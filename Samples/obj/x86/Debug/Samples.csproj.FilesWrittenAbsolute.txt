@@ -1,0 +1,15 @@
+/Users/hwt/Projects/XwPlot/Samples/obj/x86/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/hwt/Projects/XwPlot/Samples/obj/x86/Debug/Samples.class.png
+/Users/hwt/Projects/XwPlot/Samples/obj/x86/Debug/Samples.package.png
+/Users/hwt/Projects/XwPlot/Samples/obj/x86/Debug/Samples.Resources.sound.wav
+/Users/hwt/Projects/XwPlot/Samples/obj/x86/Debug/Samples.Resources.asx_jbh.xml
+/Users/hwt/Projects/XwPlot/Samples/obj/x86/Debug/Samples.Resources.NPlotDemo-icon.ico
+/Users/hwt/Projects/XwPlot/Samples/obj/x86/Debug/Samples.Resources.pattern01.jpg
+/Users/hwt/Projects/XwPlot/Samples/bin/Debug/Samples.dll.mdb
+/Users/hwt/Projects/XwPlot/Samples/bin/Debug/Samples.dll
+/Users/hwt/Projects/XwPlot/Samples/obj/x86/Debug/Samples.dll
+/Users/hwt/Projects/XwPlot/Samples/obj/x86/Debug/Samples.dll.mdb
+/Users/hwt/Projects/XwPlot/Samples/bin/Debug/Xwt.dll
+/Users/hwt/Projects/XwPlot/Samples/bin/Debug/Xwt.Mac.dll
+/Users/hwt/Projects/XwPlot/Samples/bin/Debug/XwPlot.dll
+/Users/hwt/Projects/XwPlot/Samples/bin/Debug/XwPlot.dll.mdb

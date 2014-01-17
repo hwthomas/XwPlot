@@ -1,0 +1,10 @@
+/Users/hwt/Projects/XwPlot/GtkHost/obj/x86/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/hwt/Projects/XwPlot/GtkHost/bin/Debug/GtkTest.exe.mdb
+/Users/hwt/Projects/XwPlot/GtkHost/bin/Debug/GtkTest.exe
+/Users/hwt/Projects/XwPlot/GtkHost/obj/x86/Debug/GtkTest.exe
+/Users/hwt/Projects/XwPlot/GtkHost/obj/x86/Debug/GtkTest.exe.mdb
+/Users/hwt/Projects/XwPlot/GtkHost/bin/Debug/Xwt.dll
+/Users/hwt/Projects/XwPlot/GtkHost/bin/Debug/Samples.dll
+/Users/hwt/Projects/XwPlot/GtkHost/bin/Debug/Samples.dll.mdb
+/Users/hwt/Projects/XwPlot/GtkHost/bin/Debug/XwPlot.dll
+/Users/hwt/Projects/XwPlot/GtkHost/bin/Debug/XwPlot.dll.mdb

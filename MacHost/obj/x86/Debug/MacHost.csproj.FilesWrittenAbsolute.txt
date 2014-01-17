@@ -1,0 +1,11 @@
+/Users/hwt/Projects/XwPlot/MacHost/obj/x86/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/hwt/Projects/XwPlot/MacHost/bin/Debug/MacHost.exe.mdb
+/Users/hwt/Projects/XwPlot/MacHost/bin/Debug/MacHost.exe
+/Users/hwt/Projects/XwPlot/MacHost/obj/x86/Debug/MacHost.exe
+/Users/hwt/Projects/XwPlot/MacHost/obj/x86/Debug/MacHost.exe.mdb
+/Users/hwt/Projects/XwPlot/MacHost/bin/Debug/Xwt.dll
+/Users/hwt/Projects/XwPlot/MacHost/bin/Debug/Xwt.Mac.dll
+/Users/hwt/Projects/XwPlot/MacHost/bin/Debug/Samples.dll
+/Users/hwt/Projects/XwPlot/MacHost/bin/Debug/MonoMac.dll
+/Users/hwt/Projects/XwPlot/MacHost/bin/Debug/XwPlot.dll
+/Users/hwt/Projects/XwPlot/MacHost/bin/Debug/XwPlot.dll.mdb

@@ -1,0 +1,6 @@
+/Users/hwt/Projects/NPlot/NPlot.Xwt/NPlot/obj/x86/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/hwt/Projects/NPlot/NPlot.Xwt/NPlot/bin/Debug/NPlot.dll.mdb
+/Users/hwt/Projects/NPlot/NPlot.Xwt/NPlot/bin/Debug/NPlot.dll
+/Users/hwt/Projects/NPlot/NPlot.Xwt/NPlot/obj/x86/Debug/NPlot.dll
+/Users/hwt/Projects/NPlot/NPlot.Xwt/NPlot/obj/x86/Debug/NPlot.dll.mdb
+/Users/hwt/Projects/NPlot/NPlot.Xwt/NPlot/bin/Debug/Xwt.dll

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{761A7039-8E4E-43B9-B14D-7CA96B3B569C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XwPlot</RootNamespace>
+    <AssemblyName>XwPlot</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Interactions\Interaction.cs" />
+    <Compile Include="XwPlot\FilledRegion.cs" />
+    <Compile Include="XwPlot\Utils.cs" />
+    <Compile Include="XwPlot\Transform2D.cs" />
+    <Compile Include="XwPlot\ITransform2D.cs" />
+    <Compile Include="XwPlot\IDrawable.cs" />
+    <Compile Include="XwPlot\IGradient.cs" />
+    <Compile Include="XwPlot\IPlot.cs" />
+    <Compile Include="XwPlot\IPlotSurface2D.cs" />
+    <Compile Include="XwPlot\ISequencePlot.cs" />
+    <Compile Include="XwPlot\Axis.cs" />
+    <Compile Include="XwPlot\LinearAxis.cs" />
+    <Compile Include="XwPlot\PhysicalAxis.cs" />
+    <Compile Include="XwPlot\PageAlignedPhysicalAxis.cs" />
+    <Compile Include="XwPlot\AxesConstraint.cs" />
+    <Compile Include="XwPlot\NPlotException.cs" />
+    <Compile Include="XwPlot\AxisPosition.cs" />
+    <Compile Include="XwPlot\LegendBase.cs" />
+    <Compile Include="XwPlot\Legend.cs" />
+    <Compile Include="XwPlot\PlotSurface2D.cs" />
+    <Compile Include="XwPlot\BasePlot.cs" />
+    <Compile Include="XwPlot\StepPlot.cs" />
+    <Compile Include="XwPlot\BaseSequencePlot.cs" />
+    <Compile Include="XwPlot\SequenceAdapter.cs" />
+    <Compile Include="XwPlot\AdapterUtils.cs" />
+    <Compile Include="XwPlot\StartStep.cs" />
+    <Compile Include="XwPlot\DateTimeAxis.cs" />
+    <Compile Include="XwPlot\ArrowItem.cs" />
+    <Compile Include="XwPlot\LogAxis.cs" />
+    <Compile Include="XwPlot\LinePlot.cs" />
+    <Compile Include="XwPlot\HorizontalLine.cs" />
+    <Compile Include="XwPlot\Marker.cs" />
+    <Compile Include="XwPlot\MarkerItem.cs" />
+    <Compile Include="XwPlot\PointPlot.cs" />
+    <Compile Include="XwPlot\BarPlot.cs" />
+    <Compile Include="XwPlot\HistogramPlot.cs" />
+    <Compile Include="XwPlot\InteractivePlotSurface2D.cs" />
+    <Compile Include="XwPlot\Modifier.cs" />
+    <Compile Include="XwPlot\PlotCanvas.cs" />
+    <Compile Include="XwPlot\CandlePlot.cs" />
+    <Compile Include="XwPlot\TradingDateTimeAxis.cs" />
+    <Compile Include="XwPlot\Grid.cs" />
+    <Compile Include="XwPlot\VerticalLine.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="Xwt">
+      <HintPath>..\..\xwt\Xwt\bin\Debug\Xwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+</Project>
