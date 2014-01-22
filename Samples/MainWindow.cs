@@ -74,6 +74,8 @@ namespace Samples
 			box.Panel1.Content = samplesTree;
 			
 			sampleBox = new VBox ();
+			Label title = new Label (Title);
+			sampleBox.PackStart (title);
 
 			box.Panel2.Content = sampleBox;
 			box.Panel2.Resize = true;
@@ -88,7 +90,8 @@ namespace Samples
 
 		void HandleCloseRequested (object sender, CloseRequestedEventArgs args)
 		{
-			args.AllowClose = !MessageDialog.Confirm ("Samples will be closed", Command.Ok);
+			bool allowClose = MessageDialog.Confirm ("Samples will be closed", Command.Ok);
+			args.AllowClose = allowClose;
 		}
 		
 		protected override void Dispose (bool disposing)
