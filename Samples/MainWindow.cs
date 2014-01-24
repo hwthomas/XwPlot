@@ -74,8 +74,6 @@ namespace Samples
 			box.Panel1.Content = samplesTree;
 			
 			sampleBox = new VBox ();
-			Label title = new Label (Title);
-			sampleBox.PackStart (title);
 
 			box.Panel2.Content = sampleBox;
 			box.Panel2.Resize = true;

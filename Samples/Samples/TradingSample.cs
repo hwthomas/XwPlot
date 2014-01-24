@@ -106,25 +106,26 @@ namespace Samples
 			LinePlot av = new LinePlot ();
 			av.OrdinateData = av10;
 			av.AbscissaData = dates;
-			av.LineColor = Colors.LightGray;
+			av.LineColor = Colors.DarkGray;
 			av.LineWidth = 2.0;
 
 			LinePlot top = new LinePlot ();
 			top.OrdinateData = sd2_10;
 			top.AbscissaData = dates;
-			top.LineColor = Colors.LightSteelBlue;
+			top.LineColor = Colors.LightBlue;
 			top.LineWidth = 2.0;
 
 			LinePlot bottom = new LinePlot ();
 			bottom.OrdinateData = sd_2_10;
 			bottom.AbscissaData = dates;
-			bottom.LineColor = Colors.LightSteelBlue;
+			bottom.LineColor = Colors.LightBlue;
 			bottom.LineWidth = 2.0;
 
 			FilledRegion fr = new FilledRegion (top, bottom);
-			fr.FillColor = Colors.GhostWhite;
-			plotCanvas.Add (fr);
+			fr.FillColor = Colors.LightGreen;
 
+			// Note: order of adding FilledRegion, Plots, etc is important for visibility
+			plotCanvas.Add (fr);
 			plotCanvas.Add (new Grid());
 
 			plotCanvas.Add (av);
