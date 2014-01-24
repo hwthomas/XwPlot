@@ -108,35 +108,57 @@ namespace XwPlot
 		{
 			ITransform2D t = Transform2D.GetTransformer (xAxis, yAxis);
 
+			ctx.Save ();
+
 			if (hl1 != null && hl2 != null) {
 				ctx.MoveTo (t.Transform (xAxis.Axis.WorldMin, hl1.OrdinateValue));
 				ctx.LineTo (t.Transform (xAxis.Axis.WorldMax, hl1.OrdinateValue));
 				ctx.LineTo (t.Transform (xAxis.Axis.WorldMax, hl2.OrdinateValue));
 				ctx.LineTo (t.Transform (xAxis.Axis.WorldMin, hl2.OrdinateValue));
+				ctx.ClosePath ();
 			} else if (vl1 != null && vl2 != null) {
 				ctx.MoveTo (t.Transform (vl1.AbscissaValue, yAxis.Axis.WorldMin));
 				ctx.LineTo (t.Transform (vl1.AbscissaValue, yAxis.Axis.WorldMax));
 				ctx.LineTo (t.Transform (vl2.AbscissaValue, yAxis.Axis.WorldMax));
 				ctx.LineTo (t.Transform (vl2.AbscissaValue, yAxis.Axis.WorldMin));
+				ctx.ClosePath ();
 			} else if (lp1 != null && lp2 != null) {
+
 				SequenceAdapter a1 = new SequenceAdapter (lp1.DataSource, lp1.DataMember, lp1.OrdinateData, lp1.AbscissaData);
 				SequenceAdapter a2 = new SequenceAdapter (lp2.DataSource, lp2.DataMember, lp2.OrdinateData, lp2.AbscissaData);
-				// Start at first point of LinePlot 1
-				ctx.MoveTo (t.Transform (a1 [0]));
+
+				// Start at first point of LinePlot 1 within plot bounds
+				int start = 0;
+				while (t.Transform (a1 [start]).X < xAxis.PhysicalMin.X) {
+					++start;
+				}
+				Point first = t.Transform (a1 [start]);
+				ctx.MoveTo (first);
 				// Join LinePlot 1 points in ascending order
-				for (int i = 1; i < a1.Count; ++i) {
-					ctx.LineTo (t.Transform (a1[i]));
+				Point next;
+				for (int i = start+1; i < a1.Count-1; ++i) {
+					next = t.Transform (a1 [i]);
+					if (next.X > xAxis.PhysicalMax.X)
+						break;
+					ctx.LineTo (next);
 				}
 				// Then join LinePlot 2 points in descending order
-				for (int i = a2.Count-1; i >= 0; --i) {
-					ctx.LineTo (t.Transform (a2[i]));
+				int end = a2.Count-1;
+				while (t.Transform (a2 [end]).X > xAxis.PhysicalMax.X) {
+					--end;
 				}
+				for (int i = end; i > 0; --i) {
+					next = t.Transform (a2 [i]);
+					if (next.X < xAxis.PhysicalMin.X)
+						break;
+					ctx.LineTo (next);
+				}
+				ctx.LineTo (first);
+				ctx.ClosePath ();
 			}
 			else {
 				throw new XwPlotException ("Filled Region bounds not defined");
 			}
-
-			ctx.Save ();
 			ctx.SetColor (FillColor);
 			ctx.Fill ();
 			ctx.Restore ();
