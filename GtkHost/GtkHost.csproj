@@ -8,7 +8,6 @@
     <ProjectGuid>{5415AE99-2877-4730-AF1F-F94DCD12C31A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>GtkHost</RootNamespace>
-    <AssemblyName>GtkTest</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +19,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>false</ConsolePause>
+    <AssemblyName>GtkTest</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -29,6 +29,25 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>false</ConsolePause>
+    <AssemblyName>GtkTest</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mac-debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Mac-debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>GtkHost</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'linux-debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\linux-debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>GtkHost</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Win-debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Win-debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>GtkHost</AssemblyName>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

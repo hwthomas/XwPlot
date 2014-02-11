@@ -1,6 +1,0 @@
-/Users/hwt/Projects/XwPlot/XwPlot/obj/x86/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
-/Users/hwt/Projects/XwPlot/XwPlot/bin/Debug/XwPlot.dll.mdb
-/Users/hwt/Projects/XwPlot/XwPlot/bin/Debug/XwPlot.dll
-/Users/hwt/Projects/XwPlot/XwPlot/obj/x86/Debug/XwPlot.dll
-/Users/hwt/Projects/XwPlot/XwPlot/obj/x86/Debug/XwPlot.dll.mdb
-/Users/hwt/Projects/XwPlot/XwPlot/bin/Debug/Xwt.dll

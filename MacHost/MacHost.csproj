@@ -28,6 +28,21 @@
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mac-debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Mac-debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'linux-debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\linux-debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Win-debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Win-debug</OutputPath>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
   </ItemGroup>
@@ -40,17 +55,14 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Xwt">
-      <HintPath>bin\Debug\Xwt.dll</HintPath>
-    </Reference>
-    <Reference Include="Xwt.Mac">
-      <HintPath>bin\Debug\Xwt.Mac.dll</HintPath>
-    </Reference>
     <Reference Include="Samples">
       <HintPath>..\Samples\bin\Debug\Samples.dll</HintPath>
     </Reference>
-    <Reference Include="MonoMac">
-      <HintPath>bin\Debug\MonoMac.dll</HintPath>
+    <Reference Include="Xwt.Mac">
+      <HintPath>..\..\xwt\Xwt.Mac\bin\Debug\Xwt.Mac.dll</HintPath>
+    </Reference>
+    <Reference Include="Xwt">
+      <HintPath>..\..\xwt\Xwt\bin\Debug\Xwt.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

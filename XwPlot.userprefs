@@ -1,9 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Samples/App.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Mac-debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="WpfHost/Main.cs">
     <Files>
-      <File FileName="MacHost/Main.cs" Line="1" Column="1" />
-      <File FileName="Samples/App.cs" Line="10" Column="1" />
+      <File FileName="XwPlot/XwPlot/PlotCanvas.cs" Line="1" Column="1" />
+      <File FileName="XwPlot/Interactions/Interaction.cs" Line="1" Column="1" />
+      <File FileName="XwPlot/XwPlot/PlotSurface2D.cs" Line="1" Column="1" />
+      <File FileName="WpfHost/Main.cs" Line="28" Column="7" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
