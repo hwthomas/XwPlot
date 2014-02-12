@@ -228,7 +228,7 @@ namespace XwPlot {
 		/// Adds a specific interaction to the PlotSurface2D
 		/// </summary>
 		/// <param name="i">the interaction to add.</param>
-		public void AddInteraction(Interaction i)
+		public void AddInteraction (Interaction i)
 		{
 			interactions.Add(i);
 		}
@@ -237,7 +237,7 @@ namespace XwPlot {
 		/// Remove a previously added interaction
 		/// </summary>
 		/// <param name="i">interaction to remove</param>
-		public void RemoveInteraction(Interaction i)			 
+		public void RemoveInteraction (Interaction i)			 
 		{
 			interactions.Remove(i);
 		}
@@ -270,7 +270,7 @@ namespace XwPlot {
 		/// Override this, or add handler to InteractionOccurred event.
 		/// </summary>
 		/// <param name="sender"></param>
-		protected void OnInteractionOccurred(object sender)
+		protected void OnInteractionOccurred (object sender)
 		{
 		}
 		
@@ -279,7 +279,7 @@ namespace XwPlot {
 		/// PreRefresh event handler signature
 		/// </summary>
 		/// <param name="sender"></param>
-		public delegate void PreRefreshHandler(object sender);
+		public delegate void PreRefreshHandler (object sender);
 
 
 		/// <summary>
@@ -293,10 +293,9 @@ namespace XwPlot {
 		/// Override this, or add handler to PreRefresh event.
 		/// </summary>
 		/// <param name="sender"></param>
-		protected void OnPreRefresh(object sender)
+		protected void OnPreRefresh (object sender)
 		{
 		}
-		
 		#endregion
 
 		#region PlotSurface Interaction handlers
@@ -309,10 +308,10 @@ namespace XwPlot {
 		/// <summary>
 		/// Handle Draw event for all interactions. Called by platform-specific OnDraw/Paint
 		/// </summary>
-		protected void DoDraw (Context ctx, Rectangle clip)
+		protected void OnDraw (Context ctx, Rectangle clip)
 		{
 			foreach (Interaction i in interactions) {
-				i.DoDraw (ctx, clip);
+				i.OnDraw (ctx, clip);
 			}
 		}
 
@@ -320,11 +319,11 @@ namespace XwPlot {
 		/// Handle MouseEnter for all PlotSurface interactions
 		/// </summary>
 		/// <returns>true if plot has been modified</returns>
-		protected bool DoMouseEnter (EventArgs args)
+		protected bool OnMouseEntered (EventArgs args)
 		{
 			bool modified = false;
 			foreach (Interaction i in interactions) {
-				modified |= i.DoMouseEnter (this);
+				modified |= i.OnMouseEntered (args, this);
 			}
 			ShowCursor (plotCursor);	//set by each Interaction
 			if (modified) {
@@ -342,7 +341,7 @@ namespace XwPlot {
 		{
 			bool modified = false;
 			foreach (Interaction i in interactions) {
-				modified |= i.DoMouseLeave (this);
+				modified |= i.OnMouseExited (args, this);
 			}
 			ShowCursor(plotCursor);
 			if (modified) {
@@ -353,17 +352,17 @@ namespace XwPlot {
 		}
 
 		/// <summary>
-		/// Handle MouseDown for all PlotSurface interactions
+		/// Handle ButtonPressed for all PlotSurface interactions
 		/// </summary>
 		/// <param name="X">mouse X position</param>
 		/// <param name="Y"> mouse Y position</param>
 		/// <param name="keys"> mouse and keyboard modifiers</param>
 		/// <returns>true if plot has been modified</returns>
-		protected bool DoMouseDown (double X, double Y, Modifier keys)
+		protected bool OnButtonPressed (ButtonEventArgs args)
 		{
 			bool modified = false;
 			foreach (Interaction i in interactions) {
-				modified |= i.DoMouseDown (X, Y, keys, this);
+				modified |= i.OnButtonPressed (args, this);
 			}
 			ShowCursor(plotCursor);
 			if (modified) {
@@ -374,17 +373,17 @@ namespace XwPlot {
 		}
 
 		/// <summary>
-		/// // Handle MouseUp for all PlotSurface interactions
+		/// // Handle ButtonReleased for all PlotSurface interactions
 		/// </summary>
 		/// <param name="X">mouse X position</param>
 		/// <param name="Y"> mouse Y position</param>
 		/// <param name="keys"> mouse and keyboard modifiers</param>
 		/// <returns>true if plot has been modified</returns>
-		protected bool DoMouseUp (double X, double Y, Modifier keys)
+		protected bool OnButtonReleased (ButtonEventArgs args)
 		{
 			bool modified = false;
 			foreach (Interaction i in interactions) {
-				modified |= i.DoMouseUp (X, Y, keys, this);
+				modified |= i.OnButtonReleased (args, this);
 			}
 			ShowCursor (plotCursor);
 			if (modified){
@@ -395,17 +394,17 @@ namespace XwPlot {
 		}
 
 		/// <summary>
-		/// Handle MouseMove for all PlotSurface interactions
+		/// Handle MouseMoved for all PlotSurface interactions
 		/// </summary>
 		/// <param name="X">mouse X position</param>
 		/// <param name="Y"> mouse Y position</param>
 		/// <param name="keys"> mouse and keyboard modifiers</param>
 		/// <returns>true if plot has been modified</returns>
-		protected bool DoMouseMove (double X, double Y, Modifier keys)
+		protected bool OnMouseMoved (MouseMovedEventArgs args)
 		{
 			bool modified = false;
 			foreach (Interaction i in interactions) {
-				modified |= i.DoMouseMove (X, Y, keys, this);
+				modified |= i.OnMouseMoved (args, this);
 			}
 			ShowCursor (plotCursor);
 			if (modified) {
@@ -416,18 +415,18 @@ namespace XwPlot {
 		}
 
 		/// <summary>
-		/// Handle Mouse Scroll (wheel) for all PlotSurface interactions
+		/// Handle Mouse (wheel) scrolled for all PlotSurface interactions
 		/// </summary>
 		/// <param name="X">mouse X position</param>
 		/// <param name="Y"> mouse Y position</param>
 		/// <param name="direction"> scroll direction</param>
 		/// <param name="keys"> mouse and keyboard modifiers</param>
 		/// <returns>true if plot has been modified</returns>
-		protected bool DoMouseScroll (double X, double Y, int direction, Modifier keys)
+		protected bool OnMouseScrolled (MouseScrolledEventArgs args)
 		{
 			bool modified = false;
 			foreach (Interaction i in interactions) {
-				modified |= i.DoMouseScroll (X, Y, direction, keys, this);
+				modified |= i.OnMouseScrolled (args, this);
 			}
 			ShowCursor(plotCursor);
 			if (modified) {
@@ -440,11 +439,11 @@ namespace XwPlot {
 		/// <summary>
 		/// Handle KeyPressed for all PlotSurface interactions
 		/// </summary>
-		protected bool DoKeyPress (Modifier keys, InteractivePlotSurface2D ps)
+		protected bool OnKeyPressed (KeyEventArgs args)
 		{
 			bool modified = false;
 			foreach (Interaction i in interactions) {
-				modified |= i.DoKeyPress (keys,this);
+				modified |= i.OnKeyPressed (args,this);
 			}
 			if (modified) {
 				InteractionOccurred (this);
@@ -453,15 +452,14 @@ namespace XwPlot {
 			return(modified);
 		}
 
-		
 		/// <summary>
 		/// Handle KeyReleased for all PlotSurface interactions
 		/// </summary>
-		protected bool DoKeyRelease (Modifier keys, InteractivePlotSurface2D ps)
+		protected bool OnKeyReleased (KeyEventArgs args)
 		{
 			bool modified = false;
 			foreach (Interaction i in interactions) {
-				modified |= i.DoKeyRelease (keys,this);
+				modified |= i.OnKeyReleased (args,this);
 			}
 			if (modified) {
 				InteractionOccurred (this);
