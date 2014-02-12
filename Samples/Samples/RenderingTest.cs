@@ -1,10 +1,7 @@
 ﻿//
-// DrawingSurface.cs
+// RenderingTest.cs
 //
-// Author:
-//       Lluis Sanchez Gual <lluis@xamarin.com>
-//
-// Copyright (c) 2013 Xamarin, Inc (http://www.xamarin.com)
+// Author: Hywel Thomas <hywel.w.thomas@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,23 +20,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using Xwt;
 using Xwt.Drawing;
+using XwPlot;
 
 namespace Samples
 {
-	public class DrawingSurface: VBox
+	public class RenderingTest: VBox
 	{
-		public DrawingSurface ()
+		public RenderingTest ()
 		{
-			Button run = new Button ("Run Test");
+			Button run = new Button ("Run Timing Test");
 			PackStart (run);
 
 			Label results = new Label ();
 			PackStart (results);
 
-			var st = new SurfaceTest ();
+			var st = new DrawingTest ();
 			PackStart (st);
 
 			run.Clicked += delegate {
@@ -49,24 +48,23 @@ namespace Samples
 
 			st.TestFinished += delegate {
 				run.Sensitive = true;
-				results.Text = string.Format ("Draw: {0} FPS\nBitmap: {1} FPS\nVector image: {2} FPS\nSurface: {3} FPS",
-					 st.DrawFPS, st.BitmapFPS, st.ImageFPS, st.SurfaceFPS);
+				results.Text = string.Format ("Draw: {0} FPS\nBitmap: {1} FPS\nVector image: {2}",
+					 st.DrawFPS, st.BitmapFPS, st.ImageFPS);
 				Console.WriteLine (results.Text);
 			};
 		}
 	}
 
-	class SurfaceTest: Canvas
+	class DrawingTest: Canvas
 	{
 		bool testMode = false;
 
 		Image vectorImage;
 		Image bitmap;
-		Surface surface;
+
 		int testTime = 1000;
 		double size = 500;
 		double iterations = 20;
-		Image cow;
 
 		ImageBuilder ib;
 		Context ibx;
@@ -74,13 +72,11 @@ namespace Samples
 		public int DrawFPS { get; private set; }
 		public int BitmapFPS { get; private set; }
 		public int ImageFPS { get; private set; }
-		public int SurfaceFPS { get; private set; }
 
 		public event EventHandler TestFinished;
 
-		public SurfaceTest ()
+		public DrawingTest ()
 		{
-			cow = Image.FromResource ("cow.jpg").WithBoxSize (size - 50);
 			ib = new ImageBuilder (size, size);
 			ibx = ib.Context;
 			DrawScene (ibx);
@@ -98,12 +94,9 @@ namespace Samples
 
 		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
-			if (surface == null) {
-				surface = new Surface (size, size, this);
-				DrawScene (surface.Context);
-			}
-			ctx.DrawSurface (surface, 0, 0);
-			DrawScene (ibx);
+			DrawScene (ctx);	// Draw scene on Canvas Context
+
+			DrawScene (ibx);	// Draw off-screen once inbitially
 			bitmap = ib.ToBitmap ();
 			vectorImage = ib.ToVectorImage ();
 
@@ -121,21 +114,15 @@ namespace Samples
 			// c) copying to Canvas.Context
 
 			BitmapFPS = TimedDraw (delegate {
-				DrawScene (ibx);
-				bitmap = ib.ToBitmap ();
+				//DrawScene (ibx);
+				//bitmap = ib.ToBitmap ();
 				ctx.DrawImage (bitmap, 0, 0);
 			});
 
 			ImageFPS = TimedDraw (delegate {
-				DrawScene (ibx);
-				vectorImage = ib.ToVectorImage ();
+				//DrawScene (ibx);
+				//vectorImage = ib.ToVectorImage ();
 				ctx.DrawImage (vectorImage, 0, 0);
-			});
-
-			SurfaceFPS = TimedDraw (delegate {
-				DrawScene (surface.Context);
-				// no conversion to do
-				ctx.DrawSurface (surface, 0, 0);
 			});
 
 			testMode = false;
@@ -164,7 +151,6 @@ namespace Samples
 				ctx.Arc (size/2, size/2, ((size / iterations) * n) / 2, 0, 360);
 				ctx.Stroke ();
 			}
-			//ctx.DrawImage (cow, 20, 20);
 		}
 	}
 }

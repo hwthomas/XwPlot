@@ -34,10 +34,9 @@
 
 using System;
 
-using XwPlot;
-
 using Xwt;
 using Xwt.Drawing;
+using XwPlot;
 
 namespace Samples
 {

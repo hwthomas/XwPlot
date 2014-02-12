@@ -68,6 +68,7 @@ namespace Samples
 			AddSample (tests, "Log Axis", typeof (LogAxisTest));
 			AddSample (tests, "DateTime Axis", typeof (DateTimeAxisTest));
 			AddSample (tests, "TradingDateTime Axis", typeof (TradingDateTimeAxisTest));
+			AddSample (tests, "Rendering Performance", typeof(RenderingTest));
 
 			samplesTree.DataSource = store;
 			
