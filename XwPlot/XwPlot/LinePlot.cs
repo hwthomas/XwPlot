@@ -92,7 +92,7 @@ namespace XwPlot
 			}
 
 			ctx.Save ();
-			ctx.SetLineWidth (lineWidth_);
+			ctx.SetLineWidth (lineWidth);
 
 			// clipping is now handled assigning a clip region in the
 			// graphic object before this call
@@ -100,13 +100,13 @@ namespace XwPlot
 				Point physical = t.Transform (data[0]);
 				
 				if (drawShadow) {
-					ctx.SetColor (shadowColor_);
+					ctx.SetColor (shadowColor);
 					ctx.MoveTo (physical.X - 0.5 + ShadowOffset.X, physical.Y + ShadowOffset.Y);
 					ctx.LineTo (physical.X + 0.5 + ShadowOffset.X, physical.Y + ShadowOffset.Y);
 					ctx.Stroke ();
 				}
 				else {
-					ctx.SetColor (lineColor_);
+					ctx.SetColor (lineColor);
 					ctx.MoveTo (physical.X-0.5, physical.Y);
 					ctx.LineTo (physical.X+0.5, physical.Y);
 					ctx.Stroke ();
@@ -153,13 +153,13 @@ namespace XwPlot
 					}
 
 					if (drawShadow) {
-						ctx.SetColor (shadowColor_);
+						ctx.SetColor (shadowColor);
 						ctx.MoveTo (p1.X + ShadowOffset.X, p1.Y + ShadowOffset.Y);
 						ctx.LineTo (p2.X + ShadowOffset.X, p2.Y + ShadowOffset.Y);
 						ctx.Stroke ();
 					}
 					else {
-						ctx.SetColor (lineColor_);
+						ctx.SetColor (lineColor);
 						ctx.MoveTo (p1.X, p1.Y);
 						ctx.LineTo (p2.X, p2.Y);
 						ctx.Stroke ();
@@ -178,7 +178,7 @@ namespace XwPlot
 		/// <param name="yAxis">The Y-Axis to draw against.</param>
 		public void Draw (Context ctx, PhysicalAxis xAxis, PhysicalAxis yAxis)
 		{
-			if (shadow_) {
+			if (shadow) {
 				DrawLineOrShadow (ctx, xAxis, yAxis, true);
 			}
 			DrawLineOrShadow (ctx, xAxis, yAxis, false);
@@ -216,10 +216,10 @@ namespace XwPlot
 		/// </summary>
 		public bool Shadow
 		{
-			get { return shadow_; }
-			set { shadow_ = value; }
+			get { return shadow; }
+			set { shadow = value; }
 		}
-		private bool shadow_ = false;
+		private bool shadow = false;
 	
 
 		/// <summary>
@@ -227,30 +227,30 @@ namespace XwPlot
 		/// </summary>
 		public Color LineColor
 		{
-			get { return lineColor_; }
-			set { lineColor_ = value; }
+			get { return lineColor; }
+			set { lineColor = value; }
 		}
-		private Color lineColor_ = Colors.Black;
+		private Color lineColor = Colors.Black;
 
 		/// <summary>
 		/// The line width used in this plot.
 		/// </summary>
 		public double LineWidth
 		{
-			get { return lineWidth_; }
-			set { lineWidth_ = value; }
+			get { return lineWidth; }
+			set { lineWidth = value; }
 		}
-		private double lineWidth_ = 1;
+		private double lineWidth = 1;
 
 		/// <summary>
 		/// Color of line shadow if drawn. Use Shadow method to turn shadow on and off.
 		/// </summary>
 		public Color ShadowColor
 		{
-			get { return shadowColor_; }
-			set { shadowColor_ = value; }
+			get { return shadowColor; }
+			set { shadowColor = value; }
 		}
-		private Color shadowColor_ = new Color (100, 100, 100);
+		private Color shadowColor = new Color (100, 100, 100);
 
 
 		/// <summary>
@@ -258,10 +258,10 @@ namespace XwPlot
 		/// </summary>
 		public Point ShadowOffset
 		{
-			get { return shadowOffset_; }
-			set { shadowOffset_ = value; }
+			get { return shadowOffset; }
+			set { shadowOffset = value; }
 		}
-		private Point shadowOffset_ = new Point (1, 1);
+		private Point shadowOffset = new Point (1, 1);
 
 
 		/// <summary>
@@ -272,8 +272,8 @@ namespace XwPlot
 		public virtual void DrawInLegend (Context ctx, Rectangle startEnd)
 		{
 			ctx.Save ();
-			ctx.SetLineWidth (lineWidth_);
-			ctx.SetColor (lineColor_);
+			ctx.SetLineWidth (lineWidth);
+			ctx.SetColor (lineColor);
 			ctx.MoveTo (startEnd.Left, (startEnd.Top + startEnd.Bottom)/2);
 			ctx.LineTo (startEnd.Right, (startEnd.Top + startEnd.Bottom)/2);
 			ctx.Stroke ();

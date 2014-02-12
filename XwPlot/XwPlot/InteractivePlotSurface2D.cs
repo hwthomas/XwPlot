@@ -244,7 +244,7 @@ namespace XwPlot {
 
 		#endregion Add/Remove Interaction
 
-		#region InteractivePlotSurface Events
+		#region PlotSurface Events
 
 		/// An Event is raised to notify clients that an Interaction has modified
 		/// the PlotSurface, and a separate Event is also raised prior to a call
