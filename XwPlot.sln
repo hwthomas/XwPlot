@@ -21,10 +21,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1BA22AB4-C228-4115-BEA2-1C2548BFCC33}.Debug|x86.ActiveCfg = Debug|x86
+		{1BA22AB4-C228-4115-BEA2-1C2548BFCC33}.Debug|x86.Build.0 = Debug|x86
 		{1BA22AB4-C228-4115-BEA2-1C2548BFCC33}.linux-debug|Any CPU.ActiveCfg = linux-debug|Any CPU
-		{1BA22AB4-C228-4115-BEA2-1C2548BFCC33}.linux-debug|Any CPU.Build.0 = linux-debug|Any CPU
 		{1BA22AB4-C228-4115-BEA2-1C2548BFCC33}.Mac-debug|Any CPU.ActiveCfg = Mac-debug|Any CPU
-		{1BA22AB4-C228-4115-BEA2-1C2548BFCC33}.Mac-debug|Any CPU.Build.0 = Mac-debug|Any CPU
 		{1BA22AB4-C228-4115-BEA2-1C2548BFCC33}.Release|x86.ActiveCfg = Release|x86
 		{1BA22AB4-C228-4115-BEA2-1C2548BFCC33}.Release|x86.Build.0 = Release|x86
 		{1BA22AB4-C228-4115-BEA2-1C2548BFCC33}.Win-debug|Any CPU.ActiveCfg = Win-debug|Any CPU
@@ -32,13 +31,11 @@ Global
 		{3C152C63-2F42-48E1-81E2-E8E542708A7A}.Debug|x86.ActiveCfg = Debug|x86
 		{3C152C63-2F42-48E1-81E2-E8E542708A7A}.Debug|x86.Build.0 = Debug|x86
 		{3C152C63-2F42-48E1-81E2-E8E542708A7A}.linux-debug|Any CPU.ActiveCfg = linux-debug|Any CPU
-		{3C152C63-2F42-48E1-81E2-E8E542708A7A}.linux-debug|Any CPU.Build.0 = linux-debug|Any CPU
 		{3C152C63-2F42-48E1-81E2-E8E542708A7A}.Mac-debug|Any CPU.ActiveCfg = Mac-debug|Any CPU
 		{3C152C63-2F42-48E1-81E2-E8E542708A7A}.Mac-debug|Any CPU.Build.0 = Mac-debug|Any CPU
 		{3C152C63-2F42-48E1-81E2-E8E542708A7A}.Release|x86.ActiveCfg = Release|x86
 		{3C152C63-2F42-48E1-81E2-E8E542708A7A}.Release|x86.Build.0 = Release|x86
 		{3C152C63-2F42-48E1-81E2-E8E542708A7A}.Win-debug|Any CPU.ActiveCfg = Win-debug|Any CPU
-		{3C152C63-2F42-48E1-81E2-E8E542708A7A}.Win-debug|Any CPU.Build.0 = Win-debug|Any CPU
 		{4D53E9E6-0DC3-4C09-ABC3-5BD1D60A5940}.Debug|x86.ActiveCfg = Debug|x86
 		{4D53E9E6-0DC3-4C09-ABC3-5BD1D60A5940}.Debug|x86.Build.0 = Debug|x86
 		{4D53E9E6-0DC3-4C09-ABC3-5BD1D60A5940}.linux-debug|Any CPU.ActiveCfg = linux-debug|Any CPU
@@ -54,11 +51,9 @@ Global
 		{5415AE99-2877-4730-AF1F-F94DCD12C31A}.linux-debug|Any CPU.ActiveCfg = linux-debug|Any CPU
 		{5415AE99-2877-4730-AF1F-F94DCD12C31A}.linux-debug|Any CPU.Build.0 = linux-debug|Any CPU
 		{5415AE99-2877-4730-AF1F-F94DCD12C31A}.Mac-debug|Any CPU.ActiveCfg = Mac-debug|Any CPU
-		{5415AE99-2877-4730-AF1F-F94DCD12C31A}.Mac-debug|Any CPU.Build.0 = Mac-debug|Any CPU
 		{5415AE99-2877-4730-AF1F-F94DCD12C31A}.Release|x86.ActiveCfg = Release|x86
 		{5415AE99-2877-4730-AF1F-F94DCD12C31A}.Release|x86.Build.0 = Release|x86
 		{5415AE99-2877-4730-AF1F-F94DCD12C31A}.Win-debug|Any CPU.ActiveCfg = Win-debug|Any CPU
-		{5415AE99-2877-4730-AF1F-F94DCD12C31A}.Win-debug|Any CPU.Build.0 = Win-debug|Any CPU
 		{761A7039-8E4E-43B9-B14D-7CA96B3B569C}.Debug|x86.ActiveCfg = Debug|x86
 		{761A7039-8E4E-43B9-B14D-7CA96B3B569C}.Debug|x86.Build.0 = Debug|x86
 		{761A7039-8E4E-43B9-B14D-7CA96B3B569C}.linux-debug|Any CPU.ActiveCfg = linux-debug|Any CPU
@@ -71,7 +66,7 @@ Global
 		{761A7039-8E4E-43B9-B14D-7CA96B3B569C}.Win-debug|Any CPU.Build.0 = Win-debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = MacHost\MacHost.csproj
+		StartupItem = GtkHost\GtkHost.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.inheritsSet = null
@@ -221,5 +216,8 @@ Global
 		$29.MessageStyle = $30
 		$30.LineAlign = 0
 		$29.inheritsSet = Mono
+		$0.DotNetNamingPolicy = $31
+		$31.DirectoryNamespaceAssociation = None
+		$31.ResourceNamePolicy = FileFormatDefault
 	EndGlobalSection
 EndGlobal
