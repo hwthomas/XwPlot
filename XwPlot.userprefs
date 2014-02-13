@@ -1,12 +1,34 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Mac-debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="WpfHost/Main.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="linux-debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="XwPlot/XwPlot/PlotCanvas.cs">
     <Files>
-      <File FileName="XwPlot/XwPlot/PlotCanvas.cs" Line="1" Column="1" />
+      <File FileName="Samples/MainWindow.cs" Line="1" Column="1" />
       <File FileName="XwPlot/Interactions/Interaction.cs" Line="1" Column="1" />
-      <File FileName="XwPlot/XwPlot/PlotSurface2D.cs" Line="1" Column="1" />
-      <File FileName="WpfHost/Main.cs" Line="28" Column="7" />
+      <File FileName="XwPlot/XwPlot/InteractivePlotSurface2D.cs" Line="1" Column="1" />
+      <File FileName="Samples/Samples/LinearAxisTest.cs" Line="1" Column="1" />
+      <File FileName="XwPlot/XwPlot/PlotCanvas.cs" Line="4" Column="17" />
+      <File FileName="XwPlot/XwPlot/LinePlot.cs" Line="1" Column="1" />
+      <File FileName="Samples/Samples/OverlayTest.cs" Line="1" Column="1" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="GtkHost" expanded="True">
+            <Node name="References" expanded="True" />
+          </Node>
+          <Node name="Samples" selected="True" />
+          <Node name="XwPlot" expanded="True">
+            <Node name="XwPlot" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>

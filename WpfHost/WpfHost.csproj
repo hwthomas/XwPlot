@@ -8,6 +8,7 @@
     <ProjectGuid>{1BA22AB4-C228-4115-BEA2-1C2548BFCC33}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>WpfHost</RootNamespace>
+    <AssemblyName>WpfHost</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -19,7 +20,6 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>false</ConsolePause>
-    <AssemblyName>SwfHost</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -29,25 +29,21 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>false</ConsolePause>
-    <AssemblyName>SwfHost</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mac-debug|AnyCPU' ">
     <Optimize>false</Optimize>
     <OutputPath>bin\Mac-debug</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <AssemblyName>WpfHost</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'linux-debug|AnyCPU' ">
     <Optimize>false</Optimize>
     <OutputPath>bin\linux-debug</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <AssemblyName>WpfHost</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Win-debug|AnyCPU' ">
     <Optimize>false</Optimize>
-    <OutputPath>bin\Win-debug</OutputPath>
+    <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <AssemblyName>WpfHost</AssemblyName>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

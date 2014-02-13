@@ -30,7 +30,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Mac-debug|AnyCPU' ">
     <Optimize>false</Optimize>
-    <OutputPath>bin\Mac-debug</OutputPath>
+    <OutputPath>bin\Debug</OutputPath>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'linux-debug|AnyCPU' ">
