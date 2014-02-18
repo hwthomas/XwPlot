@@ -1,14 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="linux-debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="XwPlot/XwPlot/PlotCanvas.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Samples/Samples/OverlayTest.cs">
     <Files>
-      <File FileName="Samples/MainWindow.cs" Line="1" Column="1" />
-      <File FileName="XwPlot/Interactions/Interaction.cs" Line="1" Column="1" />
-      <File FileName="XwPlot/XwPlot/InteractivePlotSurface2D.cs" Line="1" Column="1" />
-      <File FileName="Samples/Samples/LinearAxisTest.cs" Line="1" Column="1" />
-      <File FileName="XwPlot/XwPlot/PlotCanvas.cs" Line="4" Column="17" />
-      <File FileName="XwPlot/XwPlot/LinePlot.cs" Line="1" Column="1" />
-      <File FileName="Samples/Samples/OverlayTest.cs" Line="1" Column="1" />
+      <File FileName="Samples/Samples/OverlayTest.cs" Line="112" Column="45" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -16,9 +10,11 @@
           <Node name="GtkHost" expanded="True">
             <Node name="References" expanded="True" />
           </Node>
-          <Node name="Samples" selected="True" />
-          <Node name="XwPlot" expanded="True">
-            <Node name="XwPlot" expanded="True" />
+          <Node name="Samples" expanded="True">
+            <Node name="Samples" expanded="True" />
+          </Node>
+          <Node name="XwPlot" expanded="True" selected="True">
+            <Node name="Interactions" expanded="True" />
           </Node>
         </State>
       </Pad>

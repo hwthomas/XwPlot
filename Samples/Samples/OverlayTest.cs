@@ -30,100 +30,132 @@ namespace Samples
 {
 	public class OverlayTest: Canvas
 	{
-		bool testMode = false;
+		const double focusRadius = 32; 
+		Size startSize = new Size (400, 400);
+		Size lastSize;
+		Point lastCursor = Point.Zero;
 
-		Image vectorImage;
-		Image bitmap;
+		ImageBuilder ib = null;
+		BitmapImage plotCache;
+		BitmapImage focusCache;
 
-		int testTime = 1000;
-		double size = 500;
-		double iterations = 20;
-
-		ImageBuilder ib;
-		Context ibx;
-
-		public int DrawFPS { get; private set; }
-		public int BitmapFPS { get; private set; }
-		public int ImageFPS { get; private set; }
-
-		public event EventHandler TestFinished;
-
-		public OverlayTest ()
+		public OverlayTest () : base ()
 		{
-			ib = new ImageBuilder (size, size);
-			ibx = ib.Context;
-			DrawScene (ibx);
-			bitmap = ib.ToBitmap ();
-			vectorImage = ib.ToVectorImage ();
-			WidthRequest = size;
-			HeightRequest = size;
+			lastSize = startSize;
+			WidthRequest = startSize.Width;
+			HeightRequest = startSize.Height;
+			// initialise plotCache
+			UpdateCache ();
+			// Draw 'focus' cache
+			ib = new ImageBuilder (64, 64);
+			Point p = new Point (32, 32);
+			DrawFocus (ib.Context, p);
+			focusCache = ib.ToBitmap ();
 		}
 
-		public void StartTest ()
+		protected override void OnBoundsChanged ()
 		{
-			testMode = true;
+			lastSize = Bounds.Size;
+			UpdateCache ();
 			QueueDraw ();
+			base.OnBoundsChanged ();
+		}
+
+		protected override void OnMouseMoved (MouseMovedEventArgs args)
+		{
+			// Clear previous overlay
+			Rectangle focus = new Rectangle (lastCursor.X - 32, lastCursor.Y - 32, 65, 65);
+			QueueDraw (focus);
+			lastCursor.X = args.X;
+			lastCursor.Y = args.Y;
+			// Queue new overlay drawing
+			focus = new Rectangle (lastCursor.X - 32, lastCursor.Y - 32, 64, 64);
+			QueueDraw (focus);
+			base.OnMouseMoved (args);
 		}
 
 		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
-			DrawScene (ctx);	// Draw scene on Canvas Context
-
-			DrawScene (ibx);	// Draw off-screen once inbitially
-			bitmap = ib.ToBitmap ();
-			vectorImage = ib.ToVectorImage ();
-
-			if (!testMode)
-				return;
-
-			// Simplest drawing - direct to Canvas context
-			DrawFPS = TimedDraw (delegate {
-				DrawScene (ctx);
-			});
-
-			// Check timings for drawing the scene:-
-			// a) to the ImageBuilder Context
-			// b) converting to bitmap, etc
-			// c) copying to Canvas.Context
-
-			BitmapFPS = TimedDraw (delegate {
-				//DrawScene (ibx);
-				//bitmap = ib.ToBitmap ();
-				ctx.DrawImage (bitmap, 0, 0);
-			});
-
-			ImageFPS = TimedDraw (delegate {
-				//DrawScene (ibx);
-				//vectorImage = ib.ToVectorImage ();
-				ctx.DrawImage (vectorImage, 0, 0);
-			});
-
-			testMode = false;
-			if (TestFinished != null)
-				TestFinished (this, EventArgs.Empty);
-		}
-
-		int TimedDraw (Action draw)
-		{
-			var t = DateTime.Now;
-			var n = 0;
-			while ((DateTime.Now - t).TotalMilliseconds < testTime) {
-				draw ();
-				n++;
+			// Check if cache size has changed
+			if (Bounds.Size != lastSize) {
+				UpdateCache ();
 			}
-			return n;
+
+			// Copy plotCache to screen to redraw dirtyRect
+			ctx.DrawImage (plotCache, dirtyRect, dirtyRect);
+
+			// Now draw overlay context direct to Canvas Context
+			DrawFocus (ctx, lastCursor);
+			// or... copy from focusCache
+			//Point p = new Point (lastCursor.X - 32, lastCursor.Y - 32);
+			//ctx.DrawImage (focusCache, p, 1);
 		}
 
-		void DrawScene (Context ctx)
+		void UpdateCache ()
 		{
-			ctx.SetLineWidth (1);
+			if (ib != null )
+				ib.Dispose ();
+			if (plotCache != null)
+				plotCache.Dispose ();
+			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+			RedrawCache (ib.Context);
+			plotCache = ib.ToBitmap ();
+		}
+
+		void RedrawCache (Context ctx)
+		{
+			ctx.Save ();
+			// Test 'background' is a vertical colour gradient
+			ctx.Rectangle (0, 0, Bounds.Width, Bounds.Height);
+			Gradient g = new LinearGradient (0, 0, 0, Bounds.Height);
+			g.AddColorStop (0, new Color (0.5, 0.5, 1));
+			g.AddColorStop (1, new Color (0.5, 1, 0.5));
+			ctx.Pattern = g;
+			ctx.Fill ();
+			ctx.Restore ();
+		}
+
+		void DrawFocus (Context ctx, Point p)
+		{
+			// Draw a 'zoom'-style Focus at specified point
+			double r = 12, w = focusRadius - 1;
+			Point o = Point.Zero;	// Drawing origin
+			// Align single-thickness lines on 0.5 pixel coords
+			o.X += 0.5;
+			o.Y += 0.5;
+			ctx.Save ();
+			ctx.Translate (p);	// Final translation
+			// Hairlines in X-direction
+			ctx.MoveTo (o.X + r, o.Y);
+			ctx.LineTo (o.X + w, o.Y);
+			ctx.MoveTo (o.X - r, o.Y);
+			ctx.LineTo (o.X - w, o.Y);
+			// Hairlines in Y-direction
+			ctx.MoveTo (o.X, o.Y + r);
+			ctx.LineTo (o.X, o.Y + w);
+			ctx.MoveTo (o.X, o.Y - r);
+			ctx.LineTo (o.X, o.Y - w);
+			// Inner single-thickness circle
+			ctx.MoveTo (o.X + r, o.Y);
+			ctx.Arc (o.X, o.Y, r, 0, 360);
 			ctx.SetColor (Colors.Black);
-			for (int n = 1; n < iterations; n += 3) {
-				ctx.Rectangle (0, 0, (size / iterations) * n, (size / iterations) * n);
-				ctx.Stroke ();
-				ctx.Arc (size/2, size/2, ((size / iterations) * n) / 2, 0, 360);
-				ctx.Stroke ();
-			}
+			ctx.SetLineWidth (1);
+			ctx.Stroke ();
+			// Double thickness outer arcs. Draw at (0,0) and transform
+			o = Point.Zero;
+			r = 22;
+			ctx.Rotate (5);
+			ctx.MoveTo (r, 0);
+			ctx.Arc (o.X, o.Y, r, 0, 80);
+			ctx.MoveTo (o.X, r);
+			ctx.Arc (o.X, o.Y, r, 90, 170);
+			ctx.MoveTo (-r, o.Y);
+			ctx.Arc (o.X, o.Y, r, 180, 260);
+			ctx.MoveTo (o.X, -r);
+			ctx.Arc (o.X, o.Y, r, 270, 350);
+			ctx.SetLineWidth (2);
+			ctx.Stroke ();
+			ctx.Restore ();
 		}
 	}
 }
