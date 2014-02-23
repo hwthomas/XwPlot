@@ -35,9 +35,6 @@ namespace Samples
 			Button run = new Button ("Run Timing Test");
 			PackStart (run);
 
-			Label results = new Label ();
-			PackStart (results);
-
 			var st = new DrawingTest ();
 			PackStart (st);
 
@@ -48,9 +45,9 @@ namespace Samples
 
 			st.TestFinished += delegate {
 				run.Sensitive = true;
-				results.Text = string.Format ("Draw: {0} FPS\nBitmap: {1} FPS\nVector image: {2}",
+				string results = string.Format ("Draw: {0} FPS\nBitmap: {1} FPS\nVector image: {2}",
 					 st.DrawFPS, st.BitmapFPS, st.ImageFPS);
-				Console.WriteLine (results.Text);
+				Console.WriteLine (results);
 			};
 		}
 	}
@@ -59,15 +56,14 @@ namespace Samples
 	{
 		bool testMode = false;
 
+		ImageBuilder ib;
 		Image vectorImage;
 		Image bitmap;
 
 		int testTime = 1000;
-		double size = 500;
-		double iterations = 20;
-
-		ImageBuilder ib;
-		Context ibx;
+		// 'Focus' drawing size and centre
+		double size = 64;
+		double centre = 32;
 
 		public int DrawFPS { get; private set; }
 		public int BitmapFPS { get; private set; }
@@ -75,54 +71,55 @@ namespace Samples
 
 		public event EventHandler TestFinished;
 
-		public DrawingTest ()
+		public DrawingTest () : base ()
 		{
+			// Canvas size requests
+			WidthRequest = 400;
+			HeightRequest = 400;
+
+			Point p = new Point (centre, centre);
 			ib = new ImageBuilder (size, size);
-			ibx = ib.Context;
-			DrawScene (ibx);
+			// Draw off-screen images and convert to bitmap/vector
+			ib.Context.SetColor (Colors.Green);
+			DrawFocus (ib.Context, p);
 			bitmap = ib.ToBitmap ();
+			ib.Context.SetColor (Colors.Blue);
+			DrawFocus (ib.Context, p);
 			vectorImage = ib.ToVectorImage ();
-			WidthRequest = size;
-			HeightRequest = size;
 		}
 
 		public void StartTest ()
 		{
 			testMode = true;
+			// Invalidate canvas 
 			QueueDraw ();
 		}
 
 		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
-			DrawScene (ctx);	// Draw scene on Canvas Context
-
-			DrawScene (ibx);	// Draw off-screen once inbitially
-			bitmap = ib.ToBitmap ();
-			vectorImage = ib.ToVectorImage ();
-
+			Point p = new Point (centre, centre);
+			DrawFocus (ctx, p);
 			if (!testMode)
 				return;
 
 			// Simplest drawing - direct to Canvas context
-			DrawFPS = TimedDraw (delegate {
-				DrawScene (ctx);
+			ctx.SetColor (Colors.Red);
+			DrawFPS = TimedAction (delegate {
+				DrawFocus (ctx, p);
 			});
 
-			// Check timings for drawing the scene:-
-			// a) to the ImageBuilder Context
-			// b) converting to bitmap, etc
-			// c) copying to Canvas.Context
+			// Check timings for copying off-screen images
+			// Destination on canvas may be changed
+			Rectangle srcRect = new Rectangle (0, 0, size, size);
+			Rectangle dstRect = new Rectangle (80, 0, size, size);
 
-			BitmapFPS = TimedDraw (delegate {
-				//DrawScene (ibx);
-				//bitmap = ib.ToBitmap ();
-				ctx.DrawImage (bitmap, 0, 0);
+			BitmapFPS = TimedAction (delegate {
+				ctx.DrawImage (bitmap, srcRect, dstRect);
 			});
 
-			ImageFPS = TimedDraw (delegate {
-				//DrawScene (ibx);
-				//vectorImage = ib.ToVectorImage ();
-				ctx.DrawImage (vectorImage, 0, 0);
+			dstRect.X += 80;
+			ImageFPS = TimedAction (delegate {
+				ctx.DrawImage (vectorImage, srcRect, dstRect);
 			});
 
 			testMode = false;
@@ -130,7 +127,7 @@ namespace Samples
 				TestFinished (this, EventArgs.Empty);
 		}
 
-		int TimedDraw (Action draw)
+		int TimedAction (Action draw)
 		{
 			var t = DateTime.Now;
 			var n = 0;
@@ -141,17 +138,48 @@ namespace Samples
 			return n;
 		}
 
-		void DrawScene (Context ctx)
+		void DrawFocus (Context ctx, Point p)
 		{
+			// Draw a 'zoom'-style Focus at specified point
+			double r = 12, w = 31;
+			Point o = Point.Zero;	// Drawing origin
+			// Align single-thickness lines on 0.5 pixel coords
+			o.X += 0.5;
+			o.Y += 0.5;
+			ctx.Save ();
+			ctx.Translate (p);	// Final translation
+			// Hairlines in X-direction
+			ctx.MoveTo (o.X + r, o.Y);
+			ctx.LineTo (o.X + w, o.Y);
+			ctx.MoveTo (o.X - r, o.Y);
+			ctx.LineTo (o.X - w, o.Y);
+			// Hairlines in Y-direction
+			ctx.MoveTo (o.X, o.Y + r);
+			ctx.LineTo (o.X, o.Y + w);
+			ctx.MoveTo (o.X, o.Y - r);
+			ctx.LineTo (o.X, o.Y - w);
+			// Inner single-thickness circle
+			ctx.MoveTo (o.X + r, o.Y);
+			ctx.Arc (o.X, o.Y, r, 0, 360);
 			ctx.SetLineWidth (1);
-			ctx.SetColor (Colors.Black);
-			for (int n = 1; n < iterations; n += 3) {
-				ctx.Rectangle (0, 0, (size / iterations) * n, (size / iterations) * n);
-				ctx.Stroke ();
-				ctx.Arc (size/2, size/2, ((size / iterations) * n) / 2, 0, 360);
-				ctx.Stroke ();
-			}
+			ctx.Stroke ();
+			// Double thickness outer arcs. Draw at (0,0) and transform
+			o = Point.Zero;
+			r = 22;
+			ctx.Rotate (5);
+			ctx.MoveTo (r, 0);
+			ctx.Arc (o.X, o.Y, r, 0, 80);
+			ctx.MoveTo (o.X, r);
+			ctx.Arc (o.X, o.Y, r, 90, 170);
+			ctx.MoveTo (-r, o.Y);
+			ctx.Arc (o.X, o.Y, r, 180, 260);
+			ctx.MoveTo (o.X, -r);
+			ctx.Arc (o.X, o.Y, r, 270, 350);
+			ctx.SetLineWidth (2);
+			ctx.Stroke ();
+			ctx.Restore ();
 		}
+
 	}
 }
 

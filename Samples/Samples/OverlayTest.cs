@@ -39,7 +39,7 @@ namespace Samples
 		BitmapImage plotCache;
 		BitmapImage focusCache;
 
-		public OverlayTest () : base ()
+		public OverlayTest ()
 		{
 			lastSize = startSize;
 			WidthRequest = startSize.Width;
@@ -85,10 +85,10 @@ namespace Samples
 			ctx.DrawImage (plotCache, dirtyRect, dirtyRect);
 
 			// Now draw overlay context direct to Canvas Context
-			DrawFocus (ctx, lastCursor);
+			// DrawFocus (ctx, lastCursor);
 			// or... copy from focusCache
-			//Point p = new Point (lastCursor.X - 32, lastCursor.Y - 32);
-			//ctx.DrawImage (focusCache, p, 1);
+			Point p = new Point (lastCursor.X - 32, lastCursor.Y - 32);
+			ctx.DrawImage (focusCache, p, 1);
 		}
 
 		void UpdateCache ()
