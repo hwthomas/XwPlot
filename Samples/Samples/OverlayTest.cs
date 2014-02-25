@@ -55,10 +55,10 @@ namespace Samples
 
 		protected override void OnBoundsChanged ()
 		{
+			base.OnBoundsChanged ();
 			lastSize = Bounds.Size;
 			UpdateCache ();
 			QueueDraw ();
-			base.OnBoundsChanged ();
 		}
 
 		protected override void OnMouseMoved (MouseMovedEventArgs args)
@@ -85,14 +85,16 @@ namespace Samples
 			ctx.DrawImage (plotCache, dirtyRect, dirtyRect);
 
 			// Now draw overlay context direct to Canvas Context
-			// DrawFocus (ctx, lastCursor);
+			DrawFocus (ctx, lastCursor);
 			// or... copy from focusCache
-			Point p = new Point (lastCursor.X - 32, lastCursor.Y - 32);
-			ctx.DrawImage (focusCache, p, 1);
+			// Point p = new Point (lastCursor.X - 32, lastCursor.Y - 32);
+			// ctx.DrawImage (focusCache, p, 1);
 		}
 
 		void UpdateCache ()
 		{
+			if (Bounds.Size == Size.Zero)
+				return;
 			if (ib != null )
 				ib.Dispose ();
 			if (plotCache != null)
@@ -141,7 +143,7 @@ namespace Samples
 			ctx.SetColor (Colors.Black);
 			ctx.SetLineWidth (1);
 			ctx.Stroke ();
-			// Double thickness outer arcs. Draw at (0,0) and transform
+			// Double thickness outer arcs. Draw at (0,0) and rotate
 			o = Point.Zero;
 			r = 22;
 			ctx.Rotate (5);
