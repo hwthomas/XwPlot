@@ -68,6 +68,9 @@
     <Compile Include="XwPlot\TradingDateTimeAxis.cs" />
     <Compile Include="XwPlot\Grid.cs" />
     <Compile Include="XwPlot\VerticalLine.cs" />
+    <Compile Include="XwPlot\LabelPointPlot.cs" />
+    <Compile Include="XwPlot\ImagePlot.cs" />
+    <Compile Include="XwPlot\LinearGradient.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
