@@ -42,18 +42,18 @@ namespace XwPlot
 	/// </summary>
 	public class ImagePlot : IPlot
 	{
-		private double[,] data;
-		private double xStart = 0.0;
-		private double yStart = 0.0;
-		private double xStep = 1.0;
-		private double yStep = 1.0;
+		double[,] data;
+		double xStart = 0.0;
+		double yStart = 0.0;
+		double xStep = 1.0;
+		double yStep = 1.0;
 		
-		private double dataMin;
-		private double dataMax;
-		private IGradient gradient;
-		private string label = "";
-		private bool center = true;
-		private bool showInLegend = true;
+		double dataMin;
+		double dataMax;
+		IGradient gradient;
+		string label = "";
+		bool center = true;
+		bool showInLegend = true;
 
 		/// <summary>
 		/// At or below which value a minimum gradient color should be used.
@@ -84,7 +84,7 @@ namespace XwPlot
 		/// <summary>
 		/// Calculates the minimum and maximum values of the data array.
 		/// </summary>
-		private void calculateMinMax()
+		private void CalculateMinMax()
 		{
 			dataMin = data[0,0];
 			dataMax = data[0,0];
@@ -117,7 +117,7 @@ namespace XwPlot
 			this.xStep = xStep;
 			this.yStart = yStart;
 			this.yStep = yStep;
-			this.calculateMinMax();
+			CalculateMinMax();
 		}
 
 		/// <summary>
@@ -127,7 +127,7 @@ namespace XwPlot
 		public ImagePlot (double[,] data)
 		{
 			this.data = data;
-			this.calculateMinMax();
+			CalculateMinMax();
 		}
 
 		/// <summary>
@@ -141,9 +141,9 @@ namespace XwPlot
 			}
 
 			double worldWidth = xAxis.Axis.WorldMax - xAxis.Axis.WorldMin;
-			double numBlocksHorizontal = worldWidth / this.xStep;
+			double numBlocksHorizontal = worldWidth / xStep;
 			double worldHeight = yAxis.Axis.WorldMax - yAxis.Axis.WorldMin;
-			double numBlocksVertical = worldHeight / this.yStep;
+			double numBlocksVertical = worldHeight / yStep;
 
 			double physicalWidth = xAxis.PhysicalMax.X - xAxis.PhysicalMin.X;
 			double blockWidth = physicalWidth / numBlocksHorizontal;
@@ -172,11 +172,11 @@ namespace XwPlot
 					if (!wPositive ) {
 						wX += xStep;
 					}
-					if (this.center) {
-						wX -= this.xStep/2.0;
-						wY -= this.yStep/2.0;
+					if (center) {
+						wX -= xStep/2.0;
+						wY -= yStep/2.0;
 					}
-					Color color = Gradient.GetColor ((data[i,j]-dataMin)/(dataMax-this.dataMin)); 
+					Color color = Gradient.GetColor ((data[i,j]-dataMin)/(dataMax-dataMin)); 
 					ctx.SetColor (color);
 					double x = xAxis.WorldToPhysical(wX,false).X;
 					double y = yAxis.WorldToPhysical(wY,false).Y;
@@ -224,7 +224,7 @@ namespace XwPlot
 				return label;
 			}
 			set {
-				this.label = value;
+				label = value;
 			}
 		}
 

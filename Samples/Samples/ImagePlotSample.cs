@@ -37,9 +37,9 @@ namespace Samples
 		public ImagePlotSample ()
 		{
 			infoText = "";
-			infoText += "Image Example. Demonstrates - \n";
-			infoText += " * ImagePlot IDrawable \n";
-			infoText += " * Rubber band selection plot interaction";
+			infoText += "ImagePlot Example. Demonstrates - \n";
+			infoText += " * X-Y Color Gradient Plot \n";
+			//infoText += " * Rubber band selection plot interaction";
 
 			string myfile = 
 			"-1.251382E-3 -1.279191E-3 -7.230207E-4 -8.064462E-4 -5.005528E-4 -5.839783E-4 -1.696318E-3 -1.668509E-3 -3.893189E-4 -4.449358E-4 -1.473850E-3 -1.473850E-3 -1.974403E-3 -1.946594E-3 -2.085637E-3 -2.085637E-3 -1.612892E-3 -1.640701E-3 -1.863169E-3 " +
@@ -66,8 +66,7 @@ namespace Samples
 			double [,] map = new double [19,19];
 			for (int i=0; i < 19; ++i) {
 				for (int j=0; j < 19; ++j) {
-					map[i,j] = Convert.ToDouble(tokens[i*19+j], new
-						System.Globalization.CultureInfo("en-US"));
+					map[i,j] = Convert.ToDouble (tokens[i*19+j], new System.Globalization.CultureInfo ("en-US"));
 				}
 			}
 
@@ -78,7 +77,7 @@ namespace Samples
 			ImagePlot ip = new ImagePlot (map, -9.0f, 1.0f, -9.0f, 1.0f);
 			ip.Gradient = new XwPlot.LinearGradient (Colors.Gold, Colors.Black );
 
-			plotCanvas.Add(ip);
+			plotCanvas.Add (ip);
 			plotCanvas.XAxis1.Label = "x [mm]";
 			plotCanvas.YAxis1.Label = "y [mm]";
 

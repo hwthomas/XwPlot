@@ -51,7 +51,7 @@ namespace XwPlot
 		{
 			MinColor = minColor;
 			MaxColor = maxColor;
-			VoidColor = Colors.Black;
+			VoidColor = Colors.Yellow;
 		}
 
 		/// <summary>
@@ -77,8 +77,7 @@ namespace XwPlot
 		/// <returns>The color corresponding to the supplied number.</returns>
 		public Color GetColor (double prop)
 		{
-			if (Double.IsNaN(prop))
-			{
+			if (Double.IsNaN(prop)) {
 				return VoidColor;
 			}
 
@@ -90,11 +89,11 @@ namespace XwPlot
 				return MaxColor;
 			}
 
-			byte r = (byte)((int)(MinColor.Red) + (int)(((double)MaxColor.Red - (double)MinColor.Red)*prop));
-			byte g = (byte)((int)(MinColor.Green) + (int)(((double)MaxColor.Green - (double)MinColor.Green)*prop));
-			byte b = (byte)((int)(MinColor.Blue) + (int)(((double)MaxColor.Blue- (double)MinColor.Blue)*prop));
+			double r = MinColor.Red + (MaxColor.Red - MinColor.Red)*prop;
+			double g = MinColor.Green + (MaxColor.Green - MinColor.Green)*prop;
+			double b = MinColor.Blue + (MaxColor.Blue - MinColor.Blue)*prop;
 
-			return Color.FromBytes (r,g,b);
+			return new Color (r,g,b);
 		}
 	}
 }
