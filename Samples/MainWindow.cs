@@ -57,6 +57,7 @@ namespace Samples
 			AddSample (staticPlots, "Waveform Step Plot", typeof (StepPlotSample));
 			AddSample (staticPlots, "Point Plot", typeof (PointPlotSample));
 			AddSample (staticPlots, "LabelPoint Plot", typeof (LabelPointPlotSample));
+			AddSample (staticPlots, "ImagePlot", typeof (ImagePlotSample));
 			AddSample (staticPlots, "Histogram Plot", typeof (HistogramSample));
 			AddSample (staticPlots, "Candle Plot", typeof (CandlePlotSample));
 			AddSample (staticPlots, "Trading Plot", typeof (TradingSample));

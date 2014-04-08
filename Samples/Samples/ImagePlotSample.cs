@@ -1,15 +1,40 @@
+//
+// ImagePlotSample.cs
+//
+// Author: Hywel Thomas <hywel.w.thomas@gmail.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 using System;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 
-using NPlot;
+using Xwt;
+using Xwt.Drawing;
 
-namespace GtkSamples
+using XwPlot;
+
+namespace Samples
 {
-	public class PlotImage : PlotSample
+	public class ImagePlotSample : PlotSample
 	{
-		public PlotImage ()
+		public ImagePlotSample ()
 		{
 			infoText = "";
 			infoText += "Image Example. Demonstrates - \n";
@@ -39,38 +64,35 @@ namespace GtkSamples
 
 			string [] tokens = myfile.Split(new char [1] {' '});
 			double [,] map = new double [19,19];
-			for (int i=0; i < 19; ++i)
-			{
-				for (int j=0; j < 19; ++j)
-				{
+			for (int i=0; i < 19; ++i) {
+				for (int j=0; j < 19; ++j) {
 					map[i,j] = Convert.ToDouble(tokens[i*19+j], new
 						System.Globalization.CultureInfo("en-US"));
 				}
 			}
 
-			plotSurface.Clear();
+			plotCanvas.Clear();
 			
-			plotSurface.Title = "Cathode 11.2 QE Map";
+			plotCanvas.Title = "Cathode 11.2 QE Map";
 			
-			ImagePlot ip = new ImagePlot(map, -9.0f, 1.0f, -9.0f, 1.0f);
-			//ip.Gradient = new StepGradient( StepGradient.Type.Rainbow );
-			ip.Gradient = new LinearGradient( Color.Gold, Color.Black );
+			ImagePlot ip = new ImagePlot (map, -9.0f, 1.0f, -9.0f, 1.0f);
+			ip.Gradient = new XwPlot.LinearGradient (Colors.Gold, Colors.Black );
 
-			plotSurface.Add(ip);
-			plotSurface.XAxis1.Label = "x [mm]";
-			plotSurface.YAxis1.Label = "y [mm]";
+			plotCanvas.Add(ip);
+			plotCanvas.XAxis1.Label = "x [mm]";
+			plotCanvas.YAxis1.Label = "y [mm]";
 
-			plotSurface.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+			//plotCanvas.AddAxesConstraint( new AxesConstraint.AxisPosition( plotCanvas2D.YAxisPosition.Left, 0) );
+			//plotCanvas.AddAxesConstraint( new AxesConstraint.AxisPosition( plotCanvas2D.XAxisPosition.Top, 0) );
+			//plotCanvas.AddAxesConstraint(
+			//new AxesConstraint.YPixelWorldLength(0.1f,plotCanvas2D.XAxisPosition.Bottom) );
+			//plotCanvas.AddAxesConstraint( new AxesConstraint.AspectRatio(1.0,plotCanvas2D.XAxisPosition.Top,plotCanvas2D.YAxisPosition.Left) );
+			//plotCanvas.AddInteraction (new KeyActions());
+			//plotCanvas.AddInteraction (new PlotSelection(Color.White));
 
-			//plotSurface.AddAxesConstraint( new AxesConstraint.AxisPosition( PlotSurface2D.YAxisPosition.Left, 0) );
-			//plotSurface.AddAxesConstraint( new AxesConstraint.AxisPosition( PlotSurface2D.XAxisPosition.Top, 0) );
-			//plotSurface.AddAxesConstraint(
-			//new AxesConstraint.YPixelWorldLength(0.1f,PlotSurface2D.XAxisPosition.Bottom) );
-			//plotSurface.AddAxesConstraint( new AxesConstraint.AspectRatio(1.0,PlotSurface2D.XAxisPosition.Top,PlotSurface2D.YAxisPosition.Left) );
-			plotSurface.AddInteraction (new KeyActions());
-			plotSurface.AddInteraction (new PlotSelection(Color.White));
-
-			plotSurface.Refresh();
+			PackStart (plotCanvas.Canvas, true);
+			Label info = new Label (infoText);
+			PackStart (info);
 
 		}
 	}

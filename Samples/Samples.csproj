@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="Tests\TradingDateTimeAxisTest.cs" />
     <Compile Include="Samples\LabelPointPlotSample.cs" />
+    <Compile Include="Samples\ImagePlotSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Data" />
