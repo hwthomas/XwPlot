@@ -61,6 +61,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Tests\TradingDateTimeAxisTest.cs" />
+    <Compile Include="Samples\LabelPointPlotSample.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Data" />

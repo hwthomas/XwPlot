@@ -97,7 +97,7 @@ namespace XwPlot
 		/// </summary>
 		public DateTimeAxis () : base()
 		{
-			Init();
+			Init ();
 		}
 
 
@@ -108,7 +108,7 @@ namespace XwPlot
 		/// <param name="worldMax">World max of axis</param>
 		public DateTimeAxis (double worldMin, double worldMax) : base (worldMin, worldMax)
 		{
-			Init();
+			Init ();
 		}
 
 
@@ -119,7 +119,7 @@ namespace XwPlot
 		/// <param name="worldMax">World max of axis</param>
 		public DateTimeAxis (long worldMin, long worldMax) : base ((double)worldMin, (double)worldMax)
 		{
-			Init();
+			Init ();
 		}
 
 
@@ -130,7 +130,7 @@ namespace XwPlot
 		/// <param name="worldMax">World max of axis</param>
 		public DateTimeAxis (DateTime worldMin, DateTime worldMax) : base ((double)worldMin.Ticks, (double)worldMax.Ticks)
 		{
-			Init();
+			Init ();
 		}
 
 
@@ -142,12 +142,7 @@ namespace XwPlot
 		/// <param name="physicalMax">The maximum physical extent of the axis.</param>
 		/// <param name="boundingBox">out: smallest box that completely encompasses all of the ticks and tick labels.</param>
 		/// <param name="labelOffset">out: a suitable offset from the axis to draw the axis label.</param>
-		protected override void DrawTicks ( 
-			Context ctx, 
-			Point physicalMin, 
-			Point physicalMax, 
-			out object labelOffset,
-			out object boundingBox )
+		protected override void DrawTicks (Context ctx, Point physicalMin, Point physicalMax, out object labelOffset, out object boundingBox )
 		{	
 			// TODO: Look at offset and bounding box logic again here. why temp and other vars? 
 

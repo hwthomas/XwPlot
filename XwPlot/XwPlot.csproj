@@ -71,6 +71,7 @@
     <Compile Include="XwPlot\LabelPointPlot.cs" />
     <Compile Include="XwPlot\ImagePlot.cs" />
     <Compile Include="XwPlot\LinearGradient.cs" />
+    <Compile Include="XwPlot\LabelAxis.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
