@@ -109,7 +109,7 @@ namespace Samples
 			ctx.Save ();
 			// Test 'background' is a vertical colour gradient
 			ctx.Rectangle (0, 0, Bounds.Width, Bounds.Height);
-			Gradient g = new LinearGradient (0, 0, 0, Bounds.Height);
+			Gradient g = new Xwt.Drawing.LinearGradient (0, 0, 0, Bounds.Height);
 			g.AddColorStop (0, new Color (0.5, 0.5, 1));
 			g.AddColorStop (1, new Color (0.5, 1, 0.5));
 			ctx.Pattern = g;

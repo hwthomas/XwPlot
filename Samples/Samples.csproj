@@ -28,15 +28,6 @@
     <Compile Include="MainWindow.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Samples\LinearAxisTest.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\LogAxisTest.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Samples\DateTimeAxisTest.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Samples\PlotSample.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -58,9 +49,18 @@
     <Compile Include="Samples\TradingSample.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Samples\TradingDateTimeAxisTest.cs" />
-    <Compile Include="Samples\RenderingTest.cs" />
-    <Compile Include="Samples\OverlayTest.cs" />
+    <Compile Include="Tests\RenderingTest.cs" />
+    <Compile Include="Tests\OverlayTest.cs" />
+    <Compile Include="Tests\LogAxisTest.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tests\LinearAxisTest.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tests\DateTimeAxisTest.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tests\TradingDateTimeAxisTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Data" />
@@ -88,5 +88,8 @@
       <Project>{761A7039-8E4E-43B9-B14D-7CA96B3B569C}</Project>
       <Name>XwPlot</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\" />
   </ItemGroup>
 </Project>
