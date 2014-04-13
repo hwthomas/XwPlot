@@ -73,7 +73,7 @@ namespace XwPlot
 		/// </summary>
 		public void Refresh ()
 		{
-			surface.QueueDraw (surface.Bounds);
+			surface.QueueDraw ();
 		}
 
 		/// <summary>

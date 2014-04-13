@@ -1,7 +1,9 @@
 //
 // ImagePlotSample.cs
 //
-// Author: Hywel Thomas <hywel.w.thomas@gmail.com>
+// Derived originally from NPlot (Copyright (C) 2003-2006 Matt Howlett and others)
+// Updated and ported to Xwt 2012-2014 : Hywel Thomas <hywel.w.thomas@gmail.com>
+// All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +34,12 @@ using XwPlot;
 
 namespace Samples
 {
-	public class ImagePlotSample : PlotSample
+	public class GradientPlotSample : PlotSample
 	{
-		public ImagePlotSample ()
+		public GradientPlotSample ()
 		{
 			infoText = "";
-			infoText += "ImagePlot Example. Demonstrates - \n";
+			infoText += "GradientPlot Example. Demonstrates - \n";
 			infoText += " * X-Y Color Gradient Plot \n";
 			//infoText += " * Rubber band selection plot interaction";
 
@@ -74,15 +76,15 @@ namespace Samples
 			
 			plotCanvas.Title = "Cathode 11.2 QE Map";
 			
-			ImagePlot ip = new ImagePlot (map, -9.0f, 1.0f, -9.0f, 1.0f);
+			GradientPlot ip = new GradientPlot (map, -9.0f, 1.0f, -9.0f, 1.0f);
 			ip.Gradient = new XwPlot.LinearGradient (Colors.Gold, Colors.Black );
 
 			plotCanvas.Add (ip);
 			plotCanvas.XAxis1.Label = "x [mm]";
 			plotCanvas.YAxis1.Label = "y [mm]";
 
-			//plotCanvas.AddAxesConstraint( new AxesConstraint.AxisPosition( plotCanvas2D.YAxisPosition.Left, 0) );
-			//plotCanvas.AddAxesConstraint( new AxesConstraint.AxisPosition( plotCanvas2D.XAxisPosition.Top, 0) );
+			//plotCanvas.AddAxesConstraint (new AxesConstraint.AxisPosition (YAxisPosition.Left, 0));
+			//plotCanvas.AddAxesConstraint (new AxesConstraint.AxisPosition (XAxisPosition.Top, 0));
 			//plotCanvas.AddAxesConstraint(
 			//new AxesConstraint.YPixelWorldLength(0.1f,plotCanvas2D.XAxisPosition.Bottom) );
 			//plotCanvas.AddAxesConstraint( new AxesConstraint.AspectRatio(1.0,plotCanvas2D.XAxisPosition.Top,plotCanvas2D.YAxisPosition.Left) );

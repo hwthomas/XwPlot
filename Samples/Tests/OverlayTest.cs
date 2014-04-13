@@ -100,11 +100,11 @@ namespace Samples
 			if (plotCache != null)
 				plotCache.Dispose ();
 			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
-			RedrawCache (ib.Context);
+			DrawCache (ib.Context);
 			plotCache = ib.ToBitmap ();
 		}
 
-		void RedrawCache (Context ctx)
+		void DrawCache (Context ctx)
 		{
 			ctx.Save ();
 			// Test 'background' is a vertical colour gradient

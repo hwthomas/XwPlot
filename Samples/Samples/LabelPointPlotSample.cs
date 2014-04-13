@@ -67,8 +67,8 @@ namespace Samples
 			Random r = new Random();
 
 			for (int i=0; i<len;i++) {
-				PlotQEExampleValues[i] = 8.0f + 12.0f * (double)r.Next(10000) / 10000.0f;
-				if (PlotQEExampleValues[i] > 18.0f) {
+				PlotQEExampleValues[i] = 8.0 + 12.0 * (double)r.Next(10000) / 10000.0;
+				if (PlotQEExampleValues[i] > 18.0) {
 					PlotQEExampleTextValues[i] = "KCsTe";
 				}
 				else {
@@ -103,7 +103,7 @@ namespace Samples
 
 			plotCanvas.Title = "Cs2Te Photocathode QE evolution";
 			plotCanvas.TitleFont = ff.WithSize (15);
-			plotCanvas.XAxis1.WorldMin = -1.0f;
+			plotCanvas.XAxis1.WorldMin = -1.0;
 			plotCanvas.XAxis1.WorldMax = len;
 			plotCanvas.XAxis1.LabelFont = ff.WithSize (10);
 			plotCanvas.XAxis1.Label = "Cathode ID";
@@ -113,7 +113,7 @@ namespace Samples
 
 			plotCanvas.YAxis1.WorldMin = 0.0;
 			plotCanvas.YAxis1.WorldMax= 25.0;
-			plotCanvas.XAxis1.TickTextAngle = 60.0f;
+			plotCanvas.XAxis1.TickTextAngle = 60.0;
 
 			// Add timer into Xwt loop for data updates
 			Application.TimeoutInvoke (750, qeExampleTimer_Tick);
@@ -135,8 +135,8 @@ namespace Samples
 			Random r = new Random ();
 
 			for (int i=0; i<PlotQEExampleValues.Length; ++i) {
-				PlotQEExampleValues[i] = 8.0f + 12.0f * (double)r.Next(10000) / 10000.0f;
-				if ( PlotQEExampleValues[i] > 18.0f ) {
+				PlotQEExampleValues[i] = 8.0 + 12.0 * (double)r.Next(10000) / 10000.0;
+				if ( PlotQEExampleValues[i] > 18.0 ) {
 					PlotQEExampleTextValues[i] = "KCsTe";
 				}
 				else {

@@ -35,14 +35,12 @@ using System;
 
 namespace XwPlot
 {
-	public enum XAxisPosition
-	{
+	public enum XAxisPosition {
 		Top,
 		Bottom
 	}
 
-	public enum YAxisPosition
-	{
+	public enum YAxisPosition {
 		Left,
 		Right
 	}

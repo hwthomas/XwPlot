@@ -1,7 +1,7 @@
 //
 // XwPlot - A cross-platform charting library using the Xwt toolkit
 // 
-// ImagePlot.cs
+// GradientPlot.cs
 //
 // Derived originally from NPlot (Copyright (C) 2003-2006 Matt Howlett and others)
 // Updated and ported to Xwt 2012-2014 : Hywel Thomas <hywel.w.thomas@gmail.com>
@@ -40,7 +40,7 @@ namespace XwPlot
 	/// <summary>
 	/// Encapsulates functionality for plotting data as a 2D image chart.
 	/// </summary>
-	public class ImagePlot : IPlot
+	public class GradientPlot : IPlot
 	{
 		double[,] data;
 		double xStart = 0.0;
@@ -48,57 +48,8 @@ namespace XwPlot
 		double xStep = 1.0;
 		double yStep = 1.0;
 		
-		double dataMin;
-		double dataMax;
 		IGradient gradient;
 		string label = "";
-		bool center = true;
-		bool showInLegend = true;
-
-		/// <summary>
-		/// At or below which value a minimum gradient color should be used.
-		/// </summary>
-		public double DataMin  
-		{
-			get	{
-				return dataMin;
-			}
-			set {
-				dataMin = value;
-			}
-		}
-
-		/// <summary>
-		/// At or above which value a maximum gradient color should be used.
-		/// </summary>
-		public double DataMax
-		{
-			get {
-				return dataMax;
-			}
-			set {
-				dataMax = value;
-			}
-		}
-
-		/// <summary>
-		/// Calculates the minimum and maximum values of the data array.
-		/// </summary>
-		private void CalculateMinMax()
-		{
-			dataMin = data[0,0];
-			dataMax = data[0,0];
-			for (int i=0; i<data.GetLength(0); ++i) {
-				for (int j=0; j<data.GetLength(1); ++j) {
-					if (data[i,j]<dataMin) {
-						dataMin = data[i,j];
-					}
-					if (data[i,j]>dataMax) {
-						dataMax = data[i,j];
-					}
-				}
-			}
-		}
 
 		/// <summary>
 		/// Constructor
@@ -110,24 +61,68 @@ namespace XwPlot
 		/// <param name="yStep">the world step size between pixels in the y-direction.</param>
 		/// <remarks>no adapters for this yet - when we get some more 2d
 		/// plotting functionality, then perhaps create some.</remarks>
-		public ImagePlot (double[,] data, double xStart, double xStep, double yStart, double yStep)
+		public GradientPlot (double[,] data, double xStart, double xStep, double yStart, double yStep)
 		{
 			this.data = data;
 			this.xStart = xStart;
 			this.xStep = xStep;
 			this.yStart = yStart;
 			this.yStep = yStep;
-			CalculateMinMax();
+			Center = true;
+			ShowInLegend = true;
+			CalculateMinMax ();
 		}
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="data">The 2D array to plot.</param>
-		public ImagePlot (double[,] data)
+		public GradientPlot (double[,] data)
 		{
 			this.data = data;
-			CalculateMinMax();
+			Center = true;
+			ShowInLegend = true;
+			CalculateMinMax ();
+		}
+
+		/// <summary>
+		/// At or below which value a minimum gradient color should be used.
+		/// </summary>
+		public double DataMin { get; set; }
+
+		/// <summary>
+		/// At or above which value a maximum gradient color should be used.
+		/// </summary>
+		public double DataMax { get; set; }
+
+		/// <summary>
+		/// If true, pixels are centered on their respective coordinates. If false, they are drawn
+		/// between their coordinates and the coordinates of the the next point in each direction.
+		/// </summary>
+		public bool Center { get; set; }
+
+		/// <summary>
+		/// Whether or not to include an entry for this plot in the legend if it exists.
+		/// </summary>
+		public bool ShowInLegend { get; set; }
+
+		/// <summary>
+		/// Calculates the minimum and maximum values of the data array.
+		/// </summary>
+		private void CalculateMinMax()
+		{
+			DataMin = data[0,0];
+			DataMax = data[0,0];
+			for (int i=0; i<data.GetLength(0); ++i) {
+				for (int j=0; j<data.GetLength(1); ++j) {
+					if (data[i,j]<DataMin) {
+						DataMin = data[i,j];
+					}
+					if (data[i,j]>DataMax) {
+						DataMax = data[i,j];
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -172,11 +167,11 @@ namespace XwPlot
 					if (!wPositive ) {
 						wX += xStep;
 					}
-					if (center) {
+					if (Center) {
 						wX -= xStep/2.0;
 						wY -= yStep/2.0;
 					}
-					Color color = Gradient.GetColor ((data[i,j]-dataMin)/(dataMax-dataMin)); 
+					Color color = Gradient.GetColor ((data[i,j]-DataMin)/(DataMax-DataMin)); 
 					ctx.SetColor (color);
 					double x = xAxis.WorldToPhysical(wX,false).X;
 					double y = yAxis.WorldToPhysical(wY,false).Y;
@@ -234,7 +229,7 @@ namespace XwPlot
 		/// <returns>A suitable x-axis.</returns>
 		public Axis SuggestXAxis ()
 		{
-			if (center) {
+			if (Center) {
 				return new LinearAxis (xStart - xStep/2.0, xStart + xStep * data.GetLength (1) - xStep/2.0);
 			}
 			return new LinearAxis (xStart, xStart + xStep * data.GetLength (1));
@@ -247,37 +242,10 @@ namespace XwPlot
 		/// <returns>A suitable y-axis.</returns>
 		public Axis SuggestYAxis()
 		{
-			if (center) {
+			if (Center) {
 				return new LinearAxis (yStart - yStep/2.0, yStart + yStep * data.GetLength (0) - yStep/2.0);
 			}
 			return new LinearAxis (yStart, yStart + yStep * data.GetLength (0));
-		}
-
-		/// <summary>
-		/// If true, pixels are centered on their respective coordinates. If false, they are drawn
-		/// between their coordinates and the coordinates of the the next point in each direction.
-		/// </summary>
-		public bool Center
-		{
-			get {
-				return center;
-			}
-			set {
-				center = value;
-			}
-		}
-
-		/// <summary>
-		/// Whether or not to include an entry for this plot in the legend if it exists.
-		/// </summary>
-		public bool ShowInLegend
-		{
-			get {
-				return showInLegend;
-			}
-			set {
-				showInLegend = value;
-			}
 		}
 
 		/// <summary>
