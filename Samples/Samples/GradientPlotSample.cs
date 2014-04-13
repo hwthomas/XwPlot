@@ -77,7 +77,7 @@ namespace Samples
 			plotCanvas.Title = "Cathode 11.2 QE Map";
 			
 			GradientPlot ip = new GradientPlot (map, -9.0f, 1.0f, -9.0f, 1.0f);
-			ip.Gradient = new XwPlot.LinearGradient (Colors.Gold, Colors.Black );
+			ip.Gradient = new XwPlot.ColorGradient (Colors.Gold, Colors.Black );
 
 			plotCanvas.Add (ip);
 			plotCanvas.XAxis1.Label = "x [mm]";

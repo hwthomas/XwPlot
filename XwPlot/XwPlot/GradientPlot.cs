@@ -191,7 +191,7 @@ namespace XwPlot
 			get {
 				if (gradient == null) {
 					// TODO: suboptimal.
-					gradient = new LinearGradient (Colors.Black, Colors.White);
+					gradient = new ColorGradient (Colors.Black, Colors.White);
 				}
 				return gradient;
 			}

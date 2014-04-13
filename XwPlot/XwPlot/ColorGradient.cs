@@ -1,7 +1,7 @@
 //
 // XwPlot - A cross-platform charting library using the Xwt toolkit
 // 
-// LinearGradient.cs
+// ColorGradient.cs
 //
 // Derived originally from NPlot (Copyright (C) 2003-2006 Matt Howlett and others)
 // Updated and ported to Xwt 2012-2014 : Hywel Thomas <hywel.w.thomas@gmail.com>
@@ -38,16 +38,16 @@ using Xwt.Drawing;
 namespace XwPlot
 {
 	/// <summary>
-	/// Class for creating a linear gradient.
+	/// Class for creating a (linear) color gradient.
 	/// </summary>
-	public class LinearGradient : IGradient
+	public class ColorGradient : IGradient
 	{
 		/// <summary>
 		/// Constructor.
 		/// </summary>
 		/// <param name="minColor">The color corresponding to 0.0</param>
 		/// <param name="maxColor">The color corresponding to 1.0</param>
-		public LinearGradient (Color minColor, Color maxColor)
+		public ColorGradient (Color minColor, Color maxColor)
 		{
 			MinColor = minColor;
 			MaxColor = maxColor;
@@ -67,7 +67,7 @@ namespace XwPlot
 		/// <summary>
 		/// The color corresponding to NaN
 		/// </summary>
-		public Color VoidColor { get; set; }					 
+		public Color VoidColor { get; set; } 
 
 		/// <summary>
 		/// Gets a color corresponding to a number between 0.0 and 1.0 inclusive. The color will
