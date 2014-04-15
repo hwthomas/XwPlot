@@ -152,8 +152,6 @@ namespace XwPlot
 				}
 				ctx.MoveTo (p1);
 				ctx.LineTo (p2);
-				// note: casting all drawing was necessary for sane display. why?
-				//g.DrawLine( p, (int)p1.X, (int)p1.Y, (int)p2.X, (int)p2.Y );
 			}
 			ctx.SetLineWidth (1);
 			ctx.SetColor (gridColor);
@@ -201,7 +199,6 @@ namespace XwPlot
 				yAxis.Axis.WorldTickPositions_SecondPass (yAxis.PhysicalMin, yAxis.PhysicalMax, yLargePositions, ref ySmallPositions);
 				DrawGridLines (ctx, yAxis, xAxis, ySmallPositions, false);
 			}
-
 			ctx.Restore ();
 		}
 	}

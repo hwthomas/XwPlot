@@ -38,12 +38,18 @@ using Xwt.Drawing;
 
 namespace XwPlot
 {
-
 	/// <summary>
 	/// Encapsulates functionality for plotting data as a line chart.
 	/// </summary>
 	public class LinePlot : BaseSequencePlot, IPlot, ISequencePlot
 	{
+		private Color lineColor = Colors.Black;
+		private double lineWidth = 1;
+		private double [] lineDash = null;
+		private bool shadow = false;
+		private Color shadowColor = new Color (100, 100, 100);
+		private Point shadowOffset = new Point (1, 1);
+
 		/// <summary>
 		/// Default constructor
 		/// </summary>
@@ -79,7 +85,6 @@ namespace XwPlot
 			get { return lineColor; }
 			set { lineColor = value; }
 		}
-		private Color lineColor = Colors.Black;
 
 		/// <summary>
 		/// The line width used in this plot.
@@ -89,7 +94,6 @@ namespace XwPlot
 			get { return lineWidth; }
 			set { lineWidth = value; }
 		}
-		private double lineWidth = 1;
 
 		/// <summary>
 		/// The Dash Pattern used for the line
@@ -99,7 +103,6 @@ namespace XwPlot
 			get { return lineDash; }
 			set { lineDash = value; }
 		}
-		private double [] lineDash = null;
 
 		/// <summary>
 		/// If true, draw a shadow under the line.
@@ -109,7 +112,6 @@ namespace XwPlot
 			get { return shadow; }
 			set { shadow = value; }
 		}
-		private bool shadow = false;
 
 		/// <summary>
 		/// Color of line shadow if drawn. Use Shadow method to turn shadow on and off.
@@ -119,7 +121,6 @@ namespace XwPlot
 			get { return shadowColor; }
 			set { shadowColor = value; }
 		}
-		private Color shadowColor = new Color (100, 100, 100);
 
 		/// <summary>
 		/// Offset of shadow line from primary line.
@@ -129,7 +130,6 @@ namespace XwPlot
 			get { return shadowOffset; }
 			set { shadowOffset = value; }
 		}
-		private Point shadowOffset = new Point (1, 1);
 
 		/// <summary>
 		/// Draws the line plot using the Context and Physical Axes provided
