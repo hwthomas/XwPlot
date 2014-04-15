@@ -61,6 +61,7 @@ namespace Samples
 			AddSample (staticPlots, "Histogram Plot", typeof (HistogramSample));
 			AddSample (staticPlots, "Candle Plot", typeof (CandlePlotSample));
 			AddSample (staticPlots, "Trading Plot", typeof (TradingSample));
+			AddSample (staticPlots, "Plot Particles", typeof (PlotParticles));
 
 			var interactivePlots = AddSample (null, "Interactive Plots", null);
 			AddSample (interactivePlots, "Waveform Plot", typeof (StepPlotSample));
