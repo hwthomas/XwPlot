@@ -133,8 +133,8 @@ namespace Samples
 			lp2.OrdinateData = yeli2;
 			lp2.AbscissaData = xeli2;
 			plotCanvas.Add (lp2, XAxisPosition.Bottom, YAxisPosition.Left);
-			//double[] pattern = new double[] { 5, 40 };					// Problem? HWT
-			//lp2.DashPattern = pattern;
+			double[] pattern = new double[] { 10, 20 };
+			lp2.LineDash = pattern;
 			lp2.LineColor = Colors.Red;
 
 			// now bin the particle position to create beam density histogram

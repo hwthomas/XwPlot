@@ -71,6 +71,65 @@ namespace XwPlot
 			AbscissaData = abscissaData;
 		}
 
+		/// <summary>
+		/// The color used to draw lines in this plot.
+		/// </summary>
+		public Color LineColor
+		{
+			get { return lineColor; }
+			set { lineColor = value; }
+		}
+		private Color lineColor = Colors.Black;
+
+		/// <summary>
+		/// The line width used in this plot.
+		/// </summary>
+		public double LineWidth
+		{
+			get { return lineWidth; }
+			set { lineWidth = value; }
+		}
+		private double lineWidth = 1;
+
+		/// <summary>
+		/// The Dash Pattern used for the line
+		/// </summary>
+		public double [] LineDash
+		{
+			get { return lineDash; }
+			set { lineDash = value; }
+		}
+		private double [] lineDash = null;
+
+		/// <summary>
+		/// If true, draw a shadow under the line.
+		/// </summary>
+		public bool Shadow
+		{
+			get { return shadow; }
+			set { shadow = value; }
+		}
+		private bool shadow = false;
+
+		/// <summary>
+		/// Color of line shadow if drawn. Use Shadow method to turn shadow on and off.
+		/// </summary>
+		public Color ShadowColor
+		{
+			get { return shadowColor; }
+			set { shadowColor = value; }
+		}
+		private Color shadowColor = new Color (100, 100, 100);
+
+		/// <summary>
+		/// Offset of shadow line from primary line.
+		/// </summary>
+		public Point ShadowOffset
+		{
+			get { return shadowOffset; }
+			set { shadowOffset = value; }
+		}
+		private Point shadowOffset = new Point (1, 1);
 
 		/// <summary>
 		/// Draws the line plot using the Context and Physical Axes provided
@@ -93,6 +152,9 @@ namespace XwPlot
 
 			ctx.Save ();
 			ctx.SetLineWidth (lineWidth);
+			if (lineDash != null) {
+				ctx.SetLineDash (0, lineDash);
+			}
 
 			// clipping is now handled assigning a clip region in the
 			// graphic object before this call
@@ -169,7 +231,6 @@ namespace XwPlot
 			ctx.Restore ();
 		}
 
-
 		/// <summary>
 		/// Draws the line plot using the Context and Physical Axes provided
 		/// </summary>
@@ -184,7 +245,6 @@ namespace XwPlot
 			DrawLineOrShadow (ctx, xAxis, yAxis, false);
 		}
 
-
 		/// <summary>
 		/// Returns an x-axis that is suitable for drawing this plot.
 		/// </summary>
@@ -193,10 +253,8 @@ namespace XwPlot
 		{
 			SequenceAdapter data_ = 
 				new SequenceAdapter (DataSource, DataMember, OrdinateData, AbscissaData);
-
 			return data_.SuggestXAxis();
 		}
-
 
 		/// <summary>
 		/// Returns a y-axis that is suitable for drawing this plot.
@@ -206,63 +264,8 @@ namespace XwPlot
 		{
 			SequenceAdapter data_ = 
 				new SequenceAdapter (DataSource, DataMember, OrdinateData, AbscissaData);
-
 			return data_.SuggestYAxis();
 		}
-
-
-		/// <summary>
-		/// If true, draw a shadow under the line.
-		/// </summary>
-		public bool Shadow
-		{
-			get { return shadow; }
-			set { shadow = value; }
-		}
-		private bool shadow = false;
-	
-
-		/// <summary>
-		/// The color used to draw lines in this plot.
-		/// </summary>
-		public Color LineColor
-		{
-			get { return lineColor; }
-			set { lineColor = value; }
-		}
-		private Color lineColor = Colors.Black;
-
-		/// <summary>
-		/// The line width used in this plot.
-		/// </summary>
-		public double LineWidth
-		{
-			get { return lineWidth; }
-			set { lineWidth = value; }
-		}
-		private double lineWidth = 1;
-
-		/// <summary>
-		/// Color of line shadow if drawn. Use Shadow method to turn shadow on and off.
-		/// </summary>
-		public Color ShadowColor
-		{
-			get { return shadowColor; }
-			set { shadowColor = value; }
-		}
-		private Color shadowColor = new Color (100, 100, 100);
-
-
-		/// <summary>
-		/// Offset of shadow line from primary line.
-		/// </summary>
-		public Point ShadowOffset
-		{
-			get { return shadowOffset; }
-			set { shadowOffset = value; }
-		}
-		private Point shadowOffset = new Point (1, 1);
-
 
 		/// <summary>
 		/// Draws a representation of this plot in the legend.
