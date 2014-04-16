@@ -52,9 +52,9 @@ namespace XwPlot
 		private Color majorGridColor;
 		private Color minorGridColor;
 		private Color gridColor;
-		private double [] majorGridDash = {3.0, 1.0};
+		private double [] majorGridDash = {2.0, 2.0};
 		private double [] minorGridDash = {1.0, 2.0};
-		private double [] gridDash = {3.0, 1.0};
+		private double [] gridDash = {2.0, 2.0};
 
 		public enum GridType
 		{
@@ -114,6 +114,14 @@ namespace XwPlot
 			set { majorGridColor = value; }
 		}
 
+		/// <summary>
+		/// The Dash Patter used to draw major (coarse) grid lines.
+		/// </summary>
+		public double[] MajorGridDash
+		{
+			get { return majorGridDash; }
+			set { majorGridDash = value; }
+		}
 
 		/// <summary>
 		/// The Color used to draw minor (fine) grid lines.
@@ -122,6 +130,15 @@ namespace XwPlot
 		{
 			get { return minorGridColor; }
 			set { minorGridColor = value; }
+		}
+
+		/// <summary>
+		/// The Dash Patter used to draw minor (fine) grid lines.
+		/// </summary>
+		public double[] MinorGridDash
+		{
+			get { return minorGridDash; }
+			set { minorGridDash = value; }
 		}
 
 		/// <summary>

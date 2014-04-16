@@ -133,7 +133,7 @@ namespace Samples
 			lp2.OrdinateData = yeli2;
 			lp2.AbscissaData = xeli2;
 			plotCanvas.Add (lp2, XAxisPosition.Bottom, YAxisPosition.Left);
-			double[] pattern = new double[] { 10, 20 };
+			double[] pattern = new double[] { 5, 20 };
 			lp2.LineDash = pattern;
 			lp2.LineColor = Colors.Red;
 
