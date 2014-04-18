@@ -64,6 +64,7 @@
     <Compile Include="Samples\LabelPointPlotSample.cs" />
     <Compile Include="Samples\GradientPlotSample.cs" />
     <Compile Include="Samples\PlotParticles.cs" />
+    <Compile Include="Samples\PlotLogo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Data" />
@@ -84,7 +85,7 @@
     <EmbeddedResource Include="Resources\sound.wav" />
     <EmbeddedResource Include="Resources\asx_jbh.xml" />
     <EmbeddedResource Include="Resources\NPlotDemo-icon.ico" />
-    <EmbeddedResource Include="Resources\pattern01.jpg" />
+    <EmbeddedResource Include="Resources\LogoBackground.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XwPlot\XwPlot.csproj">

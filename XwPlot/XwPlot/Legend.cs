@@ -39,7 +39,7 @@ using Xwt.Drawing;
 namespace XwPlot
 {
 	/// <summary>
-	/// Legend functionality specific to Legends associated with a PlotSurface2D.
+	/// Legend functionality specific to Legends associated with a PlotSurface.
 	/// </summary>
 	public class Legend : LegendBase
 	{
@@ -150,7 +150,7 @@ namespace XwPlot
 
 
 		/// <summary>
-		/// Updates the PlotSurface2D axes to compensate for the legend.
+		/// Updates the PlotSurface axes to compensate for the legend.
 		/// </summary>
 		/// <param name="pXAxis1">the bottom x axis</param>
 		/// <param name="pYAxis1">the left y axis</param>

@@ -33,7 +33,6 @@
     <Compile Include="XwPlot\IDrawable.cs" />
     <Compile Include="XwPlot\IGradient.cs" />
     <Compile Include="XwPlot\IPlot.cs" />
-    <Compile Include="XwPlot\IPlotSurface2D.cs" />
     <Compile Include="XwPlot\ISequencePlot.cs" />
     <Compile Include="XwPlot\Axis.cs" />
     <Compile Include="XwPlot\LinearAxis.cs" />
@@ -44,7 +43,6 @@
     <Compile Include="XwPlot\AxisPosition.cs" />
     <Compile Include="XwPlot\LegendBase.cs" />
     <Compile Include="XwPlot\Legend.cs" />
-    <Compile Include="XwPlot\PlotSurface2D.cs" />
     <Compile Include="XwPlot\BasePlot.cs" />
     <Compile Include="XwPlot\StepPlot.cs" />
     <Compile Include="XwPlot\BaseSequencePlot.cs" />
@@ -72,6 +70,8 @@
     <Compile Include="XwPlot\LabelAxis.cs" />
     <Compile Include="XwPlot\GradientPlot.cs" />
     <Compile Include="XwPlot\ColorGradient.cs" />
+    <Compile Include="XwPlot\PlotSurface.cs" />
+    <Compile Include="XwPlot\IPlotSurface.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

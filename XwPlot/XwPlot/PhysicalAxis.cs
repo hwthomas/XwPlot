@@ -46,7 +46,7 @@ namespace XwPlot
 	/// question where to put this information. It belongs with every specific axis
 	/// type, but on the other hand, users of the library as it is normally used 
 	/// should not see it because
-	/// positioning of axes is handled internally by PlotSurface2D. Therefore it doesn't make sense
+	/// positioning of axes is handled internally by PlotSurface. Therefore it doesn't make sense
 	/// to put it in the Axis class unless it is internal. But if this were done it would restrict
 	/// use of this information outside the library always, which is not what is wanted.
 	/// The main disadvantage with the method chosen is that there is a lot of passing

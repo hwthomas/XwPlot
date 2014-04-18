@@ -42,7 +42,7 @@ namespace XwPlot
 	/// Provides functionality for drawing legends.
 	/// </summary>
 	/// <remarks>
-	/// The class is very closely tied to PlotSurface2D. 
+	/// The class is very closely tied to PlotSurface. 
 	/// </remarks>
 	public class LegendBase
 	{

@@ -1,7 +1,7 @@
 //
 // XwPlot - A cross-platform charting library using the Xwt toolkit
 // 
-// InteractivePlotSurface2D.cs
+// InteractivePlotSurface.cs
 //
 // Copyright (C) Hywel Thomas and others.
 // All rights reserved.
@@ -40,17 +40,17 @@ using Xwt.Drawing;
 namespace XwPlot {
  
 	/// <summary>
-	/// Interactive PlotSurface2D
+	/// Interactive PlotSurface
 	/// </summary> <summary>
-	/// Extends PlotSurface2D with Interactions which allow the user
+	/// Extends PlotSurface with Interactions which allow the user
 	/// to change the plot using mouse and keyboard inputs.
 	/// </summary>
-	public class InteractivePlotSurface2D : XwPlot.PlotSurface2D
+	public class InteractivePlotSurface : XwPlot.PlotSurface
 	{
 	/// <summary>
 		/// Default constructor.
 		/// </summary>
-		public InteractivePlotSurface2D() : base()
+		public InteractivePlotSurface() : base()
 		{
 			// Create empty InteractionOccurred and PreRefresh Event handlers
 			InteractionOccurred += new InteractionHandler (OnInteractionOccurred);
@@ -225,7 +225,7 @@ namespace XwPlot {
 		private ArrayList interactions = new ArrayList();
 
 		/// <summary>
-		/// Adds a specific interaction to the PlotSurface2D
+		/// Adds a specific interaction to the PlotSurface
 		/// </summary>
 		/// <param name="i">the interaction to add.</param>
 		public void AddInteraction (Interaction i)
@@ -504,6 +504,6 @@ namespace XwPlot {
 
 		#endregion
 
-	} // class InteractivePlotSurface2D
+	} // class InteractivePlotSurface
   
 } // namespace XwPlot

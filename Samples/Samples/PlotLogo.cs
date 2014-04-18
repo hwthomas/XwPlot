@@ -1,11 +1,10 @@
 //
 // XwPlot - A cross-platform charting library using the Xwt toolkit
 // 
-// Interaction.cs
-// 
+// PlotLogo.cs
+//
 // Derived originally from NPlot (Copyright (C) 2003-2006 Matt Howlett and others)
 // Updated and ported to Xwt 2012-2014 : Hywel Thomas <hywel.w.thomas@gmail.com>
-//
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without modification,
@@ -31,77 +30,63 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 using System;
+using System.IO;
+using System.Reflection;
+
 using Xwt;
 using Xwt.Drawing;
+using XwPlot;
 
-namespace XwPlot
+namespace Samples
 {
-	/// <summary>
-	/// Defines the base class for plot "Interactions". An interaction comprises a range
-	/// of handlers for mouse and keyboard events that work in a specific way, eg rescaling
-	/// the axes, scrolling the PlotSurface, measuring distances, etc. Each handler should
-	/// return true if the underlying (cached) plot requires redrawing.
-	/// </summary>
-	/// <remarks>
-	/// This is a virtual base class, rather than abstract, since each Interaction 
-	/// will only need to override a limited number of the possible default handlers.
-	/// The default handlers below do nothing, and return false (no redraw required).
-	/// </remarks>
-	public class Interaction
+	public class PlotLogo : PlotSample
 	{
-		public Interaction ()
+		public PlotLogo ()
 		{
-		}
+			infoText = "";
+			infoText += "ABC (logo for australian broadcasting commission) Example. Demonstrates - \n";
+			infoText += " * How to set the background of a plotCanvas as an image. \n";
+			infoText += " * EqualAspectRatio axis constraint \n";
+			//infoText += " * Plot Zoom with Mouse Wheel, and mouse position Focus point";
+		   
+			plotCanvas.Clear();
+			const int size = 200;
+			double [] xs = new double [size];
+			double [] ys = new double [size];
+			for (int i=0; i<size; i++) {
+				xs[i] = Math.Sin ((double)i/(size-1)*2.0*Math.PI);
+				ys[i] = Math.Cos ((double)i/(size-1)*6.0*Math.PI);
+			}
 
-		public virtual bool OnMouseEntered (EventArgs args, PlotSurface ps)
-		{
-			return false;
-		}
+			LinePlot lp = new LinePlot ();
+			lp.OrdinateData = ys;
+			lp.AbscissaData = xs;
+			lp.LineColor = Colors.Yellow;
+			lp.LineWidth = 2;
+			plotCanvas.Add (lp);
+			plotCanvas.Title = "AxisConstraint.EqualScaling in action...";
 
-		public virtual bool OnMouseExited (EventArgs args, PlotSurface ps)
-		{
-			return false;
-		}
+			// Image downloaded from http://squidfingers.com. Thanks!
+			Assembly asm = Assembly.GetExecutingAssembly ();
+			Stream file = asm.GetManifestResourceStream ("Samples.Resources.LogoBackground.jpg" );
 
-		public virtual bool OnButtonPressed (ButtonEventArgs args, PlotSurface ps)
-		{
-			return false;
-		}
-				
-		public virtual bool OnButtonReleased (ButtonEventArgs args, PlotSurface ps)
-		{
-			return false;
-		}
-				
-		public virtual bool OnMouseMoved (MouseMovedEventArgs args, PlotSurface ps)
-		{
-			return false;
-		}
+			Image im = Image.FromStream (file);
+			plotCanvas.PlotBackImage = im.ToBitmap ();
+			//plotCanvas.PlotBackColor = Colors.LightGreen;
+
+			//plotCanvas.AddInteraction (new PlotZoom());
+			//plotCanvas.AddInteraction (new KeyActions());
+			plotCanvas.AddAxesConstraint (new AxesConstraint.AspectRatio (1.0, XAxisPosition.Top, YAxisPosition.Left) );
 			
-		public virtual bool OnMouseScrolled (MouseScrolledEventArgs args, PlotSurface ps)
-		{
-			return false;
-		}
-			
-		public virtual bool OnKeyPressed (KeyEventArgs args, PlotSurface ps)
-		{
-			return false;
-		}
+			plotCanvas.XAxis1.WorldMin = plotCanvas.YAxis1.WorldMin;
+			plotCanvas.XAxis1.WorldMax = plotCanvas.YAxis1.WorldMax;
 
-		public virtual bool OnKeyReleased (KeyEventArgs args, PlotSurface ps)
-		{
-			return false;
+			PackStart (plotCanvas.Canvas, true);
+			Label la = new Label (infoText);
+			PackStart (la);
 		}
-
-		/// <summary>
-		/// Draw Overlay content over the cached background plot
-		/// </summary>
-		public virtual void OnDraw (Context ctx, Rectangle dirtyRect)
-		{
-		}
-
 	}
-
 }
 

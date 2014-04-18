@@ -41,7 +41,7 @@ namespace XwPlot
 	/// <summary>
 	/// Classes derived from this abstract base class define and can apply 
 	/// some form of constraint to the positioning and length of one or more
-	/// of the four axes of a PlotSurface2D.
+	/// of the four axes of a PlotSurface.
 	/// </summary>
 	public abstract class AxesConstraint
 	{

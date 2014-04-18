@@ -43,7 +43,7 @@ namespace XwPlot
 
 	/// <summary>
 	/// Encapsulates a Grid IDrawable object. Instances of this
-	/// can be added to a PlotSurface2D to produce a grid.
+	/// can be added to a PlotSurface to produce a grid.
 	/// </summary>
 	public class Grid : IDrawable
 	{

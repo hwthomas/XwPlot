@@ -41,13 +41,13 @@ using Xwt.Drawing;
 namespace XwPlot
 {
 	/// <summary>
-	/// Extends PlotSurface2D by implementing a drawing surface (Xwt.Canvas)
-	/// to obtain a Drawing Context with which the PlotSurface2D is drawn.
+	/// Extends PlotSurface by implementing a drawing surface (Xwt.Canvas)
+	/// to obtain a Drawing Context with which the PlotSurface is drawn.
 	/// </summary>
 	/// <remarks>
 	/// The Canvas is exposed so that it may be added to any Xwt Widget
 	/// </remarks>
-	public class PlotCanvas : PlotSurface2D
+	public class PlotCanvas : PlotSurface
 	{
 		private DrawingSurface surface;	// The Xwt Drawing Surface
 
@@ -84,19 +84,19 @@ namespace XwPlot
 			// This extension of Xwt.Canvas only overrides OnDraw, and can only draw 'static' plots.
 			// Any user Interactions (with the mouse, keyboard) are handled by InteractivePlotCanvas
 
-			PlotSurface2D plotSurface;	// To allow access to PlotSurface Draw routine
+			PlotSurface plotSurface;	// To allow access to PlotSurface Draw routine
 
 			/// <summary>
 			/// Creates a new DrawingSurface and copies a reference to the calling PlotSurface
 			/// </summary>
-			internal DrawingSurface (PlotSurface2D ps) : base ()
+			internal DrawingSurface (PlotSurface ps) : base ()
 			{
 				plotSurface = ps;
 			}
 
 			protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 			{
-				// PlotSurface2D draws itself into the rectangle specified when Draw is called.
+				// PlotSurface draws itself into the rectangle specified when Draw is called.
 				// Always specify the entire area of the DrawingSurface when drawing the plot,
 				// since a smaller part of that area cannot (at present, anyway) be redrawn.
  

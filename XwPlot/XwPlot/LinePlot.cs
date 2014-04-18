@@ -156,8 +156,6 @@ namespace XwPlot
 				ctx.SetLineDash (0, lineDash);
 			}
 
-			// clipping is now handled assigning a clip region in the
-			// graphic object before this call
 			if (numberPoints == 1) {
 				Point physical = t.Transform (data[0]);
 				

@@ -1,7 +1,7 @@
 //
 // XwPlot - A cross-platform charting library using the Xwt toolkit
 // 
-// IPlotSurface2D.cs
+// IPlotSurface.cs
 // 
 // Derived originally from NPlot (Copyright (C) 2003-2006 Matt Howlett and others)
 // Updated and ported to Xwt 2012-2014 : Hywel Thomas <hywel.w.thomas@gmail.com>
@@ -41,14 +41,14 @@ using Xwt.Drawing;
 namespace XwPlot
 {
 	/// <summary>
-	/// Defines the PlotSurface2D interface - All specific PlotSurface2D classes that
-	/// use PlotSurface2D for their underlying operations should implement this class
+	/// Defines the PlotSurface interface - All specific PlotSurface classes that
+	/// use PlotSurface for their underlying operations should implement this class
 	/// </summary>
-	public interface IPlotSurface2D
+	public interface IPlotSurface
 	{
 		/// <summary>
 		/// Adds a drawable object to the plot surface. If the object is an IPlot, 
-		/// the PlotSurface2D axes will also be updated.
+		/// the PlotSurface axes will also be updated.
 		/// </summary>
 		/// <param name="p">The IDrawable object to add to the plot surface.</param>
 		/// <param name="zOrder">The z-ordering when drawing (objects with lower numbers are drawn first)</param>
@@ -56,25 +56,25 @@ namespace XwPlot
 
 		/// <summary>
 		/// Adds a drawable object to the plot surface against the specified axes. If
-		/// the object is an IPlot, the PlotSurface2D axes will also be updated.
+		/// the object is an IPlot, the PlotSurface axes will also be updated.
 		/// </summary>
 		/// <param name="p">the IDrawable object to add to the plot surface</param>
 		/// <param name="xp">the x-axis to add the plot against.</param>
 		/// <param name="yp">the y-axis to add the plot against.</param>
 		/// <param name="zOrder">The z-ordering when drawing (objects with lower numbers are drawn first)</param>
 
-		/// TODO: void Add (IDrawable p, NPlot.PlotSurface2D.XAxisPosition xp, NPlot.PlotSurface2D.YAxisPosition yp, int zOrder);
+		/// TODO: void Add (IDrawable p, NPlot.PlotSurface.XAxisPosition xp, NPlot.PlotSurface.YAxisPosition yp, int zOrder);
 
 		/// <summary>
 		/// Adds a drawable object to the plot surface. If the object is an IPlot, 
-		/// the PlotSurface2D axes will also be updated.
+		/// the PlotSurface axes will also be updated.
 		/// </summary>
 		/// <param name="p">The IDrawable object to add to the plot surface.</param>
 		void Add (IDrawable p);
 
 		/// <summary>
 		/// Adds a drawable object to the plot surface against the specified axes. If
-		/// the object is an IPlot, the PlotSurface2D axes will also be updated.
+		/// the object is an IPlot, the PlotSurface axes will also be updated.
 		/// </summary>
 		/// <param name="p">the IDrawable object to add to the plot surface</param>
 		/// <param name="xax">the x-axis to add the plot against.</param>
@@ -90,7 +90,7 @@ namespace XwPlot
 		void Remove (IDrawable p, bool updateAxes);
 
 		/// <summary>
-		/// Clears the PlotSurface2D.
+		/// Clears the PlotSurface.
 		/// </summary>
 		void Clear ();
 
@@ -181,7 +181,7 @@ namespace XwPlot
 		Axis YAxis2 { get; set; }
 
 		/// <summary>
-		/// Gets an array list containing all drawables currently added to the PlotSurface2D.
+		/// Gets an array list containing all drawables currently added to the PlotSurface.
 		/// </summary>
 		ArrayList Drawables { get; }
 
