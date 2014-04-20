@@ -120,7 +120,7 @@ namespace XwPlot
 		/// <param name="min">The minimum value.</param>
 		/// <param name="max">The maximum value.</param>
 		/// <returns>true if min max set, false otherwise (a == null or zero length).</returns>
-		public static bool ArrayMinMax( IList a, out double min, out double max )
+		public static bool ArrayMinMax (IList a, out double min, out double max)
 		{
 			if (a == null || a.Count == 0) {
 				min = 0.0;
@@ -134,12 +134,10 @@ namespace XwPlot
 			foreach ( object o in a ) {
 
 				double e = Utils.ToDouble(o);
-
 				if ((min.Equals (double.NaN)) && (!e.Equals (double.NaN))) {
 					// if min/max are double.NaN and the current value not, then
 					// set them to the current value.
-					min = e;
-					max = e;
+					min = max = e;
 				}
 				if (!double.IsNaN(e)) {
 					if (e < min) {
@@ -153,8 +151,7 @@ namespace XwPlot
 			
 			if (min.Equals (double.NaN)) {
 				// if min == double.NaN, then max is also double.NaN
-				min = 0.0;
-				max = 0.0;
+				min = max = 0.0;
 				return false;
 			}
 			return true;
@@ -177,21 +174,19 @@ namespace XwPlot
 			// it is a boxed double (same trick I use lots elsewhere in the lib). The 
 			// wonderful comment I didn't write at the top should explain everything.
 			if (rows == null || rows.Count == 0) {
-				min = 0.0;
-				max = 0.0;
+				min = max = 0.0;
 				return false;
 			}
 
-			min = Utils.ToDouble( (rows[0])[columnName] );
-			max = Utils.ToDouble( (rows[0])[columnName] );
+			min = Utils.ToDouble ((rows[0])[columnName]);
+			max = Utils.ToDouble ((rows[0])[columnName]);
 
 			foreach (DataRow r in rows) {
 				double e = Utils.ToDouble( r[columnName] );
 				if ((min.Equals (double.NaN)) && (!e.Equals (double.NaN))) {
 					// if min/max are double.NaN and the current value not, then
 					// set them to the current value.
-					min = e;
-					max = e;
+					min = max = e;
 				}
 				if (!double.IsNaN(e)) {
 					if (e < min) {
@@ -204,8 +199,7 @@ namespace XwPlot
 			}
 			if (min.Equals (double.NaN)) {
 				// if min == double.NaN, then max is also double.NaN
-				min = 0.0;
-				max = 0.0;
+				min = max = 0.0;
 				return false;
 			}
 			return true;
@@ -219,8 +213,7 @@ namespace XwPlot
 		/// <param name="max">The maximum value.</param>
 		/// <param name="columnName">The name of the column in the row collection to search over.</param>
 		/// <returns>true is min max set, false otherwise (a = null or zero length).</returns>
-		public static bool DataViewArrayMinMax( DataView data, 
-			out double min, out double max, string columnName )
+		public static bool DataViewArrayMinMax (DataView data, out double min, out double max, string columnName)
 		{
 			// double[] is a reference type and can be null, if it is then I reckon the best
 			// values for min and max are also null. double is a value type so can't be set
@@ -228,14 +221,12 @@ namespace XwPlot
 			// it is a boxed double (same trick I use lots elsewhere in the lib). The 
 			// wonderful comment I didn't write at the top should explain everything.
 			if (data == null || data.Count == 0) {
-				min = 0.0;
-				max = 0.0;
+				min = max = 0.0;
 				return false;
 			}
 
 			min = Utils.ToDouble ((data[0])[columnName]);
 			max = Utils.ToDouble ((data[0])[columnName]);
-
 			for (int i=0; i<data.Count; ++i) {
 
 				double e = Utils.ToDouble( data[i][columnName] );
@@ -286,14 +277,32 @@ namespace XwPlot
 		public static BitmapImage TiledImage (BitmapImage tile, Size final)
 		{
 			BitmapImage tiled = null;
+			Rectangle src, dest;
+			double w = tile.Size.Width;
+			double h = tile.Size.Height;
+			src = new Rectangle (0, 0, w, h);	// Initial size for source tile
 			using (ImageBuilder ib = new ImageBuilder (final.Width, final.Height)) {
 				using (Context ctx = ib.Context) {
-					double w = tile.Size.Width;
-					double h = tile.Size.Height;
-					for (double x = 0; x < final.Width; x += w) {
-						for (double y = 0; y < final.Height; y += h) {
-							ctx.DrawImage (tile, x, y);
+					double y = 0;
+					while (y < final.Height) {
+						// allow for part-height tile at end
+						if (h > (final.Height - y)) {
+							h = final.Height - y;
+							src.Height = h;
 						}
+						double x = 0;
+						src.Width = w = tile.Size.Width;	// reset source Width for each X loop
+						while (x < final.Width) {
+							// allow for part-width tile at end
+							if (w > (final.Width - x)) {
+								w = final.Width - x;
+								src.Width = w;
+							}
+							dest = new Rectangle (x, y, w, h);
+							ctx.DrawImage (tile, src, dest);
+							x += w;
+						}
+						y += h;
 					}
 				}
 				tiled = ib.ToBitmap ();
