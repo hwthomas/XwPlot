@@ -820,6 +820,9 @@ namespace XwPlot
 			// Fill in the background. 
 			if (plotBackImage != null) {
 				Rectangle imageRect = (Rectangle)plotAreaBoundingBoxCache;
+				// Ensure imageRect has integer size for tiling/drawing
+				imageRect.Width = Math.Truncate (imageRect.Width);
+				imageRect.Height = Math.Truncate (imageRect.Height);
 				ctx.DrawImage (Utils.TiledImage (plotBackImage , imageRect.Size), imageRect);
 			}
 			else {

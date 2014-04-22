@@ -274,6 +274,9 @@ namespace XwPlot
 		/// <param name="tile">Bitmap image to tile</param>
 		/// <param name="final">final image size</param>
 		/// <returns>the tiled image</returns>
+		/// <remarks>
+		/// For correct drawing, the tile and final images should have integer sizes
+		/// </remarks>
 		public static BitmapImage TiledImage (BitmapImage tile, Size final)
 		{
 			BitmapImage tiled = null;
@@ -287,7 +290,7 @@ namespace XwPlot
 					while (y < final.Height) {
 						// allow for part-height tile at end
 						if (h > (final.Height - y)) {
-							h = final.Height - y;
+							h = (final.Height - y);
 							src.Height = h;
 						}
 						double x = 0;
@@ -295,7 +298,7 @@ namespace XwPlot
 						while (x < final.Width) {
 							// allow for part-width tile at end
 							if (w > (final.Width - x)) {
-								w = final.Width - x;
+								w = (final.Width - x);
 								src.Width = w;
 							}
 							dest = new Rectangle (x, y, w, h);
