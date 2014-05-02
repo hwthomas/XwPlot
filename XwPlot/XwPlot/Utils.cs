@@ -41,7 +41,6 @@ using Xwt.Drawing;
 
 namespace XwPlot
 {
-
 	/// <summary>
 	/// General purpose utility functions used internally.
 	/// </summary>
@@ -275,37 +274,42 @@ namespace XwPlot
 		/// <param name="final">final image size</param>
 		/// <returns>the tiled image</returns>
 		/// <remarks>
-		/// For correct drawing, the tile and final images should have integer sizes
+		/// For correct drawing, the tile and final images MUST have integer sizes
 		/// </remarks>
 		public static BitmapImage TiledImage (BitmapImage tile, Size final)
 		{
 			BitmapImage tiled = null;
 			Rectangle src, dest;
-			double w = tile.Size.Width;
-			double h = tile.Size.Height;
-			src = new Rectangle (0, 0, w, h);	// Initial size for source tile
-			using (ImageBuilder ib = new ImageBuilder (final.Width, final.Height)) {
+			// Trim tile and final images to integer dimensions
+			double tileWidth = Math.Truncate (tile.Size.Width);
+			double tileHeight = Math.Truncate (tile.Size.Height);
+			double finalWidth = Math.Truncate (final.Width);
+			double finalHeight = Math.Truncate (final.Height);
+			src = new Rectangle (0, 0, tileWidth, tileHeight);	// Initial size for source tile
+			using (ImageBuilder ib = new ImageBuilder (finalWidth, finalHeight)) {
 				using (Context ctx = ib.Context) {
+					double dh = tileHeight;
 					double y = 0;
-					while (y < final.Height) {
+					while (y < finalHeight) {
 						// allow for part-height tile at end
-						if (h > (final.Height - y)) {
-							h = (final.Height - y);
-							src.Height = h;
+						if (tileHeight > (finalHeight - y)) {
+							dh = (finalHeight - y);
+							src.Height = dh;
 						}
+						double dw = tileWidth;
 						double x = 0;
-						src.Width = w = tile.Size.Width;	// reset source Width for each X loop
-						while (x < final.Width) {
+						src.Width = dw = tileWidth;		// reset source Width for each X loop
+						while (x < finalWidth) {
 							// allow for part-width tile at end
-							if (w > (final.Width - x)) {
-								w = (final.Width - x);
-								src.Width = w;
+							if (tileWidth > (finalWidth - x)) {
+								dw = (finalWidth - x);
+								src.Width = dw;
 							}
-							dest = new Rectangle (x, y, w, h);
+							dest = new Rectangle (x, y, dw, dh);
 							ctx.DrawImage (tile, src, dest);
-							x += w;
+							x += tileWidth;
 						}
-						y += h;
+						y += tileHeight;
 					}
 				}
 				tiled = ib.ToBitmap ();

@@ -110,7 +110,7 @@ namespace XwPlot
 		/// The distance in pixels to leave between of the edge of the bounding rectangle
 		/// supplied to the Draw method, and the markings that make up the plot.
 		/// </summary>
-		double SurfacePadding { get; set; }
+		double Padding { get; set; }
 
 		/// <summary>
 		/// A color used to paint the plot background. Mutually exclusive with PlotBackImage and PlotBackBrush

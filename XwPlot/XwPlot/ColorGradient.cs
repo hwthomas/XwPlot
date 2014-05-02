@@ -38,31 +38,65 @@ using Xwt.Drawing;
 namespace XwPlot
 {
 	/// <summary>
-	/// Class for creating a (linear) color gradient.
+	/// Class for creating a simple (linear) color gradient
 	/// </summary>
+	/// <remarks>
+	/// This is used to map plot-values to colors for a GradientPlot, and also
+	/// to define color gradients used in PlotBackgrounds and Histogram Plots.
+	/// </remarks>
 	public class ColorGradient : IGradient
 	{
 		/// <summary>
-		/// Constructor.
+		/// Default Constructor with standard default values set up
 		/// </summary>
-		/// <param name="minColor">The color corresponding to 0.0</param>
-		/// <param name="maxColor">The color corresponding to 1.0</param>
-		public ColorGradient (Color minColor, Color maxColor)
+		public ColorGradient ()
 		{
-			MinColor = minColor;
-			MaxColor = maxColor;
+			StartPoint = new Point (0, 0);
+			StartColor = Colors.LightBlue;
+			EndPoint = new Point (1, 1);
+			EndColor = Colors.LightGreen;
+			VoidColor = Colors.Yellow;
+		}
+
+		/// <summary>
+		/// Constructor used for proportional color only
+		/// </summary>
+		/// <param name="startColor">The start color (corresponding to 0.0)</param>
+		/// <param name="endColor">The end color (corresponding to 1.0)</param>
+		public ColorGradient (Color startColor, Color endColor)
+		{
+			StartPoint = new Point (0, 0);
+			StartColor = startColor;
+			EndPoint = new Point (1, 1);
+			EndColor = endColor;
+			VoidColor = Colors.Yellow;
+		}
+
+		/// <summary>
+		/// Constructor used for defining a linear color gradient
+		/// </summary>
+		/// <param name="startPoint">The start point for a color gradient</param>
+		/// <param name="startColor">The start color (corresponding to 0.0)</param>
+		/// <param name="endPoint">The end point for a color gradient</param>
+		/// <param name="endColor">The end color (corresponding to 1.0)</param>
+		public ColorGradient (Point startPoint, Color startColor, Point endPoint, Color endColor)
+		{
+			StartPoint = startPoint;
+			StartColor = startColor;
+			EndPoint = endPoint;
+			EndColor = endColor;
 			VoidColor = Colors.Yellow;
 		}
 
 		/// <summary>
 		/// The color corresponding to 0.0
 		/// </summary>
-		public Color MaxColor { get; set; }
+		public Color StartColor { get; set; }
 
 		/// <summary>
 		/// The color corresponding to 1.0
 		/// </summary>
-		public Color MinColor { get; set; }
+		public Color EndColor { get; set; }
 
 		/// <summary>
 		/// The color corresponding to NaN
@@ -70,11 +104,30 @@ namespace XwPlot
 		public Color VoidColor { get; set; } 
 
 		/// <summary>
-		/// Gets a color corresponding to a number between 0.0 and 1.0 inclusive. The color will
-		/// be a linear interpolation of the min and max colors.
+		/// The Point on a Unit Square defining the Start of the gradient
 		/// </summary>
-		/// <param name="prop">the number to get corresponding color for (between 0.0 and 1.0)</param>
-		/// <returns>The color corresponding to the supplied number.</returns>
+		/// <remarks>
+		/// Start and End Points must be on opposite sides of a unit square, which
+		/// only allows simple vertical, horizontal, or diagonal color gradients.
+		/// </remarks>
+		public Point StartPoint { get; set; }
+
+		/// <summary>
+		/// The Point on a Unit Square defining the End of the gradient
+		/// </summary>
+		/// <remarks>
+		/// Start and End Points must be on opposite sides of a unit square, which
+		/// only allows simple vertical, horizontal, or diagonal color gradients.
+		/// </remarks>
+		public Point EndPoint { get; set; }
+
+		/// <summary>
+		/// Gets a color corresponding to a number between 0.0 and 1.0 inclusive.
+		/// The color will be a linear interpolation of the start and end colors
+		///</summary>
+		/// <param name="prop">the number between 0.0 and 1.0 to get corresponding color for
+		/// </param>
+		/// <returns>The color corresponding to the (clipped) supplied number</returns>
 		public Color GetColor (double prop)
 		{
 			if (Double.IsNaN(prop)) {
@@ -82,16 +135,16 @@ namespace XwPlot
 			}
 
 			if (prop <= 0.0) {
-				return MinColor;
+				return StartColor;
 			}
 
 			if (prop >= 1.0) {
-				return MaxColor;
+				return EndColor;
 			}
 
-			double r = MinColor.Red + (MaxColor.Red - MinColor.Red)*prop;
-			double g = MinColor.Green + (MaxColor.Green - MinColor.Green)*prop;
-			double b = MinColor.Blue + (MaxColor.Blue - MinColor.Blue)*prop;
+			double r = StartColor.Red + (EndColor.Red - StartColor.Red)*prop;
+			double g = StartColor.Green + (EndColor.Green - StartColor.Green)*prop;
+			double b = StartColor.Blue + (EndColor.Blue - StartColor.Blue)*prop;
 
 			return new Color (r,g,b);
 		}

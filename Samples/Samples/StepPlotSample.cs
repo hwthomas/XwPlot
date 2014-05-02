@@ -85,7 +85,12 @@ namespace Samples
 			plotCanvas.YAxis1.FlipTickText = true;
 
 			plotCanvas.Canvas.BackgroundColor = new Color (0.375, 0.375, 0.375);
-			plotCanvas.PlotBackColor = Colors.DarkBlue;
+
+			ColorGradient g = new ColorGradient ();
+			g.StartColor = new Color (0.5, 0.5, 1);
+			g.EndColor = new Color (0.5, 1, 0.5);
+			plotCanvas.PlotBackGradient = g;
+
 			plotCanvas.XAxis1.LineColor = Colors.White;
 			plotCanvas.YAxis1.LineColor = Colors.White;
 			

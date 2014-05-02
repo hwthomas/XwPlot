@@ -74,7 +74,6 @@ namespace Samples
 
 			Image im = Image.FromStream (file);
 			plotCanvas.PlotBackImage = im.ToBitmap ();
-			//plotCanvas.PlotBackColor = Colors.LightGreen;
 
 			//plotCanvas.AddInteraction (new PlotZoom());
 			//plotCanvas.AddInteraction (new KeyActions());
