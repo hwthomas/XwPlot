@@ -59,6 +59,7 @@ namespace Samples
 			AddSample (staticPlots, "LabelPoint Plot", typeof (LabelPointPlotSample));
 			AddSample (staticPlots, "GradientPlot", typeof (GradientPlotSample));
 			AddSample (staticPlots, "Histogram Plot", typeof (HistogramSample));
+			AddSample (staticPlots, "LabelAxis Histogram Plot", typeof (LabelAxisHistogram));
 			AddSample (staticPlots, "Candle Plot", typeof (CandlePlotSample));
 			AddSample (staticPlots, "Trading Plot", typeof (TradingSample));
 			AddSample (staticPlots, "Plot Particles", typeof (PlotParticles));
