@@ -51,9 +51,10 @@ namespace XwPlot
 		/// </summary>
 		public ColorGradient ()
 		{
+			// Default gradient is a vertical color change
 			StartPoint = new Point (0, 0);
 			StartColor = Colors.LightBlue;
-			EndPoint = new Point (1, 1);
+			EndPoint = new Point (0, 1);
 			EndColor = Colors.LightGreen;
 			VoidColor = Colors.Yellow;
 		}

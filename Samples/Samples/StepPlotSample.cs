@@ -48,6 +48,7 @@ namespace Samples
 			infoText = "";
 			infoText += "Sound Wave Example. Demonstrates - \n";
 			infoText += " * StepPlot (centered) and HorizontalLine IDrawables \n";
+			infoText += " * Vertical ColorGradient plotBackground \n";
 			//infoText += " * AxisDrag Interaction - try left clicking and dragging X or Y axes \n";
 			//infoText += " * Vertical & Horizontal GuideLines - without fragmentation problems! \n";
 			//infoText += " * Rubberband Selection - click and drag to zoom an area of the plot \n";
