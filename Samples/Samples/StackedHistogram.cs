@@ -8,12 +8,12 @@ using XwPlot;
 
 namespace Samples
 {
-	public class LabelAxisHistogram : PlotSample
+	public class StackedHistogram : PlotSample
 	{
-		public LabelAxisHistogram ()
+		public StackedHistogram ()
 		{
 			infoText = "";
-			infoText += "Internet Usage Example. Demonstrates - \n";
+			infoText += "Stacked Histogram Sample. Also demonstrates - \n";
 			infoText += " * Label Axis with angled text. \n";
 			infoText += " * ColorGradient Bars fill";
 			
@@ -32,24 +32,24 @@ namespace Samples
 			double[] xs2 = {7.0, 10.0, 42.0, 9.0, 2.0, 79.0, 70.0};
 			double[] xs3 = {1.0, 20.0, 20.0, 25.0, 10.0, 30.0, 30.0};
 
-			HistogramPlot hp1 = new HistogramPlot();
+			HistogramPlot hp1 = new HistogramPlot ();
 			hp1.DataSource = xs;
 			hp1.BaseWidth = 0.6;
-			hp1.FillGradient = new ColorGradient (Colors.DarkGray, Colors.White);
+			hp1.FillGradient = new ColorGradient (Colors.LightGreen, Colors.White);
 			hp1.Filled = true;
 			hp1.Label = "Developer Work";
 			
-			HistogramPlot hp2 = new HistogramPlot();
+			HistogramPlot hp2 = new HistogramPlot ();
 			hp2.DataSource = xs2;
 			hp2.Label = "Web Browsing";
-			hp2.FillGradient = new ColorGradient (Colors.LightGreen, Colors.White);
+			hp2.FillGradient = new ColorGradient (Colors.LightBlue, Colors.White);
 			hp2.Filled = true;
 			hp2.StackedTo (hp1);
 			
-			HistogramPlot hp3 = new HistogramPlot();
+			HistogramPlot hp3 = new HistogramPlot ();
 			hp3.DataSource = xs3;
 			hp3.Label = "P2P Downloads";
-			hp2.FillGradient = new ColorGradient (Colors.LightBlue, Colors.White);
+			hp3.FillGradient = new ColorGradient (Colors.Red, Colors.White);
 			hp3.Filled = true;
 			hp3.StackedTo (hp2);
 			

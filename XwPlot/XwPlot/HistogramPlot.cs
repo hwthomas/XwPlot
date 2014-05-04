@@ -227,7 +227,6 @@ namespace XwPlot
 			}
 		}
 
-
 		/// <summary>
 		/// Draws the histogram.
 		/// </summary>
@@ -332,12 +331,16 @@ namespace XwPlot
 				if (Filled) {
 					if (bar.Height != 0 && bar.Width != 0) {
 						if (FillGradient != null) {
-							LinearGradient g = new LinearGradient (bar.X, bar.Y, bar.Right, bar.Bottom);
+							// Scale plotBackGradient to bar rectangle
+							double sX = bar.X + fillGradient.StartPoint.X * bar.Width;
+							double sY = bar.Y + fillGradient.StartPoint.Y * bar.Height;
+							double eX = bar.X + fillGradient.EndPoint.X * bar.Width;
+							double eY = bar.Y + fillGradient.EndPoint.Y * bar.Height;
+							LinearGradient g = new LinearGradient (sX, sY, eX, eY);
 							g.AddColorStop (0, FillGradient.StartColor);
 							g.AddColorStop (1, FillGradient.EndColor);
 							ctx.Pattern = g;
 						} else {
-							// room for optimization maybe.
 							ctx.SetColor (FillColor);
 						}
 						ctx.FillPreserve ();
@@ -349,67 +352,72 @@ namespace XwPlot
 			ctx.Restore ();
 		}
 
-		/*
+	/*
 		private double centerLine = 0.0;
 		/// <summary>
 		/// Histogram bars extend from the data value to this value. Default value is 0.
 		/// </summary>
 		public double CenterLine
 		{
-			get
-			{
-				return centerLine;
-			}
-			set
-			{
-				centerLine = value;
-			}
+			get { return centerLine; }
+			set { centerLine = value; }
 		}
-		*/
-
+	*/
 
 		private HistogramPlot stackedTo;
 		/// <summary>
 		/// Stack the histogram to another HistogramPlot.
 		/// </summary>
-		public void StackedTo(HistogramPlot hp)
+		public void StackedTo (HistogramPlot hp)
 		{
 			SequenceAdapter data = new SequenceAdapter (DataSource, DataMember, OrdinateData, AbscissaData);
-
 			SequenceAdapter hpData = new SequenceAdapter (hp.DataSource, hp.DataMember, hp.OrdinateData, hp.AbscissaData);
-
-				if (hp != null) {
+			if (hp != null) {
 				IsStacked = true;
-					if (hpData.Count != data.Count) {
-					throw new XwPlotException ("Can stack HistogramPlot data only with the same number of datapoints.");
+				if (hpData.Count != data.Count) {
+					throw new XwPlotException ("Can stack HistogramPlot data only with the same number of datapoints");
+				}
+				for (int i=0; i < data.Count; ++i) {
+					if (data[i].X != hpData[i].X) {
+						throw new XwPlotException ("Can stack HistogramPlot data only with the same X coordinates");
 					}
-					for (int i=0; i < data.Count; ++i) {
-						if (data[i].X != hpData[i].X) {
-						throw new XwPlotException ("Can stack HistogramPlot data only with the same X coordinates.");
-						}
-						if (hpData[i].Y < 0.0) {
-						throw new XwPlotException ("Can stack HistogramPlot data only with positive Y coordinates.");
-						}
+					if (hpData[i].Y < 0.0) {
+						throw new XwPlotException ("Can stack HistogramPlot data only with positive Y coordinates");
 					}
 				}
-				stackedTo = hp;
+			}
+			stackedTo = hp;
 		}
 
 		/// <summary>
 		/// Draws a representation of this plot in the legend.
 		/// </summary>
 		/// <param name="ctx">The Drawing Context with which to draw.</param>
-		/// <param name="startEnd">
+		/// <param name="r">
 		/// A rectangle specifying the bounds of the area in the legend set aside for drawing
 		/// </param>
-		public void DrawInLegend (Context ctx, Rectangle startEnd )
+		public void DrawInLegend (Context ctx, Rectangle r)
 		{
 			ctx.Save ();
-			ctx.Rectangle (startEnd);
+			ctx.SetLineWidth (1);
+			ctx.Rectangle (r);
 			if (Filled) {
-				ctx.SetColor (FillColor);
+				if (FillGradient != null) {
+					// Scale FillGradient to bar rectangle
+					double sX = r.X + fillGradient.StartPoint.X * r.Width;
+					double sY = r.Y + fillGradient.StartPoint.Y * r.Height;
+					double eX = r.X + fillGradient.EndPoint.X * r.Width;
+					double eY = r.Y + fillGradient.EndPoint.Y * r.Height;
+					LinearGradient g = new LinearGradient (sX, sY, eX, eY);
+					g.AddColorStop (0, FillGradient.StartColor);
+					g.AddColorStop (1, FillGradient.EndColor);
+					ctx.Pattern = g;
+				} else {
+					ctx.SetColor (FillColor);
+				}
 				ctx.FillPreserve ();
 			}
+			ctx.SetColor (BorderColor);
 			ctx.Stroke ();
 			ctx.Restore ();
 		}
