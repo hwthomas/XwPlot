@@ -331,7 +331,7 @@ namespace XwPlot
 				if (Filled) {
 					if (bar.Height != 0 && bar.Width != 0) {
 						if (FillGradient != null) {
-							// Scale plotBackGradient to bar rectangle
+							// Scale FillGradient to bar rectangle
 							double sX = bar.X + fillGradient.StartPoint.X * bar.Width;
 							double sY = bar.Y + fillGradient.StartPoint.Y * bar.Height;
 							double eX = bar.X + fillGradient.EndPoint.X * bar.Width;
