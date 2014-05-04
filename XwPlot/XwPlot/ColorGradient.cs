@@ -46,21 +46,21 @@ namespace XwPlot
 	/// </remarks>
 	public class ColorGradient : IGradient
 	{
+		Point startPoint = new Point (0, 0);	// Default gradient is a vertical color change
+		Point endPoint = new Point (0, 1);
+
 		/// <summary>
-		/// Default Constructor with standard default values set up
+		/// Default Constructor with all standard default values set up
 		/// </summary>
 		public ColorGradient ()
 		{
-			// Default gradient is a vertical color change
-			StartPoint = new Point (0, 0);
-			EndPoint = new Point (0, 1);
 			StartColor = Colors.LightBlue;
 			EndColor = Colors.LightGreen;
 			VoidColor = Colors.Yellow;
 		}
 
 		/// <summary>
-		/// Constructor used for proportional color only
+		/// Constructor used for proportional color and default gradient between Start/End colors
 		/// </summary>
 		/// <param name="startColor">The start color (corresponding to 0.0)</param>
 		/// <param name="endColor">The end color (corresponding to 1.0)</param>
@@ -68,8 +68,6 @@ namespace XwPlot
 		{
 			StartColor = startColor;
 			EndColor = endColor;
-			StartPoint = new Point (0, 0);	// default vertical gradient
-			EndPoint = new Point (0, 1);
 			VoidColor = Colors.Yellow;
 		}
 
@@ -111,7 +109,16 @@ namespace XwPlot
 		/// Start and End Points must be on opposite sides of a unit square, which
 		/// only allows simple vertical, horizontal, or diagonal color gradients.
 		/// </remarks>
-		public Point StartPoint { get; set; }
+		public Point StartPoint {
+			get { return startPoint; }
+			set {
+				// clip values to (0, 1)
+				startPoint.X = Math.Max (0, value.X);
+				startPoint.X = Math.Min (1, value.X);
+				startPoint.Y = Math.Max (0, value.Y);
+				startPoint.Y = Math.Min (1, value.Y);
+			}
+		}
 
 		/// <summary>
 		/// The Point on a Unit Square defining the End of the gradient
@@ -120,7 +127,16 @@ namespace XwPlot
 		/// Start and End Points must be on opposite sides of a unit square, which
 		/// only allows simple vertical, horizontal, or diagonal color gradients.
 		/// </remarks>
-		public Point EndPoint { get; set; }
+		public Point EndPoint {
+			get { return endPoint; }
+			set {
+				// clip values to (0, 1)
+				endPoint.X = Math.Max (0, value.X);
+				endPoint.X = Math.Min (1, value.X);
+				endPoint.Y = Math.Max (0, value.Y);
+				endPoint.Y = Math.Min (1, value.Y);
+			}
+		}
 
 		/// <summary>
 		/// Gets a color corresponding to a number between 0.0 and 1.0 inclusive.
