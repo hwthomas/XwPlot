@@ -65,7 +65,7 @@
     <Compile Include="Samples\GradientPlotSample.cs" />
     <Compile Include="Samples\PlotParticles.cs" />
     <Compile Include="Samples\PlotLogo.cs" />
-    <Compile Include="Samples\LabelAxisHistogram.cs" />
+    <Compile Include="Samples\StackedHistogram.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Data" />

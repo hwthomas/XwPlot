@@ -814,10 +814,10 @@ namespace XwPlot
 			}
 			else if (plotBackGradient != null) {
 				// Scale plotBackGradient to imageRect
-				double startX = plotBackGradient.StartPoint.X * imageRect.Width;
-				double startY = plotBackGradient.StartPoint.Y * imageRect.Height;
-				double endX = plotBackGradient.EndPoint.X * imageRect.Width;
-				double endY = plotBackGradient.EndPoint.Y * imageRect.Height;
+				double startX = imageRect.X + (plotBackGradient.StartPoint.X * imageRect.Width);
+				double startY = imageRect.Y + (plotBackGradient.StartPoint.Y * imageRect.Height);
+				double endX = imageRect.X + (plotBackGradient.EndPoint.X * imageRect.Width);
+				double endY = imageRect.Y + (plotBackGradient.EndPoint.Y * imageRect.Height);
 				LinearGradient g = new LinearGradient (startX, startY, endX, endY);
 				g.AddColorStop (0, plotBackGradient.StartColor);
 				g.AddColorStop (1, plotBackGradient.EndColor);
