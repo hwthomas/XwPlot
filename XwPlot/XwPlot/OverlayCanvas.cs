@@ -41,72 +41,87 @@ using Xwt.Drawing;
 namespace XwPlot
 {
 	/// <summary>
-	/// Extends PlotSurface by implementing a drawing surface (Xwt.Canvas)
-	/// to obtain a Drawing Context with which the PlotSurface is drawn.
+	/// Extends Canvas by implementing an off-screen cached drawing surface
+	/// from which standard display updates are made. Overlays can also be
+	/// drawn over this standard background, to handle any dynamic content.
 	/// </summary>
 	/// <remarks>
-	/// The Canvas is exposed so that it may be added to any Xwt Widget
+	/// Separate Draw routines are defined for the cached and overlay content
 	/// </remarks>
 	public class OverlayCanvas : Canvas
 	{
-		private DrawingSurface surface;	// The Xwt Drawing Surface
+		Size startSize = new Size (400, 300);
+		Size lastSize;
+		//Size cacheSize;
+		bool cacheDirty = true;
+
+		ImageBuilder ib;
+		BitmapImage cache;
 
 		/// <summary>
 		/// Default constructor
 		/// </summary>
 		public OverlayCanvas () : base ()
 		{
-			surface = new DrawingSurface (this);	// Create Drawing surface
+			// Create initial ImageBuilder
+			lastSize = startSize;
+			ib = new ImageBuilder (startSize.Width, startSize.Height);
 		}
 
 		/// <summary>
-		/// Exposes the local plotCanvas
+		/// Called when the off-screen cache needs to be redrawn
 		/// </summary>
-		public Canvas Canvas
+		protected virtual void OnDrawCache (Context ctx, Rectangle dirtyArea)
 		{
-			get { return (Canvas)surface; }
 		}
 
 		/// <summary>
-		/// Invalidate the entire plot area on the Canvas.
-		/// OnDraw then gets called to draw the contents
+		/// Called when the Overlay content needs to be drawn
 		/// </summary>
-		public void Refresh ()
+		protected virtual void OnDrawOverlay (Context ctx, Rectangle dirtyArea)
 		{
-			surface.QueueDraw ();
 		}
 
-		/// <summary>
-		/// Xwt.Drawing Canvas with access to PlotSurface Draw routines 
-		/// </summary>
-		internal class DrawingSurface : Canvas
+		protected override void OnBoundsChanged ()
 		{
-			// This extension of Xwt.Canvas only overrides OnDraw, and can only draw 'static' plots.
-			// Any user Interactions (with the mouse, keyboard) are handled by InteractivePlotCanvas
+			base.OnBoundsChanged ();
+			cacheDirty = true;	// Mark cache as invalid
+			UpdateCache ();		// update it
+			QueueDraw ();		// and request redraw
+		}
 
-			PlotSurface plotSurface;	// To allow access to PlotSurface Draw routine
-
-			/// <summary>
-			/// Creates a new DrawingSurface and copies a reference to the calling PlotSurface
-			/// </summary>
-			internal DrawingSurface (PlotSurface ps) : base ()
-			{
-				plotSurface = ps;
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
+		{
+			// OnDraw checks whether the cache needs to be updated, and if so,
+			// calls OnDrawCache to perform this using the off-screen Context.
+			// Any Overlay content is then added by calling OnDrawOverlay.
+			if (cacheDirty || lastSize != Bounds.Size) {
+				UpdateCache ();
+				OnDrawCache (ib.Context, Bounds);
 			}
-
-			protected override void OnDraw (Context ctx, Rectangle dirtyRect)
-			{
-				// PlotSurface draws itself into the rectangle specified when Draw is called.
-				// Always specify the entire area of the DrawingSurface when drawing the plot,
-				// since a smaller part of that area cannot (at present, anyway) be redrawn.
-
-				plotSurface.Draw (ctx, Bounds);
-
-			}
-
+			// Update screen display from cache
+			ctx.DrawImage (cache, dirtyRect, dirtyRect);
+			// then add any overlay content direct to screen
+			OnDrawOverlay (ctx, dirtyRect);
 		}
 
-	} 
+		private void UpdateCache ()
+		{
+			if (Bounds.Size == Size.Zero)
+				return;
+			if (ib != null)
+				ib.Dispose ();
+			if (cache != null)
+				cache.Dispose ();
+			// TODO: change cache size only if greater, and then use larger value?
+			lastSize = Bounds.Size;
+			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+			OnDrawCache (ib.Context, Bounds);
+			cache = ib.ToBitmap ();
+			cacheDirty = false;
+		}
+
+	} // OverlayCanvas
 
 } 
 
