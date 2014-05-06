@@ -28,37 +28,16 @@ using XwPlot;
 
 namespace Samples
 {
-	public class OverlayTest: Canvas
+	public class OverlayTest: OverlayCanvas
 	{
 		const double focusRadius = 32; 
 		Size startSize = new Size (400, 400);
-		Size lastSize;
 		Point lastCursor = Point.Zero;
 
-		ImageBuilder ib = null;
-		BitmapImage plotCache;
-		BitmapImage focusCache;
-
-		public OverlayTest ()
+		public OverlayTest () : base ()
 		{
-			lastSize = startSize;
 			WidthRequest = startSize.Width;
 			HeightRequest = startSize.Height;
-			// initialise plotCache
-			UpdateCache ();
-			// Draw 'focus' cache
-			ib = new ImageBuilder (64, 64);
-			Point p = new Point (32, 32);
-			DrawFocus (ib.Context, p);
-			focusCache = ib.ToBitmap ();
-		}
-
-		protected override void OnBoundsChanged ()
-		{
-			base.OnBoundsChanged ();
-			lastSize = Bounds.Size;
-			UpdateCache ();
-			QueueDraw ();
 		}
 
 		protected override void OnMouseMoved (MouseMovedEventArgs args)
@@ -74,34 +53,14 @@ namespace Samples
 			base.OnMouseMoved (args);
 		}
 
-		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
+		protected override void OnDrawCache (Context ctx, Rectangle dirtyArea)
 		{
-			// Check if cache size has changed
-			if (Bounds.Size != lastSize) {
-				UpdateCache ();
-			}
-
-			// Copy plotCache to screen to redraw dirtyRect
-			ctx.DrawImage (plotCache, dirtyRect, dirtyRect);
-
-			// Now draw overlay context direct to Canvas Context
-			DrawFocus (ctx, lastCursor);
-			// or... copy from focusCache
-			// Point p = new Point (lastCursor.X - 32, lastCursor.Y - 32);
-			// ctx.DrawImage (focusCache, p, 1);
+			DrawCache (ctx);
 		}
 
-		void UpdateCache ()
+		protected override void OnDrawOverlay (Context ctx, Rectangle dirtyArea)
 		{
-			if (Bounds.Size == Size.Zero)
-				return;
-			if (ib != null )
-				ib.Dispose ();
-			if (plotCache != null)
-				plotCache.Dispose ();
-			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
-			DrawCache (ib.Context);
-			plotCache = ib.ToBitmap ();
+			DrawFocus (ctx, lastCursor);
 		}
 
 		void DrawCache (Context ctx)
