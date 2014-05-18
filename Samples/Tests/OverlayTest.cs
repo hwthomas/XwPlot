@@ -1,4 +1,4 @@
-﻿﻿//
+﻿//
 // OverlayTest.cs
 //
 // Author: Hywel Thomas <hywel.w.thomas@gmail.com>
@@ -124,5 +124,87 @@ namespace Samples
 			ctx.Restore ();
 		}
 	}
+
+	/// <summary>
+	/// Extends Canvas by implementing an off-screen cached drawing surface
+	/// from which standard display updates are made. Overlays can also be
+	/// drawn over this standard background, to handle any dynamic content.
+	/// </summary>
+	/// <remarks>
+	/// Separate Draw routines are defined for the cached and overlay content
+	/// </remarks>
+	public class OverlayCanvas : Canvas
+	{
+		Size startSize = new Size (400, 300);
+		Size lastSize;
+		//Size cacheSize;
+		bool cacheDirty = true;
+
+		ImageBuilder ib;
+		BitmapImage cache;
+
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		internal OverlayCanvas () : base ()
+		{
+			// Create initial ImageBuilder
+			lastSize = startSize;
+			ib = new ImageBuilder (startSize.Width, startSize.Height);
+		}
+
+		/// <summary>
+		/// Called when the off-screen cache needs to be redrawn
+		/// </summary>
+		protected virtual void OnDrawCache (Context ctx, Rectangle dirtyArea)
+		{
+		}
+
+		/// <summary>
+		/// Called when the Overlay content needs to be drawn
+		/// </summary>
+		protected virtual void OnDrawOverlay (Context ctx, Rectangle dirtyArea)
+		{
+		}
+
+		protected override void OnBoundsChanged ()
+		{
+			base.OnBoundsChanged ();
+			cacheDirty = true;	// Mark cache as invalid
+			UpdateCache ();		// update it
+			QueueDraw ();		// and request redraw
+		}
+
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
+		{
+			// OnDraw checks whether the cache needs to be updated, and if so,
+			// calls OnDrawCache to perform this using the off-screen Context.
+			// Any Overlay content is then added by calling OnDrawOverlay.
+			if (cacheDirty || lastSize != Bounds.Size) {
+				UpdateCache ();
+				OnDrawCache (ib.Context, Bounds);
+			}
+			ctx.DrawImage (cache, dirtyRect, dirtyRect);	// Update screen display from cache
+			OnDrawOverlay (ctx, dirtyRect);					// add overlay content to display
+		}
+
+		private void UpdateCache ()
+		{
+			if (Bounds.Size == Size.Zero)
+				return;
+			if (ib != null)
+				ib.Dispose ();
+			if (cache != null)
+				cache.Dispose ();
+			// TODO: change cache size only if greater, and then use larger value?
+			lastSize = Bounds.Size;
+			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+			OnDrawCache (ib.Context, Bounds);
+			cache = ib.ToBitmap ();
+			cacheDirty = false;
+		}
+
+	} // OverlayCanvas
+
 }
 

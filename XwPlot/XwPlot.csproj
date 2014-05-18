@@ -72,7 +72,6 @@
     <Compile Include="XwPlot\ColorGradient.cs" />
     <Compile Include="XwPlot\PlotSurface.cs" />
     <Compile Include="XwPlot\IPlotSurface.cs" />
-    <Compile Include="XwPlot\OverlayCanvas.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
