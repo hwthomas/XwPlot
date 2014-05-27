@@ -57,14 +57,14 @@ namespace Samples
 			infoText += "  * PhysicalSpacingMin property of LabelAxis \n";
 
 			qeExampleTimerEnabled = true;
-			plotCanvas.Clear();
+			plotCanvas.Clear ();
 			
 			int len = 24;
 			string[] s = new string[len];
 			PlotQEExampleValues = new double[len];
 			PlotQEExampleTextValues = new string[len];
 
-			Random r = new Random();
+			Random r = new Random ();
 
 			for (int i=0; i<len;i++) {
 				PlotQEExampleValues[i] = 8.0 + 12.0 * (double)r.Next(10000) / 10000.0;
@@ -77,24 +77,24 @@ namespace Samples
 				s[i] = i.ToString("00") + ".1";
 			}
 
-			PointPlot pp = new PointPlot();
+			PointPlot pp = new PointPlot ();
 			pp.DataSource = PlotQEExampleValues;
-			pp.Marker = new Marker( Marker.MarkerType.Square, 10 );
+			pp.Marker = new Marker (Marker.MarkerType.Square, 10);
 			pp.Marker.DropLine = true;
 			pp.Marker.LineColor = Colors.CornflowerBlue;
 			pp.Marker.Filled = false;
-			plotCanvas.Add( pp );
+			plotCanvas.Add (pp);
 
-			LabelPointPlot tp1 = new LabelPointPlot();
+			LabelPointPlot tp1 = new LabelPointPlot ();
 			tp1.DataSource = PlotQEExampleValues;
 			tp1.TextData = PlotQEExampleTextValues;
 			tp1.LabelTextPosition = LabelPointPlot.LabelPositions.Above;
-			tp1.Marker = new Marker (Marker.MarkerType.None, 10 );
-			plotCanvas.Add( tp1 );
+			tp1.Marker = new Marker (Marker.MarkerType.None, 10);
+			plotCanvas.Add (tp1);
 
 			LabelAxis la = new LabelAxis (plotCanvas.XAxis1);
 			for (int i=0; i<len; ++i) {
-				la.AddLabel( s[i], i );
+				la.AddLabel (s[i], i);
 			}
 			Font ff = Font.FromName ("Verdana");
 			la.TickTextFont = ff.WithSize (7);
@@ -124,12 +124,19 @@ namespace Samples
 						
 		}
 
+		~LabelPointPlotSample ()
+		{
+			// disable timer on exit
+			qeExampleTimerEnabled = false;
+		}
+
+
 		/// <summary>
 		/// Callback for QE example timer tick.
 		/// </summary>
 		private bool qeExampleTimer_Tick()
 		{
-			if (!qeExampleTimerEnabled )
+			if (!qeExampleTimerEnabled)
 				return false;
 			
 			Random r = new Random ();
@@ -143,7 +150,7 @@ namespace Samples
 					PlotQEExampleTextValues[i] = "";
 				}
 			}
-			plotCanvas.Refresh();
+			plotCanvas.Refresh ();
 			//returning true means that the timeout routine should be invoked
 			//again after the timeout period expires.  Returning false will 
 			//terminate the timeout ie when it has been disabled.

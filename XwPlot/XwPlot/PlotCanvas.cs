@@ -66,12 +66,12 @@ namespace XwPlot
 		}
 
 		/// <summary>
-		/// Invalidate the entire plot area on the Canvas.
-		/// OnDraw then gets called to draw the contents
+		/// Force a complete redraw of the plot area on the Canvas.
 		/// </summary>
 		public void Refresh ()
 		{
-			surface.QueueDraw ();
+			surface.UpdateCache ();		// First update the cache
+			surface.QueueDraw ();		// then redraw the display
 		}
 
 		/// <summary>
@@ -84,7 +84,6 @@ namespace XwPlot
 		{
 			PlotSurface plotSurface;	// To allow access to parent PlotSurface
 			Size cacheSize;
-			bool cacheDirty = true;
 
 			ImageBuilder ib;
 			BitmapImage cache;
@@ -111,14 +110,12 @@ namespace XwPlot
 				// OnDraw checks whether the cache needs to be updated, and if so,
 				// calls OnDrawCache to perform this using the off-screen Context.
 				// Any Overlay content is then added by calling OnDrawOverlay.
-				Matrix ctm = ctx.GetCTM ();
-				if (cacheDirty || cacheSize != Bounds.Size) {
+				if (cacheSize != Bounds.Size) {
 					UpdateCache ();
 					ctx.DrawImage (cache, Bounds, Bounds);	// Update complete display
 				} else {
-					ctx.DrawImage (cache, dirtyRect, dirtyRect);	// Update dirtyRect from cache
+					ctx.DrawImage (cache, dirtyRect, dirtyRect);	// Update from cache
 				}
-				//OnDrawCache (ctx, Bounds);		// This shouldn't be necessary - but cache not copying
 				OnDrawOverlay (ctx, dirtyRect);		// add overlay content
 			}
 
@@ -133,28 +130,28 @@ namespace XwPlot
 				plotSurface.Draw (ctx, Bounds);
 			}
 
-			/// <summary>
-			/// Called when the Overlay content needs to be drawn
-			/// </summary>
 			protected virtual void OnDrawOverlay (Context ctx, Rectangle dirtyArea)
 			{
 				// All Overlay content is added by Interactions
 			}
 
-			private void UpdateCache ()
+			/// <summary>
+			/// Update the cache contents, reallocating the cache if necessary
+			/// </summary>
+			internal void UpdateCache ()
 			{
 				if (Bounds.Size == Size.Zero)
 					return;
-				if (ib != null)
-					ib.Dispose ();
-				if (cache != null)
-					cache.Dispose ();
-
-				cacheSize = Bounds.Size;
-				ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+				if (cacheSize != Bounds.Size) {
+					if (ib != null)
+						ib.Dispose ();
+					if (cache != null)
+						cache.Dispose ();
+					cacheSize = Bounds.Size;
+					ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
+				}
 				OnDrawCache (ib.Context, Bounds);
 				cache = ib.ToBitmap ();
-				cacheDirty = false;
 			}
 		}
 	} 

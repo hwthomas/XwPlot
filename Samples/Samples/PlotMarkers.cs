@@ -84,7 +84,6 @@ namespace Samples
 			PackStart (plotCanvas.Canvas, true);
 			Label la = new Label (infoText);
 			PackStart (la);
-		
 		}
 	}
 }
