@@ -95,7 +95,7 @@ namespace XwPlot
 		}
 
 		/// <summary>
-		/// Draw Overlay content over the cached background plot
+		/// Draw any Overlay content over the cached background plot
 		/// </summary>
 		public virtual void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
