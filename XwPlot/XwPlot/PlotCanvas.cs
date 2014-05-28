@@ -306,27 +306,6 @@ namespace XwPlot
 				ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
 			}
 
-			protected override void OnBoundsChanged ()
-			{
-				base.OnBoundsChanged ();
-				UpdateCache ();
-				QueueDraw ();		// request full redraw
-			}
-
-			protected override void OnDraw (Context ctx, Rectangle dirtyRect)
-			{
-				// OnDraw checks whether the cache needs to be updated, and if so,
-				// calls OnDrawCache to perform this using the off-screen Context.
-				// Any Overlay content is then added by calling OnDrawOverlay.
-				if (cacheSize != Bounds.Size) {
-					UpdateCache ();
-					ctx.DrawImage (cache, Bounds, Bounds);	// Update complete display
-				} else {
-					ctx.DrawImage (cache, dirtyRect, dirtyRect);	// Update from cache
-				}
-				OnDrawOverlay (ctx, dirtyRect);		// add overlay content
-			}
-
 			/// <summary>
 			/// Called when the off-screen cache needs to be redrawn
 			/// </summary>
@@ -364,6 +343,54 @@ namespace XwPlot
 				OnDrawCache (ib.Context, Bounds);
 				cache = ib.ToBitmap ();
 			}
+
+			#region Canvas (base) overrides
+			protected override void OnBoundsChanged ()
+			{
+				base.OnBoundsChanged ();
+				UpdateCache ();
+				QueueDraw ();		// request full redraw
+			}
+
+			protected override void OnKeyPressed (KeyEventArgs args)
+			{
+				bool modified = false;
+				foreach (Interaction i in plotCanvas.interactions) {
+					modified |= i.OnKeyPressed (args, plotCanvas);
+				}
+				if (modified) {
+					plotCanvas.InteractionOccurred (this);
+					plotCanvas.Refresh ();
+				}
+			}
+
+			protected override void OnKeyReleased (KeyEventArgs args)
+			{
+				bool modified = false;
+				foreach (Interaction i in plotCanvas.interactions) {
+					modified |= i.OnKeyReleased (args, plotCanvas);
+				}
+				if (modified) {
+					plotCanvas.InteractionOccurred (this);
+					plotCanvas.Refresh ();
+				}
+			}
+
+			protected override void OnDraw (Context ctx, Rectangle dirtyRect)
+			{
+				// OnDraw checks whether the cache needs to be updated, and if so,
+				// calls OnDrawCache to perform this using the off-screen Context.
+				// Any Overlay content is then added by calling OnDrawOverlay.
+				if (cacheSize != Bounds.Size) {
+					UpdateCache ();
+					ctx.DrawImage (cache, Bounds, Bounds);	// Update complete display
+				} else {
+					ctx.DrawImage (cache, dirtyRect, dirtyRect);	// Update from cache
+				}
+				OnDrawOverlay (ctx, dirtyRect);		// add overlay content
+			}
+			#endregion // overrides
+
 		}
 		#endregion	// DrawingSurface class
 

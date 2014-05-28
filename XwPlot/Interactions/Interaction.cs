@@ -54,42 +54,42 @@ namespace XwPlot
 		{
 		}
 
-		public virtual bool OnMouseEntered (EventArgs args, PlotSurface ps)
+		public virtual bool OnMouseEntered (EventArgs args, PlotCanvas pc)
 		{
 			return false;
 		}
 
-		public virtual bool OnMouseExited (EventArgs args, PlotSurface ps)
+		public virtual bool OnMouseExited (EventArgs args, PlotCanvas pc)
 		{
 			return false;
 		}
 
-		public virtual bool OnButtonPressed (ButtonEventArgs args, PlotSurface ps)
+		public virtual bool OnButtonPressed (ButtonEventArgs args, PlotCanvas pc)
 		{
 			return false;
 		}
 				
-		public virtual bool OnButtonReleased (ButtonEventArgs args, PlotSurface ps)
+		public virtual bool OnButtonReleased (ButtonEventArgs args, PlotCanvas pc)
 		{
 			return false;
 		}
 				
-		public virtual bool OnMouseMoved (MouseMovedEventArgs args, PlotSurface ps)
+		public virtual bool OnMouseMoved (MouseMovedEventArgs args, PlotCanvas pc)
 		{
 			return false;
 		}
 			
-		public virtual bool OnMouseScrolled (MouseScrolledEventArgs args, PlotSurface ps)
-		{
-			return false;
-		}
-			
-		public virtual bool OnKeyPressed (KeyEventArgs args, PlotSurface ps)
+		public virtual bool OnMouseScrolled (MouseScrolledEventArgs args, PlotCanvas pc)
 		{
 			return false;
 		}
 
-		public virtual bool OnKeyReleased (KeyEventArgs args, PlotSurface ps)
+		public virtual bool OnKeyPressed (KeyEventArgs args, PlotCanvas pc)
+		{
+			return false;
+		}
+
+		public virtual bool OnKeyReleased (KeyEventArgs args, PlotCanvas pc)
 		{
 			return false;
 		}

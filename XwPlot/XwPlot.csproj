@@ -59,8 +59,6 @@
     <Compile Include="XwPlot\PointPlot.cs" />
     <Compile Include="XwPlot\BarPlot.cs" />
     <Compile Include="XwPlot\HistogramPlot.cs" />
-    <Compile Include="XwPlot\InteractivePlotSurface2D.cs" />
-    <Compile Include="XwPlot\Modifier.cs" />
     <Compile Include="XwPlot\PlotCanvas.cs" />
     <Compile Include="XwPlot\CandlePlot.cs" />
     <Compile Include="XwPlot\TradingDateTimeAxis.cs" />
@@ -72,6 +70,7 @@
     <Compile Include="XwPlot\ColorGradient.cs" />
     <Compile Include="XwPlot\PlotSurface.cs" />
     <Compile Include="XwPlot\IPlotSurface.cs" />
+    <Compile Include="Interactions\KeyActions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
