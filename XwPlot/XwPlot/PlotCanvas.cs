@@ -301,6 +301,7 @@ namespace XwPlot
 			/// </summary>
 			internal DrawingSurface (PlotCanvas pc) : base ()
 			{
+				CanGetFocus = true;
 				plotCanvas = pc;
 				cacheSize = Size.Zero;
 				ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
@@ -337,9 +338,10 @@ namespace XwPlot
 						ib.Dispose ();
 					if (cache != null)
 						cache.Dispose ();
-					cacheSize = Bounds.Size;
-					ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
 				}
+				// Note: cache is being drawn over - create new each time for now
+				cacheSize = Bounds.Size;
+				ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
 				OnDrawCache (ib.Context, Bounds);
 				cache = ib.ToBitmap ();
 			}
@@ -352,16 +354,58 @@ namespace XwPlot
 				QueueDraw ();		// request full redraw
 			}
 
+			protected override void OnMouseEntered (EventArgs args)
+			{
+				SetFocus ();		// ensure keypresses are received
+				bool modified = false;
+				foreach (Interaction i in plotCanvas.interactions) {
+					modified |= i.OnMouseEntered (args, plotCanvas);
+				}
+				CheckForRedraw (modified);
+			}
+
+			protected override void OnMouseExited (EventArgs args)
+			{
+				bool modified = false;
+				foreach (Interaction i in plotCanvas.interactions) {
+					modified |= i.OnMouseExited (args, plotCanvas);
+				}
+				CheckForRedraw (modified);
+			}
+
+			protected override void OnButtonPressed (ButtonEventArgs args)
+			{
+				bool modified = false;
+				foreach (Interaction i in plotCanvas.interactions) {
+					modified |= i.OnButtonPressed (args, plotCanvas);
+				}
+				CheckForRedraw (modified);
+			}
+
+			protected override void OnButtonReleased (ButtonEventArgs args)
+			{
+				bool modified = false;
+				foreach (Interaction i in plotCanvas.interactions) {
+					modified |= i.OnButtonReleased (args, plotCanvas);
+				}
+				CheckForRedraw (modified);
+			}
+
+			protected override void OnMouseMoved (MouseMovedEventArgs args)
+			{
+			}
+
+			protected override void OnMouseScrolled (MouseScrolledEventArgs args)
+			{
+			}
+
 			protected override void OnKeyPressed (KeyEventArgs args)
 			{
 				bool modified = false;
 				foreach (Interaction i in plotCanvas.interactions) {
 					modified |= i.OnKeyPressed (args, plotCanvas);
 				}
-				if (modified) {
-					plotCanvas.InteractionOccurred (this);
-					plotCanvas.Refresh ();
-				}
+				CheckForRedraw (modified);
 			}
 
 			protected override void OnKeyReleased (KeyEventArgs args)
@@ -370,10 +414,7 @@ namespace XwPlot
 				foreach (Interaction i in plotCanvas.interactions) {
 					modified |= i.OnKeyReleased (args, plotCanvas);
 				}
-				if (modified) {
-					plotCanvas.InteractionOccurred (this);
-					plotCanvas.Refresh ();
-				}
+				CheckForRedraw (modified);
 			}
 
 			protected override void OnDraw (Context ctx, Rectangle dirtyRect)
@@ -389,6 +430,15 @@ namespace XwPlot
 				}
 				OnDrawOverlay (ctx, dirtyRect);		// add overlay content
 			}
+
+			private void CheckForRedraw (bool modified)
+			{
+				if (modified) {
+					plotCanvas.InteractionOccurred (this);
+					plotCanvas.Refresh ();
+				}
+			}
+
 			#endregion // overrides
 
 		}

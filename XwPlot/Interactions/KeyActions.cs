@@ -32,13 +32,7 @@
 //
 
 using System;
-using System.Diagnostics;
-using System.Collections;
-
 using Xwt;
-using Xwt.Drawing;
-
-using System;
 
 namespace XwPlot
 {
@@ -59,15 +53,16 @@ namespace XwPlot
 		/// -		- zooms out
 		/// Alt		- reduces the effect of the above actions
 		/// Home	- restores original view and dimensions
-		/// More could be added, but these are a start.
 		/// </summary>
 		/// 
 
-		const double right = +0.25, left  = -0.25;
-		const double up = +0.25, down = -0.25;
-		const double altFactor = 0.4;	// Alt key reduces effect
+		const double left = -0.25;
+		const double right = +0.25;
+		const double up = +0.25;
+		const double down = -0.25;
 		const double zoomIn	 = -0.5;	// Should give reversible
 		const double zoomOut = +1.0;	// ZoomIn / ZoomOut actions
+		const double altFactor = 0.4;	// Alt key reduces sensitivity
 		const double symmetrical = 0.5;
 
 		public KeyActions () : base ()
@@ -98,37 +93,37 @@ namespace XwPlot
 				factor *= altFactor;
 			}
 
-			if (key == Key.Home) {
+			if (key == Key.Home || key == Key.NumPadHome) {
 				pc.SetOriginalDimensions ();
 				return true;
 			}
-			if (key == Key.Left) {
+			if (key == Key.Left || key == Key.NumPadLeft) {
 				pc.CacheAxes();
 				pc.TranslateXAxes (left*factor);
 				return true;
 			}
-			if (key == Key.Right) {
+			if (key == Key.Right || key == Key.NumPadRight) {
 				pc.CacheAxes();
 				pc.TranslateXAxes (right*factor);
 				return true;
 			}
-			if (key == Key.Up) {
+			if (key == Key.Up || key == Key.NumPadUp) {
 				pc.CacheAxes ();
 				pc.TranslateYAxes (up*factor);
 				return true;
 			}
-			if (key == Key.Down) {
+			if (key == Key.Down || key == Key.NumPadDown) {
 				pc.CacheAxes ();
 				pc.TranslateYAxes (down*factor);
 				return true;
 			}
-			if (key == Key.Plus) {
+			if (key == Key.Plus || key == Key.NumPadAdd) {
 				pc.CacheAxes ();
 				pc.ZoomXAxes (zoomIn*factor,symmetrical);
 				pc.ZoomYAxes (zoomIn*factor,symmetrical);
 				return true;
 			}
-			if (key == Key.Minus) {
+			if (key == Key.Minus || key == Key.NumPadSubtract) {
 				pc.CacheAxes ();
 				pc.ZoomXAxes (zoomOut*factor,symmetrical);
 				pc.ZoomYAxes (zoomOut*factor,symmetrical);

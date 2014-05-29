@@ -71,7 +71,7 @@ namespace Samples
 		  
 			plotCanvas.AddInteraction (new KeyActions ());
 			//plotCanvas.AddInteraction (new AxisDrag ());
-			//plotCanvas.AddInteraction (new NPlot.PlotSelection (Color.Gray));
+			//plotCanvas.AddInteraction (new PlotSelection (Color.Gray));
 			//plotCanvas.AddInteraction (new VerticalGuideline (Color.Gray));
 			//plotCanvas.AddInteraction (new HorizontalGuideline (Color.Gray));
   
