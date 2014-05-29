@@ -312,6 +312,11 @@ namespace XwPlot
 			/// </summary>
 			protected virtual void OnDrawCache (Context ctx, Rectangle dirtyArea)
 			{
+				// First clear cache to Canvas Background colour
+				// should be no need to Save () and Restore ()
+				ctx.SetColor (BackgroundColor);
+				ctx.Rectangle (Bounds);
+				ctx.Fill ();
 				// PlotSurface draws itself into the rectangle specified when Draw is called.
 				// Consequently, always specify the entire area of the plot cache, since a
 				// smaller part of the plot cannot (at present) be drawn.
@@ -338,10 +343,9 @@ namespace XwPlot
 						ib.Dispose ();
 					if (cache != null)
 						cache.Dispose ();
+					cacheSize = Bounds.Size;
+					ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
 				}
-				// Note: cache is being drawn over - create new each time for now
-				cacheSize = Bounds.Size;
-				ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
 				OnDrawCache (ib.Context, Bounds);
 				cache = ib.ToBitmap ();
 			}

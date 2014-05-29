@@ -804,7 +804,7 @@ namespace XwPlot
 			bbYAxis1Cache = pYAxis1.GetBoundingBox ();
 			bbYAxis2Cache = pYAxis2.GetBoundingBox ();
 
-			// Fill in the background. 
+			// Fill in the plot background. 
 			Rectangle imageRect = (Rectangle)plotAreaBoundingBoxCache;
 			if (plotBackImage != null) {
 				// Ensure imageRect has integer size for correct tiling/drawing
@@ -824,7 +824,6 @@ namespace XwPlot
 				ctx.Rectangle (imageRect);
 				ctx.Pattern = g;
 				ctx.Fill ();
-
 			} 
 			else {
 				ctx.Rectangle (imageRect);
@@ -842,6 +841,11 @@ namespace XwPlot
 
 			// draw drawables..
 			bool legendDrawn = false;
+
+			// set the clipping region.. (necessary for zoom)
+			ctx.Save ();
+			ctx.Rectangle (imageRect);
+			ctx.Clip ();
 
 			for (int i_o = 0; i_o < ordering.Count; ++i_o) {
 	
@@ -876,14 +880,11 @@ namespace XwPlot
 					drawYAxis = pYAxis2;
 				}
 	
-				// set the clipping region.. (necessary for zoom)
-				///TODO:	g.Clip = new Region((Rectangle)plotAreaBoundingBoxCache);
-				// plot.
 				drawable.Draw (ctx, drawXAxis, drawYAxis);
-				// reset it..
-				//g.ResetClip();
+
 			}
-			
+			ctx.Restore ();
+
 			if (!legendDrawn && legend != null) {
 				legend.Draw (ctx, legendPosition, drawables, scale);
 			}

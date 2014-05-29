@@ -38,13 +38,11 @@ using Xwt.Drawing;
 
 namespace XwPlot
 {
-
 	/// <summary>
 	/// Encapsulates functionality for plotting data as a stepped line.
 	/// </summary>
 	public class StepPlot : BaseSequencePlot, IPlot, ISequencePlot
 	{
-
 		/// <summary>
 		/// Constructor.
 		/// </summary>
@@ -52,7 +50,6 @@ namespace XwPlot
 		{
 			Center = false;
 		}
-
 
 		/// <summary>
 		/// Draws the step plot using a Drawing Context against the provided x and y axes.
@@ -67,6 +64,10 @@ namespace XwPlot
 
 			double leftCutoff = xAxis.PhysicalToWorld(xAxis.PhysicalMin, false);
 			double rightCutoff = xAxis.PhysicalToWorld(xAxis.PhysicalMax, false);
+
+			ctx.Save ();
+			ctx.SetColor (Color);
+			ctx.SetLineWidth (1);
 
 			for (int i=0; i<data.Count; ++i) {
 				Point p1 = data[i];
@@ -92,17 +93,15 @@ namespace XwPlot
 						p2 = data[i - 1];
 					}
 					else {
-						// TODO: Once log4net is set up post a message to the user that a step-plot of 1 really does not make any sense.
 						p2 = p1;
 					}
-
 					double offset = p1.X - p2.X;
 					p2.X = p1.X + offset;
 					p2.Y = p1.Y;
 					p3 = p2; 
 				}
 
-				if (center_) {
+				if (centre) {
 					double offset = ( p2.X - p1.X ) / 2.0;
 					p1.X -= offset;
 					p2.X -= offset;
@@ -121,14 +120,11 @@ namespace XwPlot
 					continue;
 				}
 
-				ctx.Save ();
-				ctx.SetColor (Color);
-				ctx.SetLineWidth (1);
-				if (!this.hideHorizontalSegments_) {
-					if (scale_ != 1) {
+				if (!this.hideHorizontalSegments) {
+					if (scale != 1) {
 						double middle = (xPos2.X + xPos1.X) / 2;
 						double width = xPos2.X - xPos1.X;
-						width *= this.scale_;
+						width *= this.scale;
 						ctx.MoveTo (middle-width/2, yPos1.Y);
 						ctx.LineTo (middle+width/2, yPos2.Y);
 					}
@@ -139,13 +135,13 @@ namespace XwPlot
 					ctx.Stroke ();
 				}
 				
-				if (!this.hideVerticalSegments_) {
+				if (!this.hideVerticalSegments) {
 					ctx.MoveTo (xPos2.X, yPos2.Y);
 					ctx.LineTo (xPos3.X, yPos3.Y);
 					ctx.Stroke ();
 				}
-				ctx.Restore ();
 			}
+			ctx.Restore ();
 		}  
 
 
@@ -175,7 +171,7 @@ namespace XwPlot
 			double offset1;
 			double offset2;
 
-			if (!center_) {
+			if (!centre) {
 				offset1 = 0;
 				offset2 = p4.X - p3.X;
 			}
@@ -190,7 +186,6 @@ namespace XwPlot
 			return a;
 		}
 
-
 		/// <summary>
 		/// Returns an Y-axis suitable for use by this plot. The axis will be one that is just long
 		/// enough to show all data.
@@ -202,7 +197,6 @@ namespace XwPlot
 			return data.SuggestYAxis();
 		}
 
-
 		/// <summary>
 		/// Gets or sets whether or not steps should be centered. If true, steps will be centered on the
 		/// X abscissa values. If false, the step corresponding to a given x-value will be drawn between 
@@ -210,11 +204,10 @@ namespace XwPlot
 		/// </summary>
 		public bool Center
 		{
-			get { return center_; }
-			set { center_ = value; }
+			get { return centre; }
+			set { centre = value; }
 		}
-		private bool center_;
-
+		private bool centre;
 
 		/// <summary>
 		/// Draws a representation of this plot in the legend.
@@ -225,23 +218,22 @@ namespace XwPlot
 		{
 			ctx.Save ();
 			ctx.SetLineWidth (1);
-			ctx.SetColor (color_);
+			ctx.SetColor (color);
 			ctx.MoveTo (startEnd.Left, (startEnd.Top + startEnd.Bottom)/2);
 			ctx.LineTo (startEnd.Right, (startEnd.Top + startEnd.Bottom)/2);
 			ctx.Stroke ();
 			ctx.Restore ();
 		}
 
-
 		/// <summary>
 		/// The color of the pen used to draw lines in this plot.
 		/// </summary>
 		public Color Color
 		{
-			get { return color_; }
-			set { color_ = value;}
+			get { return color; }
+			set { color = value;}
 		}
-		private Color color_;
+		private Color color;
 
 
 		/// <summary>
@@ -249,10 +241,10 @@ namespace XwPlot
 		/// </summary>
 		public bool HideVerticalSegments
 		{
-			get { return hideVerticalSegments_; }
-			set { hideVerticalSegments_ = value; }
+			get { return hideVerticalSegments; }
+			set { hideVerticalSegments = value; }
 		}
-		bool hideVerticalSegments_ = false;
+		bool hideVerticalSegments = false;
 
 
 		/// <summary>
@@ -260,10 +252,10 @@ namespace XwPlot
 		/// </summary>
 		public bool HideHorizontalSegments
 		{
-			get { return hideHorizontalSegments_; }
-			set { hideHorizontalSegments_ = value; }
+			get { return hideHorizontalSegments; }
+			set { hideHorizontalSegments = value; }
 		}
-		bool hideHorizontalSegments_ = false;
+		bool hideHorizontalSegments = false;
 
 
 		/// <summary>
@@ -272,9 +264,9 @@ namespace XwPlot
 		/// </summary>
 		public double WidthScale
 		{
-			get { return scale_; }
-			set { scale_ = value; }
+			get { return scale; }
+			set { scale = value; }
 		}
-		private double scale_ = 1;
+		private double scale = 1;
 	}
 }

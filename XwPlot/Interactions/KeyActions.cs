@@ -56,14 +56,15 @@ namespace XwPlot
 		/// </summary>
 		/// 
 
-		const double left = -0.25;
-		const double right = +0.25;
-		const double up = +0.25;
-		const double down = -0.25;
-		const double zoomIn	 = -0.5;	// Should give reversible
-		const double zoomOut = +1.0;	// ZoomIn / ZoomOut actions
-		const double altFactor = 0.4;	// Alt key reduces sensitivity
-		const double symmetrical = 0.5;
+		double left		= -0.25;
+		double right	= +0.25;
+		double up		= +0.25;
+		double down		= -0.25;
+		double zoomIn	= -0.50;		// Should give reversible
+		double zoomOut 	= +1.00;		// ZoomIn / ZoomOut actions
+
+		double symmetrical	= 0.5;
+		double altFactor	= 0.4;		// Alt key reduces sensitivity
 
 		public KeyActions () : base ()
 		{
@@ -86,8 +87,8 @@ namespace XwPlot
 		public override bool OnKeyPressed (KeyEventArgs args, PlotCanvas pc)
 		{
 			double factor = Sensitivity;
-			var key = args.Key;
-			var modifiers = args.Modifiers;
+			Key key = args.Key;
+			ModifierKeys modifiers = args.Modifiers;
 
 			if ((modifiers & ModifierKeys.Alt) != 0) {
 				factor *= altFactor;
@@ -119,14 +120,14 @@ namespace XwPlot
 			}
 			if (key == Key.Plus || key == Key.NumPadAdd) {
 				pc.CacheAxes ();
-				pc.ZoomXAxes (zoomIn*factor,symmetrical);
-				pc.ZoomYAxes (zoomIn*factor,symmetrical);
+				pc.ZoomXAxes (zoomIn*factor, symmetrical);
+				pc.ZoomYAxes (zoomIn*factor, symmetrical);
 				return true;
 			}
 			if (key == Key.Minus || key == Key.NumPadSubtract) {
 				pc.CacheAxes ();
-				pc.ZoomXAxes (zoomOut*factor,symmetrical);
-				pc.ZoomYAxes (zoomOut*factor,symmetrical);
+				pc.ZoomXAxes (zoomOut*factor, symmetrical);
+				pc.ZoomYAxes (zoomOut*factor, symmetrical);
 				return true;
 			}
 			return false;
