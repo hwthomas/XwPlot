@@ -110,6 +110,7 @@ namespace XwPlot
 		#endregion // Add/Remove Interaction
 
 		#region Axis Cache
+		private bool cached = false;	// at least 1 axis has been cached
 		private Axis xAxis1Cache;		// copies of current axes,
 		private Axis yAxis1Cache;		// saved for restoring the
 		private Axis xAxis2Cache;		// original dimensions after
@@ -120,19 +121,22 @@ namespace XwPlot
 		/// </summary>
 		public void CacheAxes ()
 		{
-			if (xAxis1Cache == null && xAxis2Cache == null &&
-				yAxis1Cache == null && yAxis2Cache == null) {
+			if (!cached) {
 				if (XAxis1 != null) {
 					xAxis1Cache = (Axis)XAxis1.Clone();
+					cached = true;
 				}
 				if (XAxis2 != null) {
 					xAxis2Cache = (Axis)XAxis2.Clone();
+					cached = true;
 				}
 				if (YAxis1 != null) {
 					yAxis1Cache = (Axis)YAxis1.Clone();
+					cached = true;
 				}
 				if (YAxis2 != null) {
 					yAxis2Cache = (Axis)YAxis2.Clone();
+					cached = true;
 				}
 			}
 		}
@@ -142,19 +146,20 @@ namespace XwPlot
 		/// </summary>
 		public void SetOriginalDimensions ()
 		{
-			if (xAxis1Cache != null) {
+			if (cached) {
 				XAxis1 = xAxis1Cache;
 				XAxis2 = xAxis2Cache;
 				YAxis1 = yAxis1Cache;
 				YAxis2 = yAxis2Cache;
+				ClearAxisCache ();
 			}
-			ClearAxisCache ();
 		}
 
 		protected void ClearAxisCache ()
 		{
 			xAxis2Cache = xAxis1Cache = null;
 			yAxis2Cache = yAxis1Cache = null;
+			cached = false;
 		}
 		#endregion	// Axis Cache
 
@@ -303,8 +308,9 @@ namespace XwPlot
 			{
 				CanGetFocus = true;
 				plotCanvas = pc;
-				cacheSize = Size.Zero;
+				cacheSize = Bounds.Size;
 				ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
+				cache = ib.ToBitmap ();
 			}
 
 			/// <summary>
@@ -314,9 +320,11 @@ namespace XwPlot
 			{
 				// First clear cache to Canvas Background colour
 				// should be no need to Save () and Restore ()
+				ctx.Save ();
 				ctx.SetColor (BackgroundColor);
 				ctx.Rectangle (Bounds);
 				ctx.Fill ();
+				ctx.Restore ();
 				// PlotSurface draws itself into the rectangle specified when Draw is called.
 				// Consequently, always specify the entire area of the plot cache, since a
 				// smaller part of the plot cannot (at present) be drawn.
@@ -326,8 +334,8 @@ namespace XwPlot
 			protected virtual void OnDrawOverlay (Context ctx, Rectangle dirtyArea)
 			{
 				// All Overlay content is added by PlotSurface Interactions
-				foreach (Interaction i in plotCanvas.interactions) {
-					i.OnDraw (ctx, dirtyArea);
+				foreach (Interaction interaction in plotCanvas.interactions) {
+					interaction.OnDraw (ctx, dirtyArea);
 				}
 			}
 
@@ -340,9 +348,9 @@ namespace XwPlot
 					return;
 				if (cacheSize != Bounds.Size) {
 					if (ib != null)
-						ib.Dispose ();
+						//ib.Dispose ();
 					if (cache != null)
-						cache.Dispose ();
+						//cache.Dispose ();
 					cacheSize = Bounds.Size;
 					ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
 				}
@@ -358,12 +366,20 @@ namespace XwPlot
 				QueueDraw ();		// request full redraw
 			}
 
+			protected override void OnDraw (Context ctx, Rectangle dirtyRect)
+			{
+				// OnDraw updates the display from the off-screen cache,
+				// then adds Overlay content by calling OnDrawOverlay.
+				ctx.DrawImage (cache, dirtyRect, dirtyRect);
+				OnDrawOverlay (ctx, dirtyRect);
+			}
+
 			protected override void OnMouseEntered (EventArgs args)
 			{
 				SetFocus ();		// ensure keypresses are received
 				bool modified = false;
-				foreach (Interaction i in plotCanvas.interactions) {
-					modified |= i.OnMouseEntered (args, plotCanvas);
+				foreach (Interaction interaction in plotCanvas.interactions) {
+					modified |= interaction.OnMouseEntered (args, plotCanvas);
 				}
 				CheckForRedraw (modified);
 			}
@@ -371,8 +387,8 @@ namespace XwPlot
 			protected override void OnMouseExited (EventArgs args)
 			{
 				bool modified = false;
-				foreach (Interaction i in plotCanvas.interactions) {
-					modified |= i.OnMouseExited (args, plotCanvas);
+				foreach (Interaction interaction in plotCanvas.interactions) {
+					modified |= interaction.OnMouseExited (args, plotCanvas);
 				}
 				CheckForRedraw (modified);
 			}
@@ -380,8 +396,8 @@ namespace XwPlot
 			protected override void OnButtonPressed (ButtonEventArgs args)
 			{
 				bool modified = false;
-				foreach (Interaction i in plotCanvas.interactions) {
-					modified |= i.OnButtonPressed (args, plotCanvas);
+				foreach (Interaction interaction in plotCanvas.interactions) {
+					modified |= interaction.OnButtonPressed (args, plotCanvas);
 				}
 				CheckForRedraw (modified);
 			}
@@ -389,8 +405,8 @@ namespace XwPlot
 			protected override void OnButtonReleased (ButtonEventArgs args)
 			{
 				bool modified = false;
-				foreach (Interaction i in plotCanvas.interactions) {
-					modified |= i.OnButtonReleased (args, plotCanvas);
+				foreach (Interaction interaction in plotCanvas.interactions) {
+					modified |= interaction.OnButtonReleased (args, plotCanvas);
 				}
 				CheckForRedraw (modified);
 			}
@@ -406,8 +422,8 @@ namespace XwPlot
 			protected override void OnKeyPressed (KeyEventArgs args)
 			{
 				bool modified = false;
-				foreach (Interaction i in plotCanvas.interactions) {
-					modified |= i.OnKeyPressed (args, plotCanvas);
+				foreach (Interaction interaction in plotCanvas.interactions) {
+					modified |= interaction.OnKeyPressed (args, plotCanvas);
 				}
 				CheckForRedraw (modified);
 			}
@@ -415,24 +431,10 @@ namespace XwPlot
 			protected override void OnKeyReleased (KeyEventArgs args)
 			{
 				bool modified = false;
-				foreach (Interaction i in plotCanvas.interactions) {
-					modified |= i.OnKeyReleased (args, plotCanvas);
+				foreach (Interaction interaction in plotCanvas.interactions) {
+					modified |= interaction.OnKeyReleased (args, plotCanvas);
 				}
 				CheckForRedraw (modified);
-			}
-
-			protected override void OnDraw (Context ctx, Rectangle dirtyRect)
-			{
-				// OnDraw checks whether the cache needs to be updated, and if so,
-				// calls OnDrawCache to perform this using the off-screen Context.
-				// Any Overlay content is then added by calling OnDrawOverlay.
-				if (cacheSize != Bounds.Size) {
-					UpdateCache ();
-					ctx.DrawImage (cache, Bounds, Bounds);	// Update complete display
-				} else {
-					ctx.DrawImage (cache, dirtyRect, dirtyRect);	// Update from cache
-				}
-				OnDrawOverlay (ctx, dirtyRect);		// add overlay content
 			}
 
 			private void CheckForRedraw (bool modified)

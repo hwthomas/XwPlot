@@ -65,8 +65,8 @@ namespace Samples
 			AddSample (staticPlots, "Plot Particles", typeof (PlotParticles));
 			AddSample (staticPlots, "Plot Logo", typeof (PlotLogo));
 
-			var interactivePlots = AddSample (null, "Interactive Plots", null);
-			AddSample (interactivePlots, "Waveform Plot", typeof (StepPlotSample));
+			var interactivePlots = AddSample (null, "Interactions", null);
+			AddSample (interactivePlots, "KeyActions", typeof (StepPlotSample));
 
 			var tests = AddSample (null, "Tests", null);
 			AddSample (tests, "Linear Axis", typeof (LinearAxisTest));

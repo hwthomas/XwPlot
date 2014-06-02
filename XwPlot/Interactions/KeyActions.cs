@@ -56,12 +56,12 @@ namespace XwPlot
 		/// </summary>
 		/// 
 
-		double left		= -0.25;
-		double right	= +0.25;
-		double up		= +0.25;
-		double down		= -0.25;
-		double zoomIn	= -0.50;		// Should give reversible
-		double zoomOut 	= +1.00;		// ZoomIn / ZoomOut actions
+		const double left		= -0.25;
+		const double right		= +0.25;
+		const double up			= +0.25;
+		const double down		= -0.25;
+		const double zoomIn		= -0.50;	// Should give reversible
+		const double zoomOut 	= +1.00;	// ZoomIn / ZoomOut actions
 
 		double symmetrical	= 0.5;
 		double altFactor	= 0.4;		// Alt key reduces sensitivity
@@ -100,22 +100,22 @@ namespace XwPlot
 			}
 			if (key == Key.Left || key == Key.NumPadLeft) {
 				pc.CacheAxes();
-				pc.TranslateXAxes (left*factor);
+				pc.TranslateXAxes (factor*left);
 				return true;
 			}
 			if (key == Key.Right || key == Key.NumPadRight) {
 				pc.CacheAxes();
-				pc.TranslateXAxes (right*factor);
+				pc.TranslateXAxes (factor*right);
 				return true;
 			}
 			if (key == Key.Up || key == Key.NumPadUp) {
 				pc.CacheAxes ();
-				pc.TranslateYAxes (up*factor);
+				pc.TranslateYAxes (factor*up);
 				return true;
 			}
 			if (key == Key.Down || key == Key.NumPadDown) {
 				pc.CacheAxes ();
-				pc.TranslateYAxes (down*factor);
+				pc.TranslateYAxes (factor*down);
 				return true;
 			}
 			if (key == Key.Plus || key == Key.NumPadAdd) {

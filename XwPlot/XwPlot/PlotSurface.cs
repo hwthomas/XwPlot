@@ -791,8 +791,7 @@ namespace XwPlot
 			double newXAxis2Height = pXAxis2.PhysicalMin.Y;
 			double titleExtraOffset = oldXAxis2Height - newXAxis2Height;
 	
-			// now we are ready to define the bounding box for the plot area (to use in clipping
-			// operations.
+			// now we are ready to define the clipping region
 			plotAreaBoundingBoxCache = new Rectangle ( 
 				Math.Min (pXAxis1.PhysicalMin.X, pXAxis1.PhysicalMax.X),
 				Math.Min (pYAxis1.PhysicalMax.Y, pYAxis1.PhysicalMin.Y),
@@ -804,29 +803,38 @@ namespace XwPlot
 			bbYAxis1Cache = pYAxis1.GetBoundingBox ();
 			bbYAxis2Cache = pYAxis2.GetBoundingBox ();
 
+			Rectangle plotBounds = (Rectangle)plotAreaBoundingBoxCache;
+
+			// set the clipping region.. (necessary for zoom)
+			// Note: although clipping is enforced by the clip region, it is probably more efficient
+			// for each Drawable to check against the plotBounds and not draw if points are outside.
+			// This hasn't yet been implemented
+			ctx.Save ();
+			ctx.Rectangle (plotBounds);
+			ctx.Clip ();
+
 			// Fill in the plot background. 
-			Rectangle imageRect = (Rectangle)plotAreaBoundingBoxCache;
 			if (plotBackImage != null) {
-				// Ensure imageRect has integer size for correct tiling/drawing
-				imageRect.Width = Math.Truncate (imageRect.Width);
-				imageRect.Height = Math.Truncate (imageRect.Height);
-				ctx.DrawImage (Utils.TiledImage (plotBackImage , imageRect.Size), imageRect);
+				// Ensure plotBounds has integer size for correct tiling/drawing
+				plotBounds.Width = Math.Truncate (plotBounds.Width);
+				plotBounds.Height = Math.Truncate (plotBounds.Height);
+				ctx.DrawImage (Utils.TiledImage (plotBackImage , plotBounds.Size), plotBounds);
 			}
 			else if (plotBackGradient != null) {
-				// Scale plotBackGradient to imageRect
-				double startX = imageRect.X + (plotBackGradient.StartPoint.X * imageRect.Width);
-				double startY = imageRect.Y + (plotBackGradient.StartPoint.Y * imageRect.Height);
-				double endX = imageRect.X + (plotBackGradient.EndPoint.X * imageRect.Width);
-				double endY = imageRect.Y + (plotBackGradient.EndPoint.Y * imageRect.Height);
+				// Scale plotBackGradient to plotBounds
+				double startX = plotBounds.X + (plotBackGradient.StartPoint.X * plotBounds.Width);
+				double startY = plotBounds.Y + (plotBackGradient.StartPoint.Y * plotBounds.Height);
+				double endX = plotBounds.X + (plotBackGradient.EndPoint.X * plotBounds.Width);
+				double endY = plotBounds.Y + (plotBackGradient.EndPoint.Y * plotBounds.Height);
 				LinearGradient g = new LinearGradient (startX, startY, endX, endY);
 				g.AddColorStop (0, plotBackGradient.StartColor);
 				g.AddColorStop (1, plotBackGradient.EndColor);
-				ctx.Rectangle (imageRect);
+				ctx.Rectangle (plotBounds);
 				ctx.Pattern = g;
 				ctx.Fill ();
 			} 
 			else {
-				ctx.Rectangle (imageRect);
+				ctx.Rectangle (plotBounds);
 				ctx.SetColor (plotBackColor);
 				ctx.Fill ();
 			}
@@ -841,11 +849,6 @@ namespace XwPlot
 
 			// draw drawables..
 			bool legendDrawn = false;
-
-			// set the clipping region.. (necessary for zoom)
-			ctx.Save ();
-			ctx.Rectangle (imageRect);
-			ctx.Clip ();
 
 			for (int i_o = 0; i_o < ordering.Count; ++i_o) {
 	
@@ -883,11 +886,12 @@ namespace XwPlot
 				drawable.Draw (ctx, drawXAxis, drawYAxis);
 
 			}
-			ctx.Restore ();
 
 			if (!legendDrawn && legend != null) {
 				legend.Draw (ctx, legendPosition, drawables, scale);
 			}
+
+			ctx.Restore ();		// end of clipping region
 
 			// cache the physical axes we used on this draw;
 			pXAxis1Cache = pXAxis1;
