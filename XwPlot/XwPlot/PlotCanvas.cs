@@ -76,7 +76,7 @@ namespace XwPlot
 		{
 			PreRefresh (this);			// Raise the PreRefresh event
 			surface.UpdateCache ();		// First update the cache
-			surface.QueueDraw ();		// then redraw the display
+			surface.QueueDraw ();		// then request a full redraw
 		}
 
 		/// <summary>
@@ -308,7 +308,7 @@ namespace XwPlot
 			{
 				CanGetFocus = true;
 				plotCanvas = pc;
-				cacheSize = Bounds.Size;
+				cacheSize = new Size (16, 16);	// nominal size?
 				ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
 				cache = ib.ToBitmap ();
 			}
@@ -319,7 +319,7 @@ namespace XwPlot
 			protected virtual void OnDrawCache (Context ctx, Rectangle dirtyArea)
 			{
 				// First clear cache to Canvas Background colour
-				// should be no need to Save () and Restore ()
+				// should be no need to Save () and Restore () ?
 				ctx.Save ();
 				ctx.SetColor (BackgroundColor);
 				ctx.Rectangle (Bounds);
@@ -346,24 +346,32 @@ namespace XwPlot
 			{
 				if (Bounds.Size == Size.Zero)
 					return;
-				if (cacheSize != Bounds.Size) {
-					if (ib != null)
-						//ib.Dispose ();
-					if (cache != null)
-						//cache.Dispose ();
-					cacheSize = Bounds.Size;
-					ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
-				}
+				if (ib != null)
+					ib.Dispose ();
+				if (cache != null)
+					cache.Dispose ();
+				cacheSize = Bounds.Size;
+				ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
 				OnDrawCache (ib.Context, Bounds);
 				cache = ib.ToBitmap ();
+			}
+
+			private void CheckForRedraw (bool modified)
+			{
+				if (modified) {
+					plotCanvas.InteractionOccurred (this);
+					plotCanvas.PreRefresh (this);
+					UpdateCache ();
+					QueueDraw ();
+				}
 			}
 
 			#region Canvas (base) overrides
 			protected override void OnBoundsChanged ()
 			{
 				base.OnBoundsChanged ();
-				UpdateCache ();
-				QueueDraw ();		// request full redraw
+				UpdateCache ();			// cache must be redrawn
+				QueueDraw ();			// and display updated
 			}
 
 			protected override void OnDraw (Context ctx, Rectangle dirtyRect)
@@ -436,15 +444,6 @@ namespace XwPlot
 				}
 				CheckForRedraw (modified);
 			}
-
-			private void CheckForRedraw (bool modified)
-			{
-				if (modified) {
-					plotCanvas.InteractionOccurred (this);
-					plotCanvas.Refresh ();
-				}
-			}
-
 			#endregion // overrides
 
 		}
