@@ -70,16 +70,6 @@ namespace XwPlot
 		}
 
 		/// <summary>
-		/// Force a complete redraw and display of the plot area on the Canvas.
-		/// </summary>
-		public void Refresh ()
-		{
-			PreRefresh (this);			// Raise the PreRefresh event
-			surface.UpdateCache ();		// First update the cache
-			surface.QueueDraw ();		// then request a full redraw
-		}
-
-		/// <summary>
 		/// Clear the plot and reset to default values.
 		/// </summary>
 		public new void Clear ()
@@ -89,35 +79,46 @@ namespace XwPlot
 			base.Clear ();
 		}
 
+		/// <summary>
+		/// Force a complete redraw and display of the plot area on the Canvas.
+		/// </summary>
+		public void Refresh ()
+		{
+			PreRefresh (this);			// Raise the PreRefresh event
+			surface.UpdateCache ();		// First update the cache
+			surface.QueueDraw ();		// then request a full redraw
+		}
+
 		#region Add/Remove Interaction
 		/// <summary>
 		/// Adds a specific interaction to the PlotSurface
 		/// </summary>
-		/// <param name="i">the interaction to add.</param>
-		public void AddInteraction (Interaction i)
+		/// <param name="interaction">the interaction to add</param>
+		public void AddInteraction (Interaction interaction)
 		{
-			interactions.Add (i);
+			interactions.Add (interaction);
 		}
 
 		/// <summary>
 		/// Remove a previously added interaction
 		/// </summary>
-		/// <param name="i">interaction to remove</param>
-		public void RemoveInteraction (Interaction i)			 
+		/// <param name="interaction">interaction to remove</param>
+		public void RemoveInteraction (Interaction interaction)			 
 		{
-			interactions.Remove (i);
+			interactions.Remove (interaction);
 		}
 		#endregion // Add/Remove Interaction
 
 		#region Axis Cache
-		private bool cached = false;	// at least 1 axis has been cached
 		private Axis xAxis1Cache;		// copies of current axes,
 		private Axis yAxis1Cache;		// saved for restoring the
 		private Axis xAxis2Cache;		// original dimensions after
-		private Axis yAxis2Cache;		// zooming, etc
+		private Axis yAxis2Cache;		// zooming, panning, etc
+
+		private bool cached = false;	// at least 1 axis has been cached
 
 		/// <summary>
-		/// Caches the current axes
+		/// Cache the current axes
 		/// </summary>
 		public void CacheAxes ()
 		{
@@ -142,7 +143,7 @@ namespace XwPlot
 		}
 
 		/// <summary>
-		/// Sets axes to be those saved in the cache.
+		/// Sets axes to those saved in the cache
 		/// </summary>
 		public void SetOriginalDimensions ()
 		{
@@ -157,11 +158,69 @@ namespace XwPlot
 
 		protected void ClearAxisCache ()
 		{
-			xAxis2Cache = xAxis1Cache = null;
-			yAxis2Cache = yAxis1Cache = null;
+			xAxis1Cache = null;
+			xAxis2Cache = null;
+			yAxis1Cache = null;
+			yAxis2Cache = null;
 			cached = false;
 		}
 		#endregion	// Axis Cache
+
+		#region PlotCanvas Events
+		/// An Event is raised to notify clients that an Interaction has modified
+		/// the PlotSurface, and a separate Event is also raised prior to a call
+		/// to refresh the PlotSurface.	 Currently, the conditions for raising
+		/// both Events are the same (ie the PlotSurface has been modified)
+
+		/// <summary>
+		/// InteractionOccurred event signature
+		/// </summary>
+		public delegate void InteractionHandler (object sender);
+
+		/// <summary>
+		/// Event raised when an interaction modifies the PlotSurface
+		/// </summary>
+		public event InteractionHandler InteractionOccurred;
+
+		/// <summary>
+		/// Default handler called when Interaction modifies PlotSurface
+		/// Override this, or add handler to InteractionOccurred event.
+		/// </summary>
+		protected void OnInteractionOccurred (object sender)
+		{
+		}
+
+		/// <summary>
+		/// PreRefresh event handler signature
+		/// </summary>
+		public delegate void PreRefreshHandler (object sender);
+
+		/// <summary>
+		/// Event raised by Refresh () call, but prior to actual Plot Refresh
+		/// </summary>
+		public event PreRefreshHandler PreRefresh;
+
+		/// <summary>
+		/// Default handler for PreRefresh
+		/// Override this, or add handler to PreRefresh event.
+		/// </summary>
+		protected void OnPreRefresh (object sender)
+		{
+		}
+
+		/// <summary>
+		/// Raise InteractionOccurred and PreRefresh events
+		/// </summary>
+		/// <remarks>
+		/// For (internal) use only by Interactions mechanism
+		/// </remarks>
+		internal void NotifyUpdate (object sender)
+		{
+			InteractionOccurred (sender);
+			PreRefresh (sender);
+		}
+
+		#endregion	// PlotCanvas Events
 
 		#region Axis Range utilities
 		/// <summary>
@@ -242,214 +301,168 @@ namespace XwPlot
 			}
 		}
 		#endregion	// Axis Range utilities
-
-		#region PlotCanvas Events
-		/// An Event is raised to notify clients that an Interaction has modified
-		/// the PlotSurface, and a separate Event is also raised prior to a call
-		/// to refresh the PlotSurface.	 Currently, the conditions for raising
-		/// both Events are the same (ie the PlotSurface has been modified)
-
-		/// <summary>
-		/// InteractionOccurred event signature
-		/// </summary>
-		public delegate void InteractionHandler (object sender);
-
-		/// <summary>
-		/// Event raised when an interaction modifies the PlotSurface
-		/// </summary>
-		public event InteractionHandler InteractionOccurred;
-
-		/// <summary>
-		/// Default handler called when Interaction modifies PlotSurface
-		/// Override this, or add handler to InteractionOccurred event.
-		/// </summary>
-		protected void OnInteractionOccurred (object sender)
-		{
-		}
-
-		/// <summary>
-		/// PreRefresh event handler signature
-		/// </summary>
-		public delegate void PreRefreshHandler (object sender);
-
-		/// <summary>
-		/// Event raised by Refresh () call, but prior to actual Plot Refresh
-		/// </summary>
-		public event PreRefreshHandler PreRefresh;
-
-		/// <summary>
-		/// Default handler for PreRefresh
-		/// Override this, or add handler to PreRefresh event.
-		/// </summary>
-		protected void OnPreRefresh (object sender)
-		{
-		}
-		#endregion	// PlotCanvas Events
-
-		#region DrawingSurface
-		/// <summary>
-		/// Cached (overlay) Canvas with (saved) reference to PlotSurface ps.
-		/// Extends Canvas by implementing an off-screen cached drawing surface
-		/// from which standard display updates are made. Overlays can also be
-		/// drawn over this standard background, to handle any dynamic content.
-		/// </summary>
-		internal class DrawingSurface : Canvas
-		{
-			PlotCanvas plotCanvas;	// To allow access to parent PlotCanvas
-			Size cacheSize;
-
-			ImageBuilder ib;
-			BitmapImage cache;
-
-			/// <summary>
-			/// Creates a new DrawingSurface and saves a reference to the PlotSurface
-			/// </summary>
-			internal DrawingSurface (PlotCanvas pc) : base ()
-			{
-				CanGetFocus = true;
-				plotCanvas = pc;
-				cacheSize = new Size (16, 16);	// nominal size?
-				ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
-				cache = ib.ToBitmap ();
-			}
-
-			/// <summary>
-			/// Called when the off-screen cache needs to be redrawn
-			/// </summary>
-			protected virtual void OnDrawCache (Context ctx, Rectangle dirtyArea)
-			{
-				// First clear cache to Canvas Background colour
-				// should be no need to Save () and Restore () ?
-				ctx.Save ();
-				ctx.SetColor (BackgroundColor);
-				ctx.Rectangle (Bounds);
-				ctx.Fill ();
-				ctx.Restore ();
-				// PlotSurface draws itself into the rectangle specified when Draw is called.
-				// Consequently, always specify the entire area of the plot cache, since a
-				// smaller part of the plot cannot (at present) be drawn.
-				plotCanvas.Draw (ctx, Bounds);
-			}
-
-			protected virtual void OnDrawOverlay (Context ctx, Rectangle dirtyArea)
-			{
-				// All Overlay content is added by PlotSurface Interactions
-				foreach (Interaction interaction in plotCanvas.interactions) {
-					interaction.OnDraw (ctx, dirtyArea);
-				}
-			}
-
-			/// <summary>
-			/// Update the cache contents, reallocating the cache if necessary
-			/// </summary>
-			internal void UpdateCache ()
-			{
-				if (Bounds.Size == Size.Zero)
-					return;
-				if (ib != null)
-					ib.Dispose ();
-				if (cache != null)
-					cache.Dispose ();
-				cacheSize = Bounds.Size;
-				ib = new ImageBuilder (cacheSize.Width, cacheSize.Height);
-				OnDrawCache (ib.Context, Bounds);
-				cache = ib.ToBitmap ();
-			}
-
-			private void CheckForRedraw (bool modified)
-			{
-				if (modified) {
-					plotCanvas.InteractionOccurred (this);
-					plotCanvas.PreRefresh (this);
-					UpdateCache ();
-					QueueDraw ();
-				}
-			}
-
-			#region Canvas (base) overrides
-			protected override void OnBoundsChanged ()
-			{
-				base.OnBoundsChanged ();
-				UpdateCache ();			// cache must be redrawn
-				QueueDraw ();			// and display updated
-			}
-
-			protected override void OnDraw (Context ctx, Rectangle dirtyRect)
-			{
-				// OnDraw updates the display from the off-screen cache,
-				// then adds Overlay content by calling OnDrawOverlay.
-				ctx.DrawImage (cache, dirtyRect, dirtyRect);
-				OnDrawOverlay (ctx, dirtyRect);
-			}
-
-			protected override void OnMouseEntered (EventArgs args)
-			{
-				SetFocus ();		// ensure keypresses are received
-				bool modified = false;
-				foreach (Interaction interaction in plotCanvas.interactions) {
-					modified |= interaction.OnMouseEntered (args, plotCanvas);
-				}
-				CheckForRedraw (modified);
-			}
-
-			protected override void OnMouseExited (EventArgs args)
-			{
-				bool modified = false;
-				foreach (Interaction interaction in plotCanvas.interactions) {
-					modified |= interaction.OnMouseExited (args, plotCanvas);
-				}
-				CheckForRedraw (modified);
-			}
-
-			protected override void OnButtonPressed (ButtonEventArgs args)
-			{
-				bool modified = false;
-				foreach (Interaction interaction in plotCanvas.interactions) {
-					modified |= interaction.OnButtonPressed (args, plotCanvas);
-				}
-				CheckForRedraw (modified);
-			}
-
-			protected override void OnButtonReleased (ButtonEventArgs args)
-			{
-				bool modified = false;
-				foreach (Interaction interaction in plotCanvas.interactions) {
-					modified |= interaction.OnButtonReleased (args, plotCanvas);
-				}
-				CheckForRedraw (modified);
-			}
-
-			protected override void OnMouseMoved (MouseMovedEventArgs args)
-			{
-			}
-
-			protected override void OnMouseScrolled (MouseScrolledEventArgs args)
-			{
-			}
-
-			protected override void OnKeyPressed (KeyEventArgs args)
-			{
-				bool modified = false;
-				foreach (Interaction interaction in plotCanvas.interactions) {
-					modified |= interaction.OnKeyPressed (args, plotCanvas);
-				}
-				CheckForRedraw (modified);
-			}
-
-			protected override void OnKeyReleased (KeyEventArgs args)
-			{
-				bool modified = false;
-				foreach (Interaction interaction in plotCanvas.interactions) {
-					modified |= interaction.OnKeyReleased (args, plotCanvas);
-				}
-				CheckForRedraw (modified);
-			}
-			#endregion // overrides
-
-		}
-		#endregion	// DrawingSurface class
-
 	} 
+
+	#region DrawingSurface class
+	/// <summary>
+	/// Cached (overlay) Canvas with (saved) reference to PlotSurface ps.
+	/// Extends Canvas by implementing an off-screen cached drawing surface
+	/// from which standard display updates are made. Overlays can also be
+	/// drawn over this standard background, to handle any dynamic content.
+	/// </summary>
+	internal class DrawingSurface : Canvas
+	{
+		PlotCanvas plotCanvas;	// To allow access to parent PlotCanvas
+		Size cacheSize;
+
+		ImageBuilder ib;
+		BitmapImage cache;
+
+		/// <summary>
+		/// Creates a new DrawingSurface and saves a reference to the PlotSurface
+		/// </summary>
+		internal DrawingSurface (PlotCanvas pc) : base ()
+		{
+			CanGetFocus = true;
+			plotCanvas = pc;
+			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+			cacheSize = Bounds.Size;
+			cache = ib.ToBitmap ();
+		}
+
+		/// <summary>
+		/// Called when the off-screen cache needs to be redrawn
+		/// </summary>
+		protected virtual void OnDrawCache (Context ctx, Rectangle dirtyArea)
+		{
+			// First clear cache to Canvas Background colour
+			ctx.SetColor (BackgroundColor);
+			ctx.Rectangle (Bounds);
+			ctx.Fill ();
+
+			// PlotSurface draws itself into the rectangle specified when Draw is called.
+			// Consequently, always specify the entire area of the plot cache, since a
+			// smaller part of the plot cannot (at present) be drawn.
+			plotCanvas.Draw (ctx, Bounds);
+		}
+
+		protected virtual void OnDrawOverlay (Context ctx, Rectangle dirtyArea)
+		{
+			// All Overlay content is added by PlotSurface Interactions
+			foreach (Interaction interaction in plotCanvas.interactions) {
+				interaction.OnDraw (ctx, dirtyArea);
+			}
+		}
+
+		/// <summary>
+		/// Update the cache contents, reallocating the cache if necessary
+		/// </summary>
+		internal void UpdateCache ()
+		{
+			if (Bounds.Size == Size.Zero)
+				return;
+			if (cache != null)
+				cache.Dispose ();
+			if (ib != null)
+				ib.Dispose ();
+			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+			cacheSize = Bounds.Size;
+			OnDrawCache (ib.Context, Bounds);
+			cache = ib.ToBitmap ();
+		}
+
+		private void CheckForRedraw (bool modified)
+		{
+			if (modified) {
+				plotCanvas.NotifyUpdate (this);
+				UpdateCache ();
+				QueueDraw ();
+			}
+		}
+
+		#region Canvas (base) overrides
+		protected override void OnBoundsChanged ()
+		{
+			base.OnBoundsChanged ();
+			UpdateCache ();			// cache must be redrawn
+			QueueDraw ();			// and display updated
+		}
+
+		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
+		{
+			// OnDraw updates the display from the off-screen cache,
+			// then adds Overlay content by calling OnDrawOverlay.
+			ctx.DrawImage (cache, dirtyRect, dirtyRect);
+			OnDrawOverlay (ctx, dirtyRect);
+		}
+
+		protected override void OnMouseEntered (EventArgs args)
+		{
+			SetFocus ();		// ensure keypresses are received
+			bool modified = false;
+			foreach (Interaction interaction in plotCanvas.interactions) {
+				modified |= interaction.OnMouseEntered (args, plotCanvas);
+			}
+			CheckForRedraw (modified);
+		}
+
+		protected override void OnMouseExited (EventArgs args)
+		{
+			bool modified = false;
+			foreach (Interaction interaction in plotCanvas.interactions) {
+				modified |= interaction.OnMouseExited (args, plotCanvas);
+			}
+			CheckForRedraw (modified);
+		}
+
+		protected override void OnButtonPressed (ButtonEventArgs args)
+		{
+			bool modified = false;
+			foreach (Interaction interaction in plotCanvas.interactions) {
+				modified |= interaction.OnButtonPressed (args, plotCanvas);
+			}
+			CheckForRedraw (modified);
+		}
+
+		protected override void OnButtonReleased (ButtonEventArgs args)
+		{
+			bool modified = false;
+			foreach (Interaction interaction in plotCanvas.interactions) {
+				modified |= interaction.OnButtonReleased (args, plotCanvas);
+			}
+			CheckForRedraw (modified);
+		}
+
+		protected override void OnMouseMoved (MouseMovedEventArgs args)
+		{
+		}
+
+		protected override void OnMouseScrolled (MouseScrolledEventArgs args)
+		{
+		}
+
+		protected override void OnKeyPressed (KeyEventArgs args)
+		{
+			bool modified = false;
+			foreach (Interaction interaction in plotCanvas.interactions) {
+				modified |= interaction.OnKeyPressed (args, plotCanvas);
+			}
+			CheckForRedraw (modified);
+		}
+
+		protected override void OnKeyReleased (KeyEventArgs args)
+		{
+			bool modified = false;
+			foreach (Interaction interaction in plotCanvas.interactions) {
+				modified |= interaction.OnKeyReleased (args, plotCanvas);
+			}
+			CheckForRedraw (modified);
+		}
+		#endregion // overrides
+
+	}
+	#endregion	// DrawingSurface class
+
 
 } 
 

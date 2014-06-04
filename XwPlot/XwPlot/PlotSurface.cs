@@ -319,7 +319,7 @@ namespace XwPlot
 		/// </summary>
 		public void Clear()
 		{
-			Init();
+			Init ();
 		}
 
 		/// <summary>
