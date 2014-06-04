@@ -107,14 +107,16 @@ namespace Samples
 		void HandleSamplesTreeSelectionChanged (object sender, EventArgs e)
 		{
 			if (samplesTree.SelectedRow != null) {
-				if (currentSample != null)
-					sampleBox.Remove (currentSample);
+				if (currentSample != null) {
+					sampleBox.Remove (currentSample);	// possibly shutdown sample here?
+				}
 				Sample s = store.GetNavigatorAt (samplesTree.SelectedRow).GetValue (widgetCol);
 				if (s.Type != null) {
 					if (s.Widget == null) {
 						s.Widget = (Widget)Activator.CreateInstance (s.Type);
 					}
-					sampleBox.PackStart (s.Widget, true);
+					var sample = s.Widget;	// possibly extract plotCanvas, etc? for Interactions?
+					sampleBox.PackStart (sample, true);
 				}
 				
 //				string txt = System.Xaml.XamlServices.Save (s);

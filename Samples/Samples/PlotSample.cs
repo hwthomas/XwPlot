@@ -16,7 +16,7 @@
 // 2. Redistributions in binary form must reproduce the above copyright notice,
 //	  this list of conditions and the following disclaimer in the documentation
 //	  and/or other materials provided with the distribution.
-// 3. Neither the name of NPlot nor the names of its contributors may
+// 3. Neither the name of XwPlot nor the names of its contributors may
 //	  be used to endorse or promote products derived from this software without
 //	  specific prior written permission.
 // 
@@ -56,7 +56,7 @@ namespace Samples
 			plotCanvas.Legend = null;
 			plotCanvas.Canvas.Name = "plotCanvas";
 			plotCanvas.Title = "";
-			plotCanvas.TitleFont = Font.FromName ("Ubuntu 14");
+			plotCanvas.TitleFont = Font.FromName ("Source Sans Pro").WithSize (14);
 
 		}
 
