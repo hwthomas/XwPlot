@@ -37,25 +37,23 @@ using Xwt;
 namespace XwPlot
 {
 
+	/// <summary>
+	/// Links some of the standard keyboard keys to plot scrolling and zooming.
+	/// Since all key-interactions are applied to the complete PlotSurface, any
+	/// translation or zooming is applied to all axes that have been defined
+	/// 
+	/// The following key actions are currently implemented :-
+	/// Left	- scrolls the viewport to the left
+	/// Right	- scrolls the viewport to the right
+	/// Up		- scrolls the viewport up
+	/// Down	- scrolls the viewport down
+	/// +		- zooms in
+	/// -		- zooms out
+	/// Alt		- reduces the effect of the above actions
+	/// Home	- restores original view and dimensions
+	/// </summary>
 	public class KeyActions : Interaction
 	{
-		/// <summary>
-		/// Links some of the standard keyboard keys to plot scrolling and zooming.
-		/// Since all key-interactions are applied to the complete PlotSurface, any
-		/// translation or zooming is applied to all axes that have been defined
-		/// 
-		/// The following key actions are currently implemented :-
-		/// Left	- scrolls the viewport to the left
-		/// Right	- scrolls the viewport to the right
-		/// Up		- scrolls the viewport up
-		/// Down	- scrolls the viewport down
-		/// +		- zooms in
-		/// -		- zooms out
-		/// Alt		- reduces the effect of the above actions
-		/// Home	- restores original view and dimensions
-		/// </summary>
-		/// 
-
 		const double left		= -0.25;
 		const double right		= +0.25;
 		const double up			= +0.25;

@@ -366,8 +366,8 @@ namespace XwPlot
 			if (ib != null)
 				ib.Dispose ();
 			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
-			cacheSize = Bounds.Size;
 			OnDrawCache (ib.Context, Bounds);
+			cacheSize = Bounds.Size;
 			cache = ib.ToBitmap ();
 		}
 
