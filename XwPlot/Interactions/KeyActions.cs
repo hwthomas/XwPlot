@@ -61,8 +61,8 @@ namespace XwPlot
 		const double zoomIn		= -0.50;	// Should give reversible
 		const double zoomOut 	= +1.00;	// ZoomIn / ZoomOut actions
 
-		double symmetrical	= 0.5;
-		double altFactor	= 0.4;		// Alt key reduces sensitivity
+		const double symmetrical	= 0.5;
+		const double altFactor		= 0.4;	// Alt key reduces sensitivity
 
 		public KeyActions () : base ()
 		{
