@@ -124,12 +124,11 @@ namespace Samples
 						
 		}
 
-		~LabelPointPlotSample ()
+		protected override void Shutdown ()
 		{
-			// disable timer on exit
+			// need to call this from somewhere
 			qeExampleTimerEnabled = false;
 		}
-
 
 		/// <summary>
 		/// Callback for QE example timer tick.

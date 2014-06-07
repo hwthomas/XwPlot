@@ -398,7 +398,9 @@ namespace XwPlot
 
 		protected override void OnMouseEntered (EventArgs args)
 		{
+			CanGetFocus = true;
 			SetFocus ();		// ensure keypresses are received
+
 			bool modified = false;
 			foreach (Interaction interaction in plotCanvas.interactions) {
 				modified |= interaction.OnMouseEntered (args, plotCanvas);
@@ -408,6 +410,7 @@ namespace XwPlot
 
 		protected override void OnMouseExited (EventArgs args)
 		{
+			CanGetFocus = false;
 			bool modified = false;
 			foreach (Interaction interaction in plotCanvas.interactions) {
 				modified |= interaction.OnMouseExited (args, plotCanvas);
@@ -435,6 +438,12 @@ namespace XwPlot
 
 		protected override void OnMouseMoved (MouseMovedEventArgs args)
 		{
+			SetFocus ();
+			bool modified = false;
+			foreach (Interaction interaction in plotCanvas.interactions) {
+				modified |= interaction.OnMouseMoved (args, plotCanvas);
+			}
+			CheckForRedraw (modified);
 		}
 
 		protected override void OnMouseScrolled (MouseScrolledEventArgs args)

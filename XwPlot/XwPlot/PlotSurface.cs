@@ -100,14 +100,8 @@ namespace XwPlot
 			zPositions = new ArrayList ();
 			ordering = new SortedList ();
 
-			try {
-				TitleFont = Font.FromName ("Tahoma 14");
-			}
-			catch (System.ArgumentException) {
-				throw new XwPlotException("Error: Tahoma font is not installed on this system");
-			}
-
 			PlotBackColor = Colors.White;
+			TitleFont = Font.SystemSansSerifFont.WithSize (14);
 			TitleColor = Colors.Black;
 			Padding = 10;
 			Title = "";

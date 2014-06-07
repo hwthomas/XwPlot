@@ -56,8 +56,15 @@ namespace Samples
 			plotCanvas.Legend = null;
 			plotCanvas.Canvas.Name = "plotCanvas";
 			plotCanvas.Title = "";
-			plotCanvas.TitleFont = Font.FromName ("Source Sans Pro").WithSize (14);
+			plotCanvas.TitleFont = Font.SystemSansSerifFont.WithSize (14);
 
+		}
+
+		/// <summary>
+		/// Shutdown PlotSample cleanly if required
+		/// </summary>
+		protected virtual void Shutdown ()
+		{
 		}
 
 	}

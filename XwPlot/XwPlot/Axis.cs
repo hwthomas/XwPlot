@@ -380,12 +380,12 @@ namespace XwPlot
 			AutoScaleText = false;
 			FontScale = 1.0;
 			TickTextColor = Colors.Black;
-			TickTextFont = Font.FromName ("Tahoma 10");
+			TickTextFont = Font.SystemSansSerifFont.WithSize (10);
 			TickTextAngle = 0;
 
 			Label = "" ;
 			LabelColor = Colors.Black;
-			LabelFont = Font.FromName ("Tahoma 12");
+			LabelFont = Font.SystemSansSerifFont.WithSize (12);
 			LabelOffset = 0.0;
 			LabelOffsetAbsolute = false;
 			LabelOffsetScaled = true;

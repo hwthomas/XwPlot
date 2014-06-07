@@ -109,7 +109,7 @@ namespace XwPlot
 				font = value;
 			}
 		}
-		private Font font = Font.FromName ("Tahoma 8");
+		private Font font = Font.SystemSansSerifFont.WithSize (8);
 
 		/// <summary>
 		/// Draws the plot using the Drawing Context and X, Y axes supplied.

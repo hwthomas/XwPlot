@@ -89,8 +89,8 @@ namespace XwPlot
 			ModifierKeys modifiers = args.Modifiers;
 
 			if ((modifiers & ModifierKeys.Alt) != 0) {
-				factor *= altFactor;
-			}
+				factor = Sensitivity * altFactor;
+			} 
 
 			if (key == Key.Home || key == Key.NumPadHome) {
 				pc.SetOriginalDimensions ();
@@ -98,7 +98,7 @@ namespace XwPlot
 			}
 			if (key == Key.Left || key == Key.NumPadLeft) {
 				pc.CacheAxes();
-				pc.TranslateXAxes (factor*left);
+				pc.TranslateXAxes (factor * left);
 				return true;
 			}
 			if (key == Key.Right || key == Key.NumPadRight) {

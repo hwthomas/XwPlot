@@ -50,7 +50,7 @@ namespace XwPlot
 
 		private void Init()
 		{
-			textFont_ = Font.FromName ("Tahoma 10");
+			textFont_ = Font.SystemSansSerifFont.WithSize (10);
 		}
 
 		/// <summary>

@@ -1,119 +1,120 @@
 using System;
-using System.Drawing;
+using Xwt;
+using Xwt.Drawing;
 
-namespace NPlot
+
+namespace XwPlot
 {
-
 	/// <summary>
-	/// Allows Plot to be dragged without rescaling in both X and Y
+	/// PlotDrag allows Plot to be dragged without rescaling in both X and Y
 	/// </summary>
 	public class PlotDrag : Interaction
 	{
-		private bool vertical_ = true;
-		private bool horizontal_ = true;
-		private bool dragInitiated_ = false;
-		private Point lastPoint_ = new Point(-1, -1);
-		private Point unset_ = new Point(-1, -1);
-		private double focusX = 0.5, focusY = 0.5;
-		private float sensitivity_ = 2.0f;
+		bool vertical = true;
+		bool horizontal = true;
+		Point lastPoint = new Point (-1, -1);
+		Point unset = new Point (-1, -1);
+		private bool dragInitiated = false;
+
+		double focusX = 0.5, focusY = 0.5;
+
+		Key key; 
+		ModifierKeys modifiers;
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="horizontal">enable horizontal drag/param>
 		/// <param name="vertical">enable vertical drag/param>
-		public PlotDrag(bool horizontal, bool vertical)
+		public PlotDrag (bool horizontal, bool vertical)
 		{
 			Vertical = vertical;
 			Horizontal = horizontal;
+			Sensitivity = 2.0;
 		}
 
 		/// <summary>
 		/// Horizontal Drag enable/disable
 		/// </summary>
-		public bool Horizontal
-		{
-			get { return horizontal_; }
-			set { horizontal_ = value; }
-		}
+		public bool Horizontal { get; set; }
 
 		/// <summary>
 		/// Vertical Drag enable/disable
 		/// </summary>
-		public bool Vertical
-		{
-			get { return vertical_; }
-			set { vertical_ = value; }
-		}
+		public bool Vertical { get; set; }
 
 		/// <summary>
-		/// MouseDown method for PlotDrag interaction
+		/// Sensitivity factor for axis scaling
 		/// </summary>
-		/// <param name="X">mouse X position</param>
-		/// <param name="Y"> mouse Y position</param>
-		/// <param name="keys"> mouse and keyboard modifiers</param>
-		/// <param name="ps">the InteractivePlotSurface2D</param>
-		public override bool DoMouseDown (int X, int Y, Modifier keys, InteractivePlotSurface2D ps)
+		public double Sensitivity { get; set; }
+
+
+		public override bool OnButtonPressed (ButtonEventArgs args, PlotCanvas pc)
 		{
 			// Only start drag if mouse is inside plot area (excluding axes)
-			Rectangle area = ps.PlotAreaBoundingBoxCache;
-			if (area.Contains(X,Y)) {
-				dragInitiated_ = true;
-				lastPoint_ = new Point(X,Y);
-				if (((keys & Modifier.Button1) != 0)) {		   // Drag
-					if (horizontal_ || vertical_) {
-						ps.plotCursor = CursorType.Hand;
+			Rectangle area = pc.PlotAreaBoundingBoxCache;
+			if (area.Contains (args.Position)) {
+				dragInitiated = true;
+				lastPoint = new Point (args.X, args.Y);
+				if (args.Button == PointerButton.Left) {				// Drag
+					if (horizontal || vertical) {
+						//pc.plotCursor = CursorType.Hand;
 					}
-					if (((keys & Modifier.Control) != 0)) {	   // Zoom
-						if (horizontal_)
-							ps.plotCursor = CursorType.LeftRight;
-						if (vertical_)
-							ps.plotCursor = CursorType.UpDown;
-						if (horizontal_ && vertical_)
-							ps.plotCursor = CursorType.Zoom;
+					if (((modifiers & ModifierKeys.Control) != 0)) {	// Zoom
+						if (horizontal) {
+							;//pc.plotCursor = CursorType.LeftRight;
+						}
+						if (vertical) {
+							;//pc.plotCursor = CursorType.UpDown;
+						}
+						if (horizontal && vertical) {
+							;//pc.plotCursor = CursorType.Zoom;
+						}
 					}
 				}
 				// evaluate focusPoint about which axis is expanded
-				focusX = (double)(X - area.Left)/(double)area.Width;
-				focusY = (double)(area.Bottom - Y)/(double)area.Height;
+				focusX = (double)(args.X - area.Left)/(double)area.Width;
+				focusY = (double)(area.Bottom - args.Y)/(double)area.Height;
 			}
 			return false;
 		}
 
-
-		/// <summary>
-		/// MouseMove method for PlotDrag interaction
-		/// </summary>
-		/// <param name="X">mouse X position</param>
-		/// <param name="Y"> mouse Y position</param>
-		/// <param name="keys"> mouse and keyboard modifiers</param>
-		/// <param name="ps">the InteractivePlotSurface2D</param>
-		public override bool DoMouseMove (int X, int Y, Modifier keys, InteractivePlotSurface2D ps)
+		public override bool OnButtonReleased (ButtonEventArgs args, PlotCanvas pc)
 		{
-			Rectangle area = ps.PlotAreaBoundingBoxCache;
+			if (dragInitiated) {
+				lastPoint = unset;
+				dragInitiated = false;
+				//pc.plotCursor = CursorType.LeftPointer;
+			}
+			return false;
+		}
+
+		public override bool OnMouseMoved (MouseMovedEventArgs args, PlotCanvas pc)
+		{
+			Rectangle area = pc.PlotAreaBoundingBoxCache;
 
 			// Mouse Left-Button gives Plot Drag, Ctrl.Left-Button Zooms
-			if (((keys & Modifier.Button1) != 0) && dragInitiated_) {
-				ps.CacheAxes();
+			if (dragInitiated) {
+				pc.CacheAxes();
 
-				double dX = X - lastPoint_.X;		// distance mouse has moved
-				double dY = Y - lastPoint_.Y;
-				lastPoint_ = new Point(X, Y);
+				double dX = args.X - lastPoint.X;		// distance mouse has moved
+				double dY = args.Y - lastPoint.Y;
+				lastPoint = new Point (args.X, args.Y);
 
-				if ((keys & Modifier.Control) != 0) {
-					// Axis re-ranging required
+				if ((modifiers & ModifierKeys.Control) != 0) {
+					// Axis re-ranging required - Alt key reduces sensitivity
 					double factor = Sensitivity;
-					if ((keys & Modifier.Alt) != 0) {
+					if ((modifiers & ModifierKeys.Alt) != 0) {
 						factor *= 0.25;	   // arbitrary change 
 					}
 					double xProportion = +dX*factor/area.Width;
 					double yProportion = -dY*factor/area.Height;
 						
-					if (horizontal_) {
-						ps.ZoomXAxes (xProportion, focusX);
+					if (horizontal) {
+						pc.ZoomXAxes (xProportion, focusX);
 					}
-					if (vertical_) {
-						ps.ZoomYAxes (yProportion, focusY);
+					if (vertical) {
+						pc.ZoomYAxes (yProportion, focusY);
 					}
 				}
 				else {
@@ -121,11 +122,11 @@ namespace NPlot
 					double xShift = -dX / area.Width;
 					double yShift = +dY / area.Height;
 
-					if (horizontal_) {
-						ps.TranslateXAxes (xShift);
+					if (horizontal) {
+						pc.TranslateXAxes (xShift);
 					}
-					if (vertical_) {
-						ps.TranslateYAxes (yShift);
+					if (vertical) {
+						pc.TranslateYAxes (yShift);
 					}
 				}
 				return true;
@@ -133,33 +134,20 @@ namespace NPlot
 			return false;
 		}
 
-		/// <summary>
-		/// MouseUp method for PlotDrag interaction
-		/// </summary>
-		/// <param name="X">mouse X position</param>
-		/// <param name="Y"> mouse Y position</param>
-		/// <param name="keys"> mouse and keyboard modifiers</param>
-		/// <param name="ps">the InteractivePlotSurface2D</param>
-		public override bool DoMouseUp(int X, int Y, Modifier keys, InteractivePlotSurface2D ps)
+		public override bool OnKeyPressed (KeyEventArgs args, PlotCanvas pc)
 		{
-			if (dragInitiated_) {
-				lastPoint_ = unset_;
-				dragInitiated_ = false;
-				ps.plotCursor = CursorType.LeftPointer;
-			}
+			key = args.Key;
+			modifiers = args.Modifiers;
 			return false;
 		}
-			
-		/// <summary>
-		/// Sensitivity factor for axis scaling
-		/// </summary>
-		/// <value></value>
-		public float Sensitivity
+
+		public override bool OnKeyReleased (KeyEventArgs args, PlotCanvas pc)
 		{
-			get { return sensitivity_; }
-			set { sensitivity_ = value; }
+			key = args.Key;
+			modifiers = args.Modifiers;
+			return false;
 		}
-		 
+
 	} // PlotDrag/Zoom
 	
 }

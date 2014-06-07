@@ -108,23 +108,25 @@ namespace Samples
 		{
 			if (samplesTree.SelectedRow != null) {
 				if (currentSample != null) {
-					sampleBox.Remove (currentSample);	// possibly shutdown sample here?
+					// cleanup if required - how?
+					sampleBox.Remove (currentSample);
 				}
-				Sample s = store.GetNavigatorAt (samplesTree.SelectedRow).GetValue (widgetCol);
-				if (s.Type != null) {
+				TreePosition selectedRow = samplesTree.SelectedRow;
+				TreeNavigator navigator = store.GetNavigatorAt (selectedRow);
+				Sample s = navigator.GetValue (widgetCol);
+				System.Type currentType = s.Type;
+				if (currentType != null) {
 					if (s.Widget == null) {
-						s.Widget = (Widget)Activator.CreateInstance (s.Type);
+						s.Widget = (Widget)Activator.CreateInstance (currentType);
 					}
-					var sample = s.Widget;	// possibly extract plotCanvas, etc? for Interactions?
-					sampleBox.PackStart (sample, true);
+					sampleBox.PackStart (s.Widget, true);
 				}
-				
-//				string txt = System.Xaml.XamlServices.Save (s);
 				currentSample = s.Widget;
+//				string txt = System.Xaml.XamlServices.Save (s);
 				Dump (currentSample, 0);
 			}
 		}
-		
+
 		void Dump (IWidgetSurface w, int ind)
 		{
 			if (w == null)
@@ -137,9 +139,16 @@ namespace Samples
 		
 		TreePosition AddSample (TreePosition pos, string name, Type sampleType)
 		{
+			// Look up how to do this!
+			//var node = store.AddNode (pos);
+			//var tn1 = node.SetValue (nameCol, name);
+			//var tn2 = tn1.SetValue (iconCol, icon);
+			//var tn3 = tn2.SetValue (widgetCol, new Sample (sampleType));
+			var sample = new Sample (sampleType);
+			//var s = tn3.CurrentPosition;
 			//if (page != null)
 			//	page.Margin.SetAll (5);
-			return store.AddNode (pos).SetValue (nameCol, name).SetValue (iconCol, icon).SetValue (widgetCol, new Sample (sampleType)).CurrentPosition;
+			return store.AddNode (pos).SetValue (nameCol, name).SetValue (iconCol, icon).SetValue (widgetCol, sample).CurrentPosition;
 		}
 	}
 	
