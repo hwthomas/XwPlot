@@ -10,8 +10,6 @@ namespace XwPlot
 	/// </summary>
 	public class PlotDrag : Interaction
 	{
-		bool vertical = true;
-		bool horizontal = true;
 		Point lastPoint = new Point (-1, -1);
 		Point unset = new Point (-1, -1);
 		private bool dragInitiated = false;
@@ -57,17 +55,17 @@ namespace XwPlot
 				dragInitiated = true;
 				lastPoint = new Point (args.X, args.Y);
 				if (args.Button == PointerButton.Left) {				// Drag
-					if (horizontal || vertical) {
+					if (Horizontal || Vertical) {
 						//pc.plotCursor = CursorType.Hand;
 					}
 					if (((modifiers & ModifierKeys.Control) != 0)) {	// Zoom
-						if (horizontal) {
+						if (Horizontal) {
 							;//pc.plotCursor = CursorType.LeftRight;
 						}
-						if (vertical) {
+						if (Vertical) {
 							;//pc.plotCursor = CursorType.UpDown;
 						}
-						if (horizontal && vertical) {
+						if (Horizontal && Vertical) {
 							;//pc.plotCursor = CursorType.Zoom;
 						}
 					}
@@ -110,10 +108,10 @@ namespace XwPlot
 					double xProportion = +dX*factor/area.Width;
 					double yProportion = -dY*factor/area.Height;
 						
-					if (horizontal) {
+					if (Horizontal) {
 						pc.ZoomXAxes (xProportion, focusX);
 					}
-					if (vertical) {
+					if (Vertical) {
 						pc.ZoomYAxes (yProportion, focusY);
 					}
 				}
@@ -122,10 +120,10 @@ namespace XwPlot
 					double xShift = -dX / area.Width;
 					double yShift = +dY / area.Height;
 
-					if (horizontal) {
+					if (Horizontal) {
 						pc.TranslateXAxes (xShift);
 					}
-					if (vertical) {
+					if (Vertical) {
 						pc.TranslateYAxes (yShift);
 					}
 				}
