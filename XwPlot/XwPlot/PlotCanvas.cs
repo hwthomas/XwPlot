@@ -325,9 +325,9 @@ namespace XwPlot
 		{
 			CanGetFocus = true;
 			plotCanvas = pc;
-			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+			//ib = new ImageBuilder (Bounds.Width, Bounds.Height);
 			cacheSize = Bounds.Size;
-			cache = ib.ToBitmap ();
+			//cache = ib.ToBitmap ();
 		}
 
 		/// <summary>
@@ -361,11 +361,11 @@ namespace XwPlot
 		{
 			if (Bounds.Size == Size.Zero)
 				return;
-			if (cache != null)
+			/*			if (cache != null)
 				cache.Dispose ();
 			if (ib != null)
 				ib.Dispose ();
-			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+*/			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
 			OnDrawCache (ib.Context, Bounds);
 			cacheSize = Bounds.Size;
 			cache = ib.ToBitmap ();
@@ -375,7 +375,7 @@ namespace XwPlot
 		{
 			if (modified) {
 				plotCanvas.NotifyUpdate (this);
-				UpdateCache ();
+				//UpdateCache ();
 				QueueDraw ();
 			}
 		}
@@ -384,7 +384,7 @@ namespace XwPlot
 		protected override void OnBoundsChanged ()
 		{
 			base.OnBoundsChanged ();
-			UpdateCache ();			// cache must be redrawn
+			//UpdateCache ();			// cache must be redrawn
 			QueueDraw ();			// and display updated
 		}
 
@@ -392,8 +392,9 @@ namespace XwPlot
 		{
 			// OnDraw updates the display from the off-screen cache,
 			// then adds Overlay content by calling OnDrawOverlay.
-			ctx.DrawImage (cache, dirtyRect, dirtyRect);
-			OnDrawOverlay (ctx, dirtyRect);
+			//ctx.DrawImage (cache, dirtyRect, dirtyRect);
+			//OnDrawOverlay (ctx, dirtyRect);
+			OnDrawCache (ctx, Bounds);	// Test only
 		}
 
 		protected override void OnMouseEntered (EventArgs args)

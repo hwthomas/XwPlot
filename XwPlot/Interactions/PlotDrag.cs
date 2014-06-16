@@ -99,7 +99,7 @@ namespace XwPlot
 				double dY = args.Y - lastPoint.Y;
 				lastPoint = new Point (args.X, args.Y);
 
-				if ((modifiers & ModifierKeys.Control) != 0) {
+				if (key == Key.ControlLeft || key == Key.ControlRight) {
 					// Axis re-ranging required - Alt key reduces sensitivity
 					double factor = Sensitivity;
 					if ((modifiers & ModifierKeys.Alt) != 0) {
