@@ -72,6 +72,8 @@
     <Compile Include="XwPlot\IPlotSurface.cs" />
     <Compile Include="Interactions\KeyActions.cs" />
     <Compile Include="Interactions\PlotDrag.cs" />
+    <Compile Include="Interactions\PlotZoom.cs" />
+    <Compile Include="Interactions\PlotScale.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

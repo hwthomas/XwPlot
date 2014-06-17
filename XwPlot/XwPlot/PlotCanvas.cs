@@ -449,6 +449,11 @@ namespace XwPlot
 
 		protected override void OnMouseScrolled (MouseScrolledEventArgs args)
 		{
+			bool modified = false;
+			foreach (Interaction interaction in plotCanvas.interactions) {
+				modified |= interaction.OnMouseScrolled (args, plotCanvas);
+			}
+			CheckForRedraw (modified);
 		}
 
 		protected override void OnKeyPressed (KeyEventArgs args)

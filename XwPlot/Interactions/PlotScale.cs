@@ -1,7 +1,7 @@
 //
 // XwPlot - A cross-platform charting library using the Xwt toolkit
 // 
-// PlotDrag.cs
+// PlotScale.cs
 // 
 // Copyright (C) 2013 Hywel Thomas <hywel.w.thomas@gmail.com>
 //
@@ -39,13 +39,15 @@ using Xwt.Drawing;
 namespace XwPlot
 {
 	/// <summary>
-	/// PlotDrag allows Plot to be dragged without rescaling in both X and Y
+	/// PlotScale allows Plot to be rescaled in both X and Y
 	/// </summary>
-	public class PlotDrag : Interaction
+	public class PlotScale : Interaction
 	{
 		Point lastPoint = new Point (-1, -1);
 		Point unset = new Point (-1, -1);
-		private bool dragging = false;
+		private bool scaling = false;
+
+		double focusX = 0.5, focusY = 0.5;
 
 		Key key; 
 		ModifierKeys modifiers;
@@ -55,43 +57,58 @@ namespace XwPlot
 		/// </summary>
 		/// <param name="horizontal">enable horizontal drag/param>
 		/// <param name="vertical">enable vertical drag/param>
-		public PlotDrag (bool horizontal, bool vertical)
+		public PlotScale (bool horizontal, bool vertical)
 		{
 			Vertical = vertical;
 			Horizontal = horizontal;
+			Sensitivity = 2.0;
 		}
 
 		/// <summary>
-		/// Horizontal Drag enable/disable
+		/// Horizontal Scale enable/disable
 		/// </summary>
 		public bool Horizontal { get; set; }
 
 		/// <summary>
-		/// Vertical Drag enable/disable
+		/// Vertical Scale enable/disable
 		/// </summary>
 		public bool Vertical { get; set; }
 
+		/// <summary>
+		/// Sensitivity factor for plot scaling
+		/// </summary>
+		public double Sensitivity { get; set; }
+
 		public override bool OnButtonPressed (ButtonEventArgs args, PlotCanvas pc)
 		{
-			// Only start drag if mouse is inside plot area (excluding axes)
+			// Only start scaling if mouse is inside plot area (excluding axes)
 			Rectangle area = pc.PlotAreaBoundingBoxCache;
 			if (area.Contains (args.Position)) {
-				dragging = true;
+				scaling = true;
 				lastPoint = new Point (args.X, args.Y);
-				if (args.Button == PointerButton.Left) {				// Drag
-					if (Horizontal || Vertical) {
-						//pc.plotCursor = CursorType.Hand;
+				if (args.Button == PointerButton.Left) {
+					if (Horizontal) {
+						;//pc.plotCursor = CursorType.LeftRight;
+					}
+					if (Vertical) {
+						;//pc.plotCursor = CursorType.UpDown;
+					}
+					if (Horizontal && Vertical) {
+						;//pc.plotCursor = CursorType.Zoom;
 					}
 				}
+				// evaluate focusPoint about which axis is expanded
+				focusX = (double)(args.X - area.Left)/(double)area.Width;
+				focusY = (double)(area.Bottom - args.Y)/(double)area.Height;
 			}
 			return false;
 		}
 
 		public override bool OnButtonReleased (ButtonEventArgs args, PlotCanvas pc)
 		{
-			if (dragging) {
+			if (scaling) {
 				lastPoint = unset;
-				dragging = false;
+				scaling = false;
 				//pc.plotCursor = CursorType.LeftPointer;
 			}
 			return false;
@@ -101,22 +118,26 @@ namespace XwPlot
 		{
 			Rectangle area = pc.PlotAreaBoundingBoxCache;
 
-			if (dragging) {
+			if (scaling) {
 				pc.CacheAxes();
 
 				double dX = args.X - lastPoint.X;		// distance mouse has moved
 				double dY = args.Y - lastPoint.Y;
 				lastPoint = new Point (args.X, args.Y);
 
-				// Axis translation required
-				double xShift = -dX / area.Width;
-				double yShift = +dY / area.Height;
+				// Alt key reduces sensitivity
+				double factor = Sensitivity;
+				if (key == Key.AltLeft || key == Key.AltRight) {
+					factor *= 0.25;	   // arbitrary change 
+				}
 
+				double xProportion = +dX*factor/area.Width;
+				double yProportion = -dY*factor/area.Height;
 				if (Horizontal) {
-					pc.TranslateXAxes (xShift);
+					pc.ZoomXAxes (xProportion, focusX);
 				}
 				if (Vertical) {
-					pc.TranslateYAxes (yShift);
+					pc.ZoomYAxes (yProportion, focusY);
 				}
 				return true;
 			}
@@ -137,6 +158,6 @@ namespace XwPlot
 			return false;
 		}
 
-	} // PlotDrag
+	} // PlotScale
 	
 }
