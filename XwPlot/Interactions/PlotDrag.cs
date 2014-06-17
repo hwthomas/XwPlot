@@ -43,8 +43,8 @@ namespace XwPlot
 	/// </summary>
 	public class PlotDrag : Interaction
 	{
-		Point lastPoint = new Point (-1, -1);
-		Point unset = new Point (-1, -1);
+		Point lastPoint;
+		Point unset = Point.Zero;
 		bool dragging = false;
 
 		/// <summary>
