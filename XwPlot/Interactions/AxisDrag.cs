@@ -1,147 +1,128 @@
 using System;
 using System.Collections;
-using System.Drawing;
 
-namespace NPlot
+using Xwt;
+using Xwt.Drawing;
+
+namespace XwPlot
 {
 
-		public class AxisDrag : Interaction
+	/// <summary>
+	/// Dragging the axes increases or decreases the axes scaling factors
+	/// with the expansion being about the point where the drag is started
+	/// Only the axis in which the mouse is clicked will be modified
+	/// </summary>
+	public class AxisDrag : Interaction
+	{
+		Axis axis = null;
+		bool dragging = false;
+		PhysicalAxis physicalAxis = null;
+		Point lastPoint;
+		Point startPoint;
+		double focusRatio = 0.5;
+
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public AxisDrag ()
 		{
-			/// <summary>
-			/// Dragging the axes increases or decreases the axes scaling factors
-			/// with the expansion being about the point where the drag is started
-			/// Only the axis in which the mouse is clicked will be modified
-			/// </summary>
+			Sensitivity = 1.0;
+		}
 
-			private Axis axis_ = null;
-			private bool dragging_ = false;
-			private PhysicalAxis physicalAxis_ = null;
-			private Point lastPoint_  = new Point();
-			private Point startPoint_ = new Point();
-			private double focusRatio_ = 0.5;
-			private double sensitivity_ = 1.0;
+		/// <summary>
+		/// Sensitivity factor for axis scaling
+		/// </summary>
+		public double Sensitivity { get; set; }
 
-			/// <summary>
-			/// MouseDown method for AxisDrag interaction
-			/// </summary>
-			/// <param name="X">mouse X position</param>
-			/// <param name="Y">mouse Y position</param>
-			/// <param name="keys">mouse and keyboard modifiers</param>
-			/// <param name="ps">the InteractivePlotSurface2D</param>
-			public override bool DoMouseDown (int X, int Y, Modifier keys, InteractivePlotSurface2D ps)
-			{
-				// if the mouse is inside the plot area [the tick marks may be here,
-				// and are counted as part of the axis], then don't invoke drag. 
-				if (ps.PlotAreaBoundingBoxCache.Contains(X,Y)) {
-					return false;
-				}
+		/// <summary>
+		/// OnButtonPressed method for AxisDrag interaction
+		/// </summary>
+		public override bool OnButtonPressed (ButtonEventArgs args, PlotCanvas pc)
+		{
+			// if the mouse is inside the plot area (the tick marks may be here,
+			// and are counted as part of the axis), then *don't* invoke drag. 
+			if (pc.PlotAreaBoundingBoxCache.Contains(args.X, args.Y)) {
+				return false;
+			}
 				
-				if ((keys & Modifier.Button1) != 0) {
-					// see if hit with axis. NB Only one axis object will be returned
-					ArrayList objects = ps.HitTest(new Point(X, Y));
+			if (args.Button == PointerButton.Left) {
+				// see if hit with axis. NB Only one axis object will be returned
+				ArrayList objects = pc.HitTest (new Point(args.X, args.Y));
 
-					foreach (object o in objects) {
-						if (o is NPlot.Axis) {
-							dragging_ = true;
-							axis_ = (Axis)o;
-
-							if (ps.PhysicalXAxis1Cache.Axis == axis_) {
-								physicalAxis_ = ps.PhysicalXAxis1Cache;
-								ps.plotCursor = CursorType.LeftRight;
-							}
-							else if (ps.PhysicalXAxis2Cache.Axis == axis_) {
-								physicalAxis_ = ps.PhysicalXAxis2Cache;
-								ps.plotCursor = CursorType.LeftRight;
-							}
-							else if (ps.PhysicalYAxis1Cache.Axis == axis_) {
-								physicalAxis_ = ps.PhysicalYAxis1Cache;
-								ps.plotCursor = CursorType.UpDown;
-							}
-							else if (ps.PhysicalYAxis2Cache.Axis == axis_) {
-								physicalAxis_ = ps.PhysicalYAxis2Cache;
-								ps.plotCursor = CursorType.UpDown;
-							}
-
-							startPoint_ = new Point(X, Y);	// don't combine these - Mono
-							lastPoint_ = startPoint_;		// bug #475205 prior to 2.4
-
-							// evaluate focusRatio about which axis is expanded
-							float  x = startPoint_.X - physicalAxis_.PhysicalMin.X;
-							float  y = startPoint_.Y - physicalAxis_.PhysicalMin.Y;
-							double r = Math.Sqrt(x*x + y*y);
-							focusRatio_ = r/physicalAxis_.PhysicalLength;
-	
-							return false;
+				foreach (object o in objects) {
+					if (o is Axis) {
+						dragging = true;
+						axis = (Axis)o;
+						if (pc.PhysicalXAxis1Cache.Axis == axis) {
+							physicalAxis = pc.PhysicalXAxis1Cache;
+							//pc.plotCursor = CursorType.LeftRight;
 						}
+						else if (pc.PhysicalXAxis2Cache.Axis == axis) {
+							physicalAxis = pc.PhysicalXAxis2Cache;
+							//ps.plotCursor = CursorType.LeftRight;
+						}
+						else if (pc.PhysicalYAxis1Cache.Axis == axis) {
+							physicalAxis = pc.PhysicalYAxis1Cache;
+							//pc.plotCursor = CursorType.UpDown;
+						}
+						else if (pc.PhysicalYAxis2Cache.Axis == axis) {
+							physicalAxis = pc.PhysicalYAxis2Cache;
+							//pc.plotCursor = CursorType.UpDown;
+						}
+
+						startPoint = new Point (args.X, args.Y);
+						lastPoint = startPoint;
+
+						// evaluate focusRatio about which axis is expanded
+						double  x = startPoint.X - physicalAxis.PhysicalMin.X;
+						double  y = startPoint.Y - physicalAxis.PhysicalMin.Y;
+						double r = Math.Sqrt(x*x + y*y);
+						focusRatio = r/physicalAxis.PhysicalLength;
+						return false;
 					}
 				}
-				return false;
 			}
-			
+			return false;
+		}
 
-			/// <summary>
-			/// MouseMove method for AxisDrag interaction
-			/// </summary>
-			/// <param name="X">mouse X position</param>
-			/// <param name="Y"> mouse Y position</param>
-			/// <param name="keys"> mouse and keyboard modifiers</param>
-			/// <param name="ps">the InteractivePlotSurface2D</param>
-			public override bool DoMouseMove (int X, int Y, Modifier keys, InteractivePlotSurface2D ps)
-			{
-				if (((keys & Modifier.Button1) != 0) && dragging_&& physicalAxis_ != null ) {
-					ps.CacheAxes();
-
-					float dX = (X - lastPoint_.X);
-					float dY = (Y - lastPoint_.Y);
-					lastPoint_ = new Point(X, Y);
-					
-					// In case the physical axis is not horizontal/vertical, combine dX and dY
-					// in a way which preserves their sign and intuitive axis zoom sense, ie
-					// because the physical origin is top-left, expand with +ve dX, but -ve dY 
-					double distance = dX - dY;
-					double proportion = distance*sensitivity_ /physicalAxis_.PhysicalLength;
-										
-					axis_.IncreaseRange(proportion, focusRatio_);
-				
-					return true;
-				}
-				return false;
+		/// <summary>
+		/// OnButtonReleased method for AxisDrag interaction
+		/// </summary>
+		public override bool OnButtonReleased (ButtonEventArgs args, PlotCanvas pc)
+		{
+			if (dragging) {
+				dragging = false;
+				axis = null;
+				physicalAxis = null;
+				lastPoint = new Point();
+				//pc.plotCursor = CursorType.LeftPointer;
 			}
+			return false;
+		}
 
+		/// <summary>
+		/// OnMouseMoved method for AxisDrag interaction
+		/// </summary>
+		public override bool OnMouseMoved (MouseMovedEventArgs args, PlotCanvas pc)
+		{
+			if (dragging && physicalAxis != null) {
+				pc.CacheAxes();
 
-			/// <summary>
-			/// MouseUp method for AxisDrag interaction
-			/// </summary>
-			/// <param name="X">mouse X position</param>
-			/// <param name="Y"> mouse Y position</param>
-			/// <param name="keys"> mouse and keyboard modifiers</param>
-			/// <param name="ps">the InteractivePlotSurface2D</param>
-			public override bool DoMouseUp ( int X, int Y, Modifier keys, InteractivePlotSurface2D ps )
-			{
-				if (dragging_) {
-					dragging_ = false;
-					axis_ = null;
-					physicalAxis_ = null;
-					lastPoint_ = new Point();
-					ps.plotCursor = CursorType.LeftPointer;
-				}
-				return false;
+				double dX = (args.X - lastPoint.X);
+				double dY = (args.Y - lastPoint.Y);
+				lastPoint = new Point (args.X, args.Y);
+
+				// In case the physical axis is not horizontal/vertical, combine dX and dY
+				// in a way which preserves their sign and intuitive axis zoom sense, ie
+				// because the physical origin is top-left, expand with +ve dX, but -ve dY 
+				double distance = dX - dY;
+				double proportion = distance*Sensitivity /physicalAxis.PhysicalLength;
+				axis.IncreaseRange (proportion, focusRatio);
+				return true;
 			}
+			return false;
+		}
 
-	
-			/// <summary>
-			/// Sensitivity factor for axis scaling
-			/// </summary>
-			/// <value></value>
-			public double Sensitivity
-			{
-				get { return sensitivity_; }
-				set { sensitivity_ = value; }
-			}
-
-		} // AxisDrag (Zoom)
-		
-
-
+	} // AxisDrag (Zoom)
 
 }

@@ -53,8 +53,8 @@ namespace Samples
 			infoText += "Stock Dataset Sample. Demonstrates - \n";
 			infoText += " * CandlePlot, FilledRegion, LinePlot and ArrowItem IDrawables \n";
 			infoText += " * DateTime axes \n";
-			//infoText += " * Horizontal Drag Interaction - try dragging (and Ctrl-dragging) the plot surface \n";
-			//infoText += " * Axis Drag Interaction - try dragging in the horizontal and vertical Axis areas";
+			infoText += " * Horizontal Drag Interaction - try dragging the plot surface \n";
+			infoText += " * Axis Drag Interaction - try dragging in the horizontal and vertical Axis areas";
 
 			plotCanvas.Clear ();
 			// [NOTIMP] plotCanvas.DateTimeToolTip = true;
@@ -149,7 +149,7 @@ namespace Samples
 			plotCanvas.XAxis1 = new TradingDateTimeAxis (plotCanvas.XAxis1);
 
 			plotCanvas.AddInteraction (new PlotDrag (true,false));
-			//plotCanvas.AddInteraction (new AxisDrag());
+			plotCanvas.AddInteraction (new AxisDrag ());
 
 			plotCanvas.PlotBackColor = Colors.White;
 			plotCanvas.XAxis1.LineColor = Colors.Black;

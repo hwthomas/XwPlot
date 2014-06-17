@@ -46,11 +46,8 @@ namespace XwPlot
 		Point lastPoint = new Point (-1, -1);
 		Point unset = new Point (-1, -1);
 		private bool scaling = false;
-
 		double focusX = 0.5, focusY = 0.5;
-
 		Key key; 
-		ModifierKeys modifiers;
 
 		/// <summary>
 		/// Constructor
@@ -147,14 +144,12 @@ namespace XwPlot
 		public override bool OnKeyPressed (KeyEventArgs args, PlotCanvas pc)
 		{
 			key = args.Key;
-			modifiers = args.Modifiers;
 			return false;
 		}
 
 		public override bool OnKeyReleased (KeyEventArgs args, PlotCanvas pc)
 		{
 			key = args.Key;
-			modifiers = args.Modifiers;
 			return false;
 		}
 

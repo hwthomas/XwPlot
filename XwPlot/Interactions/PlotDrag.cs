@@ -45,10 +45,7 @@ namespace XwPlot
 	{
 		Point lastPoint = new Point (-1, -1);
 		Point unset = new Point (-1, -1);
-		private bool dragging = false;
-
-		Key key; 
-		ModifierKeys modifiers;
+		bool dragging = false;
 
 		/// <summary>
 		/// Constructor
@@ -120,20 +117,6 @@ namespace XwPlot
 				}
 				return true;
 			}
-			return false;
-		}
-
-		public override bool OnKeyPressed (KeyEventArgs args, PlotCanvas pc)
-		{
-			key = args.Key;
-			modifiers = args.Modifiers;
-			return false;
-		}
-
-		public override bool OnKeyReleased (KeyEventArgs args, PlotCanvas pc)
-		{
-			key = args.Key;
-			modifiers = args.Modifiers;
 			return false;
 		}
 

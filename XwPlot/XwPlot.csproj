@@ -74,6 +74,7 @@
     <Compile Include="Interactions\PlotDrag.cs" />
     <Compile Include="Interactions\PlotZoom.cs" />
     <Compile Include="Interactions\PlotScale.cs" />
+    <Compile Include="Interactions\AxisDrag.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
