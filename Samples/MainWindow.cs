@@ -11,10 +11,15 @@ namespace Samples
 		Image icon;
 		VBox sampleBox;
 		Widget currentSample;
+		TreePosition currentCategory;
 		
 		DataField<string> nameCol = new DataField<string> ();
 		DataField<Sample> widgetCol = new DataField<Sample> ();
 		DataField<Image> iconCol = new DataField<Image> ();
+
+		TreePosition interactionCategory;
+		TreePosition sampleCategory;
+		TreePosition testCategory;
 		
 		public MainWindow ()
 		{
@@ -52,29 +57,30 @@ namespace Samples
 			samplesTree = new TreeView ();
 			samplesTree.Columns.Add ("Name", iconCol, nameCol);
 			
-			var staticPlots = AddSample (null, "Static Plots", null);
-			AddSample (staticPlots, "Plot Markers", typeof (PlotMarkerSample));
-			AddSample (staticPlots, "Waveform Step Plot", typeof (StepPlotSample));
-			AddSample (staticPlots, "Point Plot", typeof (PointPlotSample));
-			AddSample (staticPlots, "LabelPoint Plot", typeof (LabelPointPlotSample));
-			AddSample (staticPlots, "GradientPlot", typeof (GradientPlotSample));
-			AddSample (staticPlots, "Histogram Plot", typeof (HistogramSample));
-			AddSample (staticPlots, "Stacked Histogram Plot", typeof (StackedHistogram));
-			AddSample (staticPlots, "Candle Plot", typeof (CandlePlotSample));
-			AddSample (staticPlots, "Trading Plot", typeof (TradingSample));
-			AddSample (staticPlots, "Plot Particles", typeof (PlotParticles));
-			AddSample (staticPlots, "Plot Logo", typeof (PlotLogo));
+			sampleCategory = AddSample (null, "Sample Plots", null);
+			interactionCategory = AddSample (null, "Interactions", null);
+			testCategory = AddSample (null, "Tests", null);
 
-			var interactivePlots = AddSample (null, "Interactions", null);
-			AddSample (interactivePlots, "KeyActions", typeof (StepPlotSample));
+			AddSample (sampleCategory, "Plot Markers", typeof (PlotMarkerSample));
+			AddSample (sampleCategory, "Waveform Step Plot", typeof (StepPlotSample));
+			AddSample (sampleCategory, "Point Plot", typeof (PointPlotSample));
+			AddSample (sampleCategory, "LabelPoint Plot", typeof (LabelPointPlotSample));
+			AddSample (sampleCategory, "GradientPlot", typeof (GradientPlotSample));
+			AddSample (sampleCategory, "Histogram Plot", typeof (HistogramSample));
+			AddSample (sampleCategory, "Stacked Histogram Plot", typeof (StackedHistogram));
+			AddSample (sampleCategory, "Candle Plot", typeof (CandlePlotSample));
+			AddSample (sampleCategory, "Trading Plot", typeof (TradingSample));
+			AddSample (sampleCategory, "Plot Particles", typeof (PlotParticles));
+			AddSample (sampleCategory, "Plot Logo", typeof (PlotLogo));
 
-			var tests = AddSample (null, "Tests", null);
-			AddSample (tests, "Linear Axis", typeof (LinearAxisTest));
-			AddSample (tests, "Log Axis", typeof (LogAxisTest));
-			AddSample (tests, "DateTime Axis", typeof (DateTimeAxisTest));
-			AddSample (tests, "TradingDateTime Axis", typeof (TradingDateTimeAxisTest));
-			AddSample (tests, "Rendering Performance", typeof (RenderingTest));
-			AddSample (tests, "Overlay Canvas Test", typeof (OverlayTest));
+			AddSample (interactionCategory, "KeyActions", typeof (StepPlotSample));
+
+			AddSample (testCategory, "Linear Axis", typeof (LinearAxisTest));
+			AddSample (testCategory, "Log Axis", typeof (LogAxisTest));
+			AddSample (testCategory, "DateTime Axis", typeof (DateTimeAxisTest));
+			AddSample (testCategory, "TradingDateTime Axis", typeof (TradingDateTimeAxisTest));
+			AddSample (testCategory, "Rendering Performance", typeof (RenderingTest));
+			AddSample (testCategory, "Overlay Canvas Test", typeof (OverlayTest));
 
 			samplesTree.DataSource = store;
 			
@@ -114,6 +120,12 @@ namespace Samples
 				TreePosition selectedRow = samplesTree.SelectedRow;
 				TreeNavigator navigator = store.GetNavigatorAt (selectedRow);
 				Sample s = navigator.GetValue (widgetCol);
+				TreePosition category = s.Category;
+				if (category == interactionCategory) {
+					if (currentCategory == sampleCategory) {
+						int n = 1;	// can now add/remove interactions from currentSample
+					}
+				}
 				System.Type currentType = s.Type;
 				if (currentType != null) {
 					if (s.Widget == null) {
@@ -122,6 +134,7 @@ namespace Samples
 					sampleBox.PackStart (s.Widget, true);
 				}
 				currentSample = s.Widget;
+				currentCategory = s.Category;
 //				string txt = System.Xaml.XamlServices.Save (s);
 				Dump (currentSample, 0);
 			}
@@ -137,29 +150,33 @@ namespace Samples
 				Dump (c, ind + 1);
 		}
 		
-		TreePosition AddSample (TreePosition pos, string name, Type sampleType)
+		TreePosition AddSample (TreePosition category, string name, Type sampleType)
 		{
-			// Look up how to do this!
-			//var node = store.AddNode (pos);
-			//var tn1 = node.SetValue (nameCol, name);
-			//var tn2 = tn1.SetValue (iconCol, icon);
-			//var tn3 = tn2.SetValue (widgetCol, new Sample (sampleType));
-			var sample = new Sample (sampleType);
-			//var s = tn3.CurrentPosition;
+			Sample sample = new Sample (sampleType, category);
+
+			TreeNavigator node = store.AddNode (category);
+			TreeNavigator nameNavigator = node.SetValue (nameCol, name);
+			TreeNavigator iconNavigator = nameNavigator.SetValue (iconCol, icon);
+			TreeNavigator sampleNavigator = iconNavigator.SetValue (widgetCol, sample);
+			TreePosition pos = sampleNavigator.CurrentPosition;
+
+			return pos;
+
 			//if (page != null)
 			//	page.Margin.SetAll (5);
-			return store.AddNode (pos).SetValue (nameCol, name).SetValue (iconCol, icon).SetValue (widgetCol, sample).CurrentPosition;
 		}
 	}
 	
 	class Sample
 	{
-		public Sample (Type type)
+		public Sample (Type type, TreePosition category)
 		{
 			Type = type;
+			Category = category;
 		}
 
 		public Type Type;
+		public TreePosition Category;
 		public Widget Widget;
 	}
 }

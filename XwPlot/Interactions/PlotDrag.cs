@@ -75,7 +75,7 @@ namespace XwPlot
 			if (area.Contains (args.Position)) {
 				dragging = true;
 				lastPoint = new Point (args.X, args.Y);
-				if (args.Button == PointerButton.Left) {				// Drag
+				if (args.Button == PointerButton.Left) {
 					if (Horizontal || Vertical) {
 						//pc.plotCursor = CursorType.Hand;
 					}
