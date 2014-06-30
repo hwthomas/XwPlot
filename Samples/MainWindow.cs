@@ -1,6 +1,7 @@
 using System;
 using Xwt;
 using Xwt.Drawing;
+using XwPlot;
 
 namespace Samples
 {
@@ -10,9 +11,10 @@ namespace Samples
 		TreeStore store;
 		Image icon;
 		VBox sampleBox;
-		Widget currentSample;
 		TreePosition currentCategory;
-		
+		Widget currentSample;
+		Interaction currentInteraction;
+
 		DataField<string> nameCol = new DataField<string> ();
 		DataField<Sample> widgetCol = new DataField<Sample> ();
 		DataField<Image> iconCol = new DataField<Image> ();
@@ -73,7 +75,7 @@ namespace Samples
 			AddSample (sampleCategory, "Plot Particles", typeof (PlotParticles));
 			AddSample (sampleCategory, "Plot Logo", typeof (PlotLogo));
 
-			AddSample (interactionCategory, "KeyActions", typeof (StepPlotSample));
+			AddInteraction (interactionCategory, "PlotDrag", new PlotDrag (true,false));
 
 			AddSample (testCategory, "Linear Axis", typeof (LinearAxisTest));
 			AddSample (testCategory, "Log Axis", typeof (LogAxisTest));
@@ -152,7 +154,7 @@ namespace Samples
 		
 		TreePosition AddSample (TreePosition category, string name, Type sampleType)
 		{
-			Sample sample = new Sample (sampleType, category);
+			Sample sample = new Sample (category, sampleType);
 
 			TreeNavigator node = store.AddNode (category);
 			TreeNavigator nameNavigator = node.SetValue (nameCol, name);
@@ -162,22 +164,43 @@ namespace Samples
 
 			return pos;
 
-			//if (page != null)
-			//	page.Margin.SetAll (5);
 		}
+
+		TreePosition AddInteraction (TreePosition category, string name, Interaction interaction)
+		{
+			Sample sample = new Sample (category, interaction);
+
+			TreeNavigator node = store.AddNode (category);
+			TreeNavigator nameNavigator = node.SetValue (nameCol, name);
+			TreeNavigator iconNavigator = nameNavigator.SetValue (iconCol, icon);
+			TreeNavigator sampleNavigator = iconNavigator.SetValue (widgetCol, sample);
+			TreePosition pos = sampleNavigator.CurrentPosition;
+
+			return pos;
+
+		}
+
 	}
 	
 	class Sample
 	{
-		public Sample (Type type, TreePosition category)
+		public Sample (TreePosition category, Type type)
 		{
-			Type = type;
 			Category = category;
+			Type = type;	// for Plot samples and tests
 		}
 
-		public Type Type;
+		public Sample (TreePosition category, Interaction interaction)
+		{
+			Category = category;
+			Interaction = interaction;	// for Plot interactions
+		}
+
 		public TreePosition Category;
-		public Widget Widget;
+		public Type Type;
+		public Widget Widget = null;
+		public Interaction Interaction = null;
+
 	}
 }
 

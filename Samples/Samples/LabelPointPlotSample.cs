@@ -124,9 +124,8 @@ namespace Samples
 						
 		}
 
-		protected override void Shutdown ()
+		public override void Shutdown ()
 		{
-			// need to call this from somewhere
 			qeExampleTimerEnabled = false;
 		}
 

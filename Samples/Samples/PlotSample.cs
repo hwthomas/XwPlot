@@ -63,7 +63,7 @@ namespace Samples
 		/// <summary>
 		/// Shutdown PlotSample cleanly if required
 		/// </summary>
-		protected virtual void Shutdown ()
+		public virtual void Shutdown ()
 		{
 		}
 
