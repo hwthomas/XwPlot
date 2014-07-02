@@ -12,15 +12,16 @@ namespace Samples
 		Image icon;
 		VBox sampleBox;
 		TreePosition currentCategory;
-		Widget currentSample;
+		//Sample currentSample;
+		Widget currentWidget;
 		Interaction currentInteraction;
 
 		DataField<string> nameCol = new DataField<string> ();
-		DataField<Sample> widgetCol = new DataField<Sample> ();
+		DataField<Sample> sampleCol = new DataField<Sample> ();
 		DataField<Image> iconCol = new DataField<Image> ();
 
 		TreePosition interactionCategory;
-		TreePosition sampleCategory;
+		TreePosition plotCategory;
 		TreePosition testCategory;
 		
 		public MainWindow ()
@@ -55,27 +56,30 @@ namespace Samples
 			
 			icon = Image.FromResource (typeof(App), "class.png");
 			
-			store = new TreeStore (nameCol, iconCol, widgetCol);
+			store = new TreeStore (nameCol, iconCol, sampleCol);
 			samplesTree = new TreeView ();
 			samplesTree.Columns.Add ("Name", iconCol, nameCol);
 			
-			sampleCategory = AddSample (null, "Sample Plots", null);
+			plotCategory = AddSample (null, "Sample Plots", null);
 			interactionCategory = AddSample (null, "Interactions", null);
 			testCategory = AddSample (null, "Tests", null);
 
-			AddSample (sampleCategory, "Plot Markers", typeof (PlotMarkerSample));
-			AddSample (sampleCategory, "Waveform Step Plot", typeof (StepPlotSample));
-			AddSample (sampleCategory, "Point Plot", typeof (PointPlotSample));
-			AddSample (sampleCategory, "LabelPoint Plot", typeof (LabelPointPlotSample));
-			AddSample (sampleCategory, "GradientPlot", typeof (GradientPlotSample));
-			AddSample (sampleCategory, "Histogram Plot", typeof (HistogramSample));
-			AddSample (sampleCategory, "Stacked Histogram Plot", typeof (StackedHistogram));
-			AddSample (sampleCategory, "Candle Plot", typeof (CandlePlotSample));
-			AddSample (sampleCategory, "Trading Plot", typeof (TradingSample));
-			AddSample (sampleCategory, "Plot Particles", typeof (PlotParticles));
-			AddSample (sampleCategory, "Plot Logo", typeof (PlotLogo));
+			AddSample (plotCategory, "Plot Markers", typeof (PlotMarkerSample));
+			AddSample (plotCategory, "Waveform Step Plot", typeof (StepPlotSample));
+			AddSample (plotCategory, "Point Plot", typeof (PointPlotSample));
+			AddSample (plotCategory, "LabelPoint Plot", typeof (LabelPointPlotSample));
+			AddSample (plotCategory, "GradientPlot", typeof (GradientPlotSample));
+			AddSample (plotCategory, "Histogram Plot", typeof (HistogramSample));
+			AddSample (plotCategory, "Stacked Histogram Plot", typeof (StackedHistogram));
+			AddSample (plotCategory, "Candle Plot", typeof (CandlePlotSample));
+			AddSample (plotCategory, "Trading Plot", typeof (TradingSample));
+			AddSample (plotCategory, "Plot Particles", typeof (PlotParticles));
+			AddSample (plotCategory, "Plot Logo", typeof (PlotLogo));
 
-			AddInteraction (interactionCategory, "PlotDrag", new PlotDrag (true,false));
+			AddInteraction (interactionCategory, "AxisDrag", new AxisDrag ());
+			AddInteraction (interactionCategory, "PlotDrag (horizontal)", new PlotDrag (true,false));
+			AddInteraction (interactionCategory, "PlotDrag (vertical)", new PlotDrag (false, true));
+			AddInteraction (interactionCategory, "PlotZoom", new PlotZoom ());
 
 			AddSample (testCategory, "Linear Axis", typeof (LinearAxisTest));
 			AddSample (testCategory, "Log Axis", typeof (LogAxisTest));
@@ -115,30 +119,49 @@ namespace Samples
 		void HandleSamplesTreeSelectionChanged (object sender, EventArgs e)
 		{
 			if (samplesTree.SelectedRow != null) {
-				if (currentSample != null) {
-					// cleanup if required - how?
-					sampleBox.Remove (currentSample);
+
+				// Remove currentInteraction if there is one
+				if (currentInteraction != null) {
+					// must already have a valid plot sample with the interaction added to it
+					PlotSample ps = (PlotSample)currentWidget;
+					PlotCanvas pc = ps.PlotCanvas;
+					// Remove current interaction from PlotCanvas
+					pc.RemoveInteraction (currentInteraction);
+					currentInteraction = null;
 				}
-				TreePosition selectedRow = samplesTree.SelectedRow;
-				TreeNavigator navigator = store.GetNavigatorAt (selectedRow);
-				Sample s = navigator.GetValue (widgetCol);
-				TreePosition category = s.Category;
-				if (category == interactionCategory) {
-					if (currentCategory == sampleCategory) {
-						int n = 1;	// can now add/remove interactions from currentSample
+
+				// get newSample from selected row
+				TreePosition viewRow = samplesTree.SelectedRow;
+				TreeNavigator storeRow = store.GetNavigatorAt (viewRow);
+				Sample newSample = storeRow.GetValue (sampleCol);
+
+				TreePosition newCategory = newSample.Category;
+				if (newCategory == interactionCategory) {
+					// only allow interaction if there is already a plotSample
+					if (currentCategory == plotCategory) {
+						PlotSample ps = (PlotSample)currentWidget;
+						PlotCanvas pc = ps.PlotCanvas;
+						// Add new interaction to existing PlotCanvas
+						currentInteraction = newSample.Interaction;
+						pc.AddInteraction (currentInteraction);
 					}
-				}
-				System.Type currentType = s.Type;
-				if (currentType != null) {
-					if (s.Widget == null) {
-						s.Widget = (Widget)Activator.CreateInstance (currentType);
+
+				} else {
+					// plotCategory or testCategory
+					System.Type newType = newSample.Type;
+					if (newType != null) {
+						if (newSample.Widget == null) {
+							newSample.Widget = (Widget)Activator.CreateInstance (newType);
+						}
+						if (currentWidget != null) {
+							sampleBox.Remove (currentWidget);
+						}
+						currentWidget = newSample.Widget;
+						sampleBox.PackStart (currentWidget, true);
+						Dump (currentWidget, 0);
 					}
-					sampleBox.PackStart (s.Widget, true);
+					currentCategory = newCategory;
 				}
-				currentSample = s.Widget;
-				currentCategory = s.Category;
-//				string txt = System.Xaml.XamlServices.Save (s);
-				Dump (currentSample, 0);
 			}
 		}
 
@@ -154,49 +177,46 @@ namespace Samples
 		
 		TreePosition AddSample (TreePosition category, string name, Type sampleType)
 		{
-			Sample sample = new Sample (category, sampleType);
+			Sample sample = new Sample (category, name, sampleType);
 
 			TreeNavigator node = store.AddNode (category);
 			TreeNavigator nameNavigator = node.SetValue (nameCol, name);
 			TreeNavigator iconNavigator = nameNavigator.SetValue (iconCol, icon);
-			TreeNavigator sampleNavigator = iconNavigator.SetValue (widgetCol, sample);
-			TreePosition pos = sampleNavigator.CurrentPosition;
-
-			return pos;
-
+			TreeNavigator sampleNavigator = iconNavigator.SetValue (sampleCol, sample);
+			return sampleNavigator.CurrentPosition;
 		}
 
 		TreePosition AddInteraction (TreePosition category, string name, Interaction interaction)
 		{
-			Sample sample = new Sample (category, interaction);
+			Sample sample = new Sample (category, name, interaction);
 
 			TreeNavigator node = store.AddNode (category);
 			TreeNavigator nameNavigator = node.SetValue (nameCol, name);
 			TreeNavigator iconNavigator = nameNavigator.SetValue (iconCol, icon);
-			TreeNavigator sampleNavigator = iconNavigator.SetValue (widgetCol, sample);
-			TreePosition pos = sampleNavigator.CurrentPosition;
-
-			return pos;
-
+			TreeNavigator sampleNavigator = iconNavigator.SetValue (sampleCol, sample);
+			return sampleNavigator.CurrentPosition;
 		}
 
 	}
 	
 	class Sample
 	{
-		public Sample (TreePosition category, Type type)
+		public Sample (TreePosition category, string name, Type type)
 		{
 			Category = category;
+			Name = name;
 			Type = type;	// for Plot samples and tests
 		}
 
-		public Sample (TreePosition category, Interaction interaction)
+		public Sample (TreePosition category, string name, Interaction interaction)
 		{
 			Category = category;
+			Name = name;
 			Interaction = interaction;	// for Plot interactions
 		}
 
 		public TreePosition Category;
+		public string Name;
 		public Type Type;
 		public Widget Widget = null;
 		public Interaction Interaction = null;

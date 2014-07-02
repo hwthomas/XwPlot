@@ -60,6 +60,10 @@ namespace Samples
 
 		}
 
+		public PlotCanvas PlotCanvas {
+			get { return plotCanvas; }
+		}
+
 		/// <summary>
 		/// Shutdown PlotSample cleanly if required
 		/// </summary>

@@ -148,9 +148,6 @@ namespace Samples
 
 			plotCanvas.XAxis1 = new TradingDateTimeAxis (plotCanvas.XAxis1);
 
-			plotCanvas.AddInteraction (new PlotDrag (true,false));
-			plotCanvas.AddInteraction (new AxisDrag ());
-
 			plotCanvas.PlotBackColor = Colors.White;
 			plotCanvas.XAxis1.LineColor = Colors.Black;
 			plotCanvas.YAxis1.LineColor = Colors.Black;
