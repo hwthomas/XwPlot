@@ -12,7 +12,6 @@ namespace Samples
 		Image icon;
 		VBox sampleBox;
 		TreePosition currentCategory;
-		Sample currentSample;
 		Widget currentWidget;
 		Interaction currentInteraction;
 
@@ -82,6 +81,7 @@ namespace Samples
 			AddInteraction (interactionCategory, "PlotDrag (vertical)", new PlotDrag (false, true));
 			AddInteraction (interactionCategory, "PlotScale", new PlotScale (true, true));
 			AddInteraction (interactionCategory, "PlotZoom", new PlotZoom ());
+			AddInteraction (interactionCategory, "PlotSelection", new PlotSelection ());
 
 			AddSample (testCategory, "Linear Axis", typeof (LinearAxisTest));
 			AddSample (testCategory, "Log Axis", typeof (LogAxisTest));
@@ -150,20 +150,15 @@ namespace Samples
 
 				} else {
 					// plotCategory or testCategory
-					System.Type newType = newSample.Type;
-					if (newType != null) {
-						if (newSample.Widget == null) {
-							newSample.Widget = (Widget)Activator.CreateInstance (newType);
-						}
-						if (currentWidget != null) {
-							sampleBox.Remove (currentWidget);
-						}
-						currentSample = newSample;
-						currentWidget = currentSample.Widget;
-						sampleBox.PackStart (currentWidget, true);
-						Dump (currentWidget, 0);
-					}
 					currentCategory = newCategory;
+					if (currentWidget != null) {
+						sampleBox.Remove (currentWidget);
+					}
+					if (newSample.Type != null) {
+						currentWidget = (Widget)Activator.CreateInstance (newSample.Type);
+					}
+					sampleBox.PackStart (currentWidget, true);
+					Dump (currentWidget, 0);
 				}
 			}
 		}
@@ -208,21 +203,20 @@ namespace Samples
 		{
 			Category = category;
 			Name = name;
-			Type = type;	// for Plot samples and tests
+			Type = type;
 		}
 
 		public Sample (TreePosition category, string name, Interaction interaction)
 		{
 			Category = category;
 			Name = name;
-			Interaction = interaction;	// for Plot interactions
+			Interaction = interaction;
 		}
 
 		public TreePosition Category;
 		public string Name;
-		public Type Type;
-		public Widget Widget = null;
-		public Interaction Interaction = null;
+		public Type Type;						// for Plot samples and tests only
+		public Interaction Interaction = null;	// for Plot interactions only
 
 	}
 }
