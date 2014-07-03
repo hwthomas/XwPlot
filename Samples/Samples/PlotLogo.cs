@@ -49,7 +49,6 @@ namespace Samples
 			infoText += "ABC (logo for australian broadcasting commission) Example. Demonstrates - \n";
 			infoText += " * How to set the background of a plotCanvas as an image. \n";
 			infoText += " * EqualAspectRatio axis constraint \n";
-			infoText += " * Plot Zoom with Mouse Wheel, and mouse position Focus point";
 		   
 			plotCanvas.Clear();
 			const int size = 200;
@@ -75,8 +74,6 @@ namespace Samples
 			Image im = Image.FromStream (file);
 			plotCanvas.PlotBackImage = im.ToBitmap ();
 
-			//plotCanvas.AddInteraction (new KeyActions());
-			plotCanvas.AddInteraction (new PlotZoom ());
 			plotCanvas.AddAxesConstraint (new AxesConstraint.AspectRatio (1.0, XAxisPosition.Top, YAxisPosition.Left) );
 			
 			plotCanvas.XAxis1.WorldMin = plotCanvas.YAxis1.WorldMin;

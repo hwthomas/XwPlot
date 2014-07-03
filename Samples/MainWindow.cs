@@ -12,7 +12,7 @@ namespace Samples
 		Image icon;
 		VBox sampleBox;
 		TreePosition currentCategory;
-		//Sample currentSample;
+		Sample currentSample;
 		Widget currentWidget;
 		Interaction currentInteraction;
 
@@ -77,8 +77,10 @@ namespace Samples
 			AddSample (plotCategory, "Plot Logo", typeof (PlotLogo));
 
 			AddInteraction (interactionCategory, "AxisDrag", new AxisDrag ());
+			AddInteraction (interactionCategory, "AxisScale", new AxisScale ());
 			AddInteraction (interactionCategory, "PlotDrag (horizontal)", new PlotDrag (true,false));
 			AddInteraction (interactionCategory, "PlotDrag (vertical)", new PlotDrag (false, true));
+			AddInteraction (interactionCategory, "PlotScale", new PlotScale (true, true));
 			AddInteraction (interactionCategory, "PlotZoom", new PlotZoom ());
 
 			AddSample (testCategory, "Linear Axis", typeof (LinearAxisTest));
@@ -156,7 +158,8 @@ namespace Samples
 						if (currentWidget != null) {
 							sampleBox.Remove (currentWidget);
 						}
-						currentWidget = newSample.Widget;
+						currentSample = newSample;
+						currentWidget = currentSample.Widget;
 						sampleBox.PackStart (currentWidget, true);
 						Dump (currentWidget, 0);
 					}
