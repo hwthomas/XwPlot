@@ -41,13 +41,13 @@ using Xwt.Drawing;
 namespace XwPlot
 {
 	/// <summary>
-	/// Extends PlotSurface by implementing a drawing surface (Xwt.Canvas)
+	/// Extends PlotSurface2D by implementing a drawing surface (Xwt.Canvas)
 	/// to obtain a Drawing Context with which the PlotSurface is drawn.
 	/// </summary>
 	/// <remarks>
 	/// The Canvas is exposed so that it may be added to any Xwt Window
 	/// </remarks>
-	public class PlotCanvas : PlotSurface
+	public class PlotCanvas : PlotSurface2D
 	{
 		private DrawingSurface surface;	// The Xwt Drawing Surface
 		public ArrayList interactions = new ArrayList();

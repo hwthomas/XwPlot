@@ -156,9 +156,9 @@ namespace Samples
 					}
 					if (newSample.Type != null) {
 						currentWidget = (Widget)Activator.CreateInstance (newSample.Type);
+						sampleBox.PackStart (currentWidget, true);
+						Dump (currentWidget, 0);
 					}
-					sampleBox.PackStart (currentWidget, true);
-					Dump (currentWidget, 0);
 				}
 			}
 		}

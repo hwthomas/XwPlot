@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{761A7039-8E4E-43B9-B14D-7CA96B3B569C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -68,7 +68,6 @@
     <Compile Include="XwPlot\LabelAxis.cs" />
     <Compile Include="XwPlot\GradientPlot.cs" />
     <Compile Include="XwPlot\ColorGradient.cs" />
-    <Compile Include="XwPlot\PlotSurface.cs" />
     <Compile Include="XwPlot\IPlotSurface.cs" />
     <Compile Include="Interactions\KeyActions.cs" />
     <Compile Include="Interactions\PlotDrag.cs" />
@@ -77,6 +76,7 @@
     <Compile Include="Interactions\AxisScale.cs" />
     <Compile Include="Interactions\AxisDrag.cs" />
     <Compile Include="Interactions\PlotSelection.cs" />
+    <Compile Include="XwPlot\PlotSurface2D.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
