@@ -77,6 +77,7 @@
     <Compile Include="Interactions\AxisDrag.cs" />
     <Compile Include="Interactions\PlotSelection.cs" />
     <Compile Include="XwPlot\PlotSurface2D.cs" />
+    <Compile Include="XwPlot\OverlayCanvas.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -947,6 +947,8 @@ namespace XwPlot
 		}
 
 
+
+
 		/// <summary>
 		/// Add an axis constraint to the plot surface. Axes constraints give you 
 		/// control over where NPlot positions each axes, and the world - pixel
@@ -1015,7 +1017,6 @@ namespace XwPlot
 				return XAxis2;
 		}
 
-
 		/// <summary>
 		/// Returns the y-axis associated with a given plot (YAxis1 is at Left).
 		/// </summary>
@@ -1030,6 +1031,86 @@ namespace XwPlot
 			else
 				return YAxis2;
 		}
+
+		#region Axis Range utilities
+		/// <summary>
+		/// Translate all PlotSurface X-Axes by shiftProportion
+		/// </summary>
+		public void TranslateXAxes (double shiftProportion )
+		{
+			if (XAxis1 != null) {
+				XAxis1.TranslateRange (shiftProportion);
+			}
+			if (XAxis2 != null) {
+				XAxis2.TranslateRange (shiftProportion);
+			}
+		}
+
+		/// <summary>
+		/// Translate all PlotSurface Y-Axes by shiftProportion
+		/// </summary>
+		public void TranslateYAxes (double shiftProportion )
+		{
+			if (YAxis1 != null) {
+				YAxis1.TranslateRange (shiftProportion);
+			}
+			if (YAxis2 != null) {
+				YAxis2.TranslateRange (shiftProportion);
+			}
+		}
+
+		/// <summary>
+		/// Zoom all PlotSurface X-Axes about focusPoint by zoomProportion 
+		/// </summary>
+		public void ZoomXAxes (double zoomProportion, double focusRatio)
+		{
+			if (XAxis1 != null) {
+				XAxis1.IncreaseRange (zoomProportion,focusRatio);
+			}
+			if (XAxis2 != null) {
+				XAxis2.IncreaseRange (zoomProportion,focusRatio);
+			}
+		}
+
+		/// <summary>
+		/// Zoom all PlotSurface Y-Axes about focusPoint by zoomProportion 
+		/// </summary>
+		public void ZoomYAxes (double zoomProportion, double focusRatio)
+		{
+			if (YAxis1 != null) {
+				YAxis1.IncreaseRange (zoomProportion,focusRatio);
+			}
+			if (YAxis2 != null) {
+				YAxis2.IncreaseRange (zoomProportion,focusRatio);
+			}
+		}
+
+		/// <summary>
+		/// Define all PlotSurface X-Axes to minProportion, maxProportion
+		/// </summary>
+		public void DefineXAxes (double minProportion, double maxProportion)
+		{
+			if (XAxis1 != null) {
+				XAxis1.DefineRange (minProportion, maxProportion, true);
+			}
+			if (XAxis2 != null) {
+				XAxis2.DefineRange (minProportion, maxProportion, true);
+			}
+		}
+
+		/// <summary>
+		/// Define all PlotSurface Y-Axes to minProportion, maxProportion
+		/// </summary>
+		public void DefineYAxes (double minProportion, double maxProportion)
+		{
+			if (YAxis1 != null) {
+				YAxis1.DefineRange (minProportion, maxProportion, true);
+			}
+			if (YAxis2 != null) {
+				YAxis2.DefineRange(minProportion, maxProportion, true);
+			}
+		}
+		#endregion	// Axis Range utilities
 
 	} 
 

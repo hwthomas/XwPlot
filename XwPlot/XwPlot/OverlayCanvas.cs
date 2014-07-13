@@ -1,7 +1,7 @@
-//
+﻿//
 // XwPlot - A cross-platform charting library using the Xwt toolkit
 // 
-// PlotCanvas.cs
+// OverlayCanvas.cs
 // 
 // Copyright (C) 2013 Hywel Thomas <hywel.w.thomas@gmail.com>
 //
@@ -41,196 +41,12 @@ using Xwt.Drawing;
 namespace XwPlot
 {
 	/// <summary>
-	/// Extends PlotSurface2D by implementing a drawing surface (Xwt.Canvas)
-	/// to obtain a Drawing Context with which the PlotSurface is drawn.
-	/// </summary>
-	/// <remarks>
-	/// The Canvas is exposed so that it may be added to any Xwt Window
-	/// </remarks>
-	public class PlotCanvas : PlotSurface2D
-	{
-		private DrawingSurface surface;	// The Xwt Drawing Surface
-		public ArrayList interactions = new ArrayList();
-
-		public PlotCanvas () : base ()
-		{
-			// Create Drawing Surface with a reference to this PlotCanvas
-			surface = new DrawingSurface (this);
-			// Create empty InteractionOccurred and PreRefresh Event handlers
-			InteractionOccurred += new InteractionHandler (OnInteractionOccurred);
-			PreRefresh += new PreRefreshHandler (OnPreRefresh);
-		}
-
-		/// <summary>
-		/// Expose the local DrawingSurface (Canvas)
-		/// </summary>
-		public Canvas Canvas
-		{
-			get { return (Canvas)surface; }
-		}
-
-		/// <summary>
-		/// Clear the plot and reset to default values.
-		/// </summary>
-		public new void Clear ()
-		{
-			ClearAxisCache ();
-			interactions.Clear ();
-			base.Clear ();
-		}
-
-		/// <summary>
-		/// Force a complete redraw and display of the plot area on the Canvas.
-		/// </summary>
-		public void Refresh ()
-		{
-			PreRefresh (this);			// Raise the PreRefresh event
-			surface.UpdateCache ();		// First update the cache
-			surface.QueueDraw ();		// then request a full redraw
-		}
-
-		#region Add/Remove Interaction
-		/// <summary>
-		/// Adds a specific interaction to the PlotSurface
-		/// </summary>
-		/// <param name="interaction">the interaction to add</param>
-		public void AddInteraction (Interaction interaction)
-		{
-			interactions.Add (interaction);
-		}
-
-		/// <summary>
-		/// Remove a previously added interaction
-		/// </summary>
-		/// <param name="interaction">interaction to remove</param>
-		public void RemoveInteraction (Interaction interaction)			 
-		{
-			interactions.Remove (interaction);
-		}
-		#endregion // Add/Remove Interaction
-
-		#region Axis Cache
-		private Axis xAxis1Cache;		// copies of current axes,
-		private Axis yAxis1Cache;		// saved for restoring the
-		private Axis xAxis2Cache;		// original dimensions after
-		private Axis yAxis2Cache;		// zooming, panning, etc
-
-		private bool cached = false;	// at least 1 axis has been cached
-
-		/// <summary>
-		/// Cache the current axes
-		/// </summary>
-		public void CacheAxes ()
-		{
-			if (!cached) {
-				if (XAxis1 != null) {
-					xAxis1Cache = (Axis)XAxis1.Clone();
-					cached = true;
-				}
-				if (XAxis2 != null) {
-					xAxis2Cache = (Axis)XAxis2.Clone();
-					cached = true;
-				}
-				if (YAxis1 != null) {
-					yAxis1Cache = (Axis)YAxis1.Clone();
-					cached = true;
-				}
-				if (YAxis2 != null) {
-					yAxis2Cache = (Axis)YAxis2.Clone();
-					cached = true;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Sets axes to those saved in the cache
-		/// </summary>
-		public void SetOriginalDimensions ()
-		{
-			if (cached) {
-				XAxis1 = xAxis1Cache;
-				XAxis2 = xAxis2Cache;
-				YAxis1 = yAxis1Cache;
-				YAxis2 = yAxis2Cache;
-				ClearAxisCache ();
-			}
-		}
-
-		protected void ClearAxisCache ()
-		{
-			xAxis1Cache = null;
-			xAxis2Cache = null;
-			yAxis1Cache = null;
-			yAxis2Cache = null;
-			cached = false;
-		}
-		#endregion	// Axis Cache
-
-		#region PlotCanvas Events
-		/// An Event is raised to notify clients that an Interaction has modified
-		/// the PlotSurface, and a separate Event is also raised prior to a call
-		/// to refresh the PlotSurface.	 Currently, the conditions for raising
-		/// both Events are the same (ie the PlotSurface has been modified)
-
-		/// <summary>
-		/// InteractionOccurred event signature
-		/// </summary>
-		public delegate void InteractionHandler (object sender);
-
-		/// <summary>
-		/// Event raised when an interaction modifies the PlotSurface
-		/// </summary>
-		public event InteractionHandler InteractionOccurred;
-
-		/// <summary>
-		/// Default handler called when Interaction modifies PlotSurface
-		/// Override this, or add handler to InteractionOccurred event.
-		/// </summary>
-		protected void OnInteractionOccurred (object sender)
-		{
-		}
-
-		/// <summary>
-		/// PreRefresh event handler signature
-		/// </summary>
-		public delegate void PreRefreshHandler (object sender);
-
-		/// <summary>
-		/// Event raised by Refresh () call, but prior to actual Plot Refresh
-		/// </summary>
-		public event PreRefreshHandler PreRefresh;
-
-		/// <summary>
-		/// Default handler for PreRefresh
-		/// Override this, or add handler to PreRefresh event.
-		/// </summary>
-		protected void OnPreRefresh (object sender)
-		{
-		}
-
-		/// <summary>
-		/// Raise InteractionOccurred and PreRefresh events
-		/// </summary>
-		/// <remarks>
-		/// For (internal) use only by Interactions mechanism
-		/// </remarks>
-		internal void NotifyUpdate (object sender)
-		{
-			InteractionOccurred (sender);
-			PreRefresh (sender);
-		}
-
-		#endregion	// PlotCanvas Events
-	} 
-
-	#region DrawingSurface class
-	/// <summary>
 	/// Cached (overlay) Canvas with (saved) reference to PlotSurface ps.
 	/// Extends Canvas by implementing an off-screen cached drawing surface
 	/// from which standard display updates are made. Overlays can also be
 	/// drawn over this standard background, to handle any dynamic content.
 	/// </summary>
-	internal class DrawingSurface : Canvas
+	public class OverlayCanvas : Canvas
 	{
 		PlotCanvas plotCanvas;	// To allow access to parent PlotCanvas
 		Size cacheSize;
@@ -241,7 +57,7 @@ namespace XwPlot
 		/// <summary>
 		/// Creates a new DrawingSurface and saves a reference to the PlotSurface
 		/// </summary>
-		internal DrawingSurface (PlotCanvas pc) : base ()
+		public OverlayCanvas (PlotCanvas pc) : base ()
 		{
 			CanGetFocus = true;
 			plotCanvas = pc;
@@ -396,9 +212,6 @@ namespace XwPlot
 		#endregion // overrides
 
 	}
-	#endregion	// DrawingSurface class
 
-
-} 
-
+}
 
