@@ -83,44 +83,36 @@ namespace Samples
 
 		void DrawFocus (Context ctx, Point p)
 		{
-			// Draw a 'zoom'-style Focus at specified point
-			double r = 12, w = focusRadius - 1;
+			// Draw a 'zoom'-style Focus at specified point.
+
+			double r1 = 12, r2 = 22, w = 31;	// focusRadius = 32
 			Point o = Point.Zero;	// Drawing origin
 			// Align single-thickness lines on 0.5 pixel coords
 			o.X += 0.5;
 			o.Y += 0.5;
+
 			ctx.Save ();
-			ctx.Translate (p);	// Final translation
-			// Hairlines in X-direction
-			ctx.MoveTo (o.X + r, o.Y);
-			ctx.LineTo (o.X + w, o.Y);
-			ctx.MoveTo (o.X - r, o.Y);
-			ctx.LineTo (o.X - w, o.Y);
-			// Hairlines in Y-direction
-			ctx.MoveTo (o.X, o.Y + r);
-			ctx.LineTo (o.X, o.Y + w);
-			ctx.MoveTo (o.X, o.Y - r);
-			ctx.LineTo (o.X, o.Y - w);
-			// Inner single-thickness circle
-			ctx.MoveTo (o.X + r, o.Y);
-			ctx.Arc (o.X, o.Y, r, 0, 360);
 			ctx.SetColor (Colors.Black);
-			ctx.SetLineWidth (1);
-			ctx.Stroke ();
-			// Double thickness outer arcs. Draw at (0,0) and rotate
-			o = Point.Zero;
-			r = 22;
-			ctx.Rotate (5);
-			ctx.MoveTo (r, 0);
-			ctx.Arc (o.X, o.Y, r, 0, 80);
-			ctx.MoveTo (o.X, r);
-			ctx.Arc (o.X, o.Y, r, 90, 170);
-			ctx.MoveTo (-r, o.Y);
-			ctx.Arc (o.X, o.Y, r, 180, 260);
-			ctx.MoveTo (o.X, -r);
-			ctx.Arc (o.X, o.Y, r, 270, 350);
-			ctx.SetLineWidth (2);
-			ctx.Stroke ();
+			ctx.Translate (p);	// Final translation to point p
+			// draw as 4 quadrants, each rotated by +90 degrees
+			for (double theta = 0; theta < 360; theta += 90) {
+				ctx.Rotate (theta);
+				// Hairline in X-direction, ending at x=r1
+				ctx.MoveTo (o.X + w, o.Y);
+				ctx.LineTo (o.X + r1, o.Y);
+				// Inner single-thickness arc
+				ctx.Arc (o.X, o.Y, r1, 0, 90);
+				ctx.SetLineWidth (1);
+				ctx.Stroke ();
+				// Double thickness outer arc, 5 - 85 degrees. Draw at (0,0) and rotate
+				ctx.Save ();
+				ctx.Rotate (5);
+				ctx.MoveTo (r2, 0);
+				ctx.Arc (0, 0, r2, 0, 80);
+				ctx.SetLineWidth (2);
+				ctx.Stroke ();
+				ctx.Restore ();
+			}
 			ctx.Restore ();
 		}
 	}

@@ -1001,7 +1001,6 @@ namespace XwPlot
 			}
 		}
 
-
 		/// <summary>
 		/// Returns the x-axis associated with a given plot (XAxis1 is at Bottom).
 		/// </summary>
