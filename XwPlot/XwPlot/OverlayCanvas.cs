@@ -41,29 +41,27 @@ using Xwt.Drawing;
 namespace XwPlot
 {
 	/// <summary>
-	/// Cached (overlay) Canvas with (saved) reference to PlotSurface ps.
 	/// Extends Canvas by implementing an off-screen cached drawing surface
 	/// from which standard display updates are made. Overlays can also be
 	/// drawn over this standard background, to handle any dynamic content.
 	/// </summary>
 	public class OverlayCanvas : Canvas
 	{
-		PlotCanvas plotCanvas;	// To allow access to parent PlotCanvas
-		Size cacheSize;
-
 		ImageBuilder ib;
 		BitmapImage cache;
+		Size cacheSize;
 
 		/// <summary>
-		/// Creates a new DrawingSurface and saves a reference to the PlotSurface
+		/// Default constructor
 		/// </summary>
-		public OverlayCanvas (PlotCanvas pc) : base ()
+		public OverlayCanvas () : base ()
 		{
 			CanGetFocus = true;
-			plotCanvas = pc;
-			//ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+			if (Bounds.Size == Size.Zero)
+				return;
+			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
 			cacheSize = Bounds.Size;
-			//cache = ib.ToBitmap ();
+			cache = ib.ToBitmap ();
 		}
 
 		/// <summary>
@@ -71,23 +69,13 @@ namespace XwPlot
 		/// </summary>
 		protected virtual void OnDrawCache (Context ctx, Rectangle dirtyArea)
 		{
-			// First clear cache to Canvas Background colour
-			ctx.SetColor (BackgroundColor);
-			ctx.Rectangle (Bounds);
-			ctx.Fill ();
-
-			// PlotSurface draws itself into the rectangle specified when Draw is called.
-			// Consequently, always specify the entire area of the plot cache, since a
-			// smaller part of the plot cannot (at present) be drawn.
-			plotCanvas.Draw (ctx, Bounds);
 		}
 
+		/// <summary>
+		/// Called when the Overlay content needs to be drawn
+		/// </summary>
 		protected virtual void OnDrawOverlay (Context ctx, Rectangle dirtyArea)
 		{
-			// All Overlay content is added by PlotSurface Interactions
-			foreach (Interaction interaction in plotCanvas.interactions) {
-				interaction.OnDraw (ctx, dirtyArea);
-			}
 		}
 
 		/// <summary>
@@ -97,30 +85,27 @@ namespace XwPlot
 		{
 			if (Bounds.Size == Size.Zero)
 				return;
-			/*			if (cache != null)
+			if (cache != null)
 				cache.Dispose ();
 			if (ib != null)
 				ib.Dispose ();
-*/			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+
+			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+			// Clear cache to Canvas Background colour
+			ib.Context.SetColor (BackgroundColor);
+			ib.Context.Rectangle (Bounds);
+			ib.Context.Fill ();
+			// Draw into cache
 			OnDrawCache (ib.Context, Bounds);
 			cacheSize = Bounds.Size;
 			cache = ib.ToBitmap ();
-		}
-
-		private void CheckForRedraw (bool modified)
-		{
-			if (modified) {
-				plotCanvas.NotifyUpdate (this);
-				//UpdateCache ();
-				QueueDraw ();
-			}
 		}
 
 		#region Canvas (base) overrides
 		protected override void OnBoundsChanged ()
 		{
 			base.OnBoundsChanged ();
-			//UpdateCache ();			// cache must be redrawn
+			UpdateCache ();			// cache must be redrawn
 			QueueDraw ();			// and display updated
 		}
 
@@ -128,87 +113,23 @@ namespace XwPlot
 		{
 			// OnDraw updates the display from the off-screen cache,
 			// then adds Overlay content by calling OnDrawOverlay.
-			//ctx.DrawImage (cache, dirtyRect, dirtyRect);
-			//OnDrawOverlay (ctx, dirtyRect);
-			OnDrawCache (ctx, Bounds);	// Test only
+			ctx.DrawImage (cache, dirtyRect, dirtyRect);
+			OnDrawOverlay (ctx, dirtyRect);
+
+			//OnDrawCache (ctx, Bounds);	// Test only
 		}
 
 		protected override void OnMouseEntered (EventArgs args)
 		{
 			CanGetFocus = true;
 			SetFocus ();		// ensure keypresses are received
-
-			bool modified = false;
-			foreach (Interaction interaction in plotCanvas.interactions) {
-				modified |= interaction.OnMouseEntered (args, plotCanvas);
-			}
-			CheckForRedraw (modified);
 		}
 
 		protected override void OnMouseExited (EventArgs args)
 		{
 			CanGetFocus = false;
-			bool modified = false;
-			foreach (Interaction interaction in plotCanvas.interactions) {
-				modified |= interaction.OnMouseExited (args, plotCanvas);
-			}
-			CheckForRedraw (modified);
 		}
 
-		protected override void OnButtonPressed (ButtonEventArgs args)
-		{
-			bool modified = false;
-			foreach (Interaction interaction in plotCanvas.interactions) {
-				modified |= interaction.OnButtonPressed (args, plotCanvas);
-			}
-			CheckForRedraw (modified);
-		}
-
-		protected override void OnButtonReleased (ButtonEventArgs args)
-		{
-			bool modified = false;
-			foreach (Interaction interaction in plotCanvas.interactions) {
-				modified |= interaction.OnButtonReleased (args, plotCanvas);
-			}
-			CheckForRedraw (modified);
-		}
-
-		protected override void OnMouseMoved (MouseMovedEventArgs args)
-		{
-			SetFocus ();
-			bool modified = false;
-			foreach (Interaction interaction in plotCanvas.interactions) {
-				modified |= interaction.OnMouseMoved (args, plotCanvas);
-			}
-			CheckForRedraw (modified);
-		}
-
-		protected override void OnMouseScrolled (MouseScrolledEventArgs args)
-		{
-			bool modified = false;
-			foreach (Interaction interaction in plotCanvas.interactions) {
-				modified |= interaction.OnMouseScrolled (args, plotCanvas);
-			}
-			CheckForRedraw (modified);
-		}
-
-		protected override void OnKeyPressed (KeyEventArgs args)
-		{
-			bool modified = false;
-			foreach (Interaction interaction in plotCanvas.interactions) {
-				modified |= interaction.OnKeyPressed (args, plotCanvas);
-			}
-			CheckForRedraw (modified);
-		}
-
-		protected override void OnKeyReleased (KeyEventArgs args)
-		{
-			bool modified = false;
-			foreach (Interaction interaction in plotCanvas.interactions) {
-				modified |= interaction.OnKeyReleased (args, plotCanvas);
-			}
-			CheckForRedraw (modified);
-		}
 		#endregion // overrides
 
 	}
