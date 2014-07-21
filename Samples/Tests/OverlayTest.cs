@@ -30,7 +30,7 @@ namespace Samples
 {
 	public class OverlayTest: OverlayCanvas
 	{
-		const double focusRadius = 32; 
+		const double focusRadius = 32; 		// Overall size is 64
 		Size startSize = new Size (400, 400);
 		Point lastCursor = Point.Zero;
 
@@ -43,7 +43,7 @@ namespace Samples
 		protected override void OnMouseMoved (MouseMovedEventArgs args)
 		{
 			// Clear previous overlay
-			Rectangle focus = new Rectangle (lastCursor.X - 32, lastCursor.Y - 32, 65, 65);
+			Rectangle focus = new Rectangle (lastCursor.X - 32, lastCursor.Y - 32, 64, 64);
 			QueueDraw (focus);
 			lastCursor.X = args.X;
 			lastCursor.Y = args.Y;
@@ -84,8 +84,8 @@ namespace Samples
 		void DrawFocus (Context ctx, Point p)
 		{
 			// Draw a 'zoom'-style Focus at specified point.
-
-			double r1 = 12, r2 = 22, w = 31;	// focusRadius = 32
+			// Following values draw at (0,0) with Size (64,64)
+			double r1 = 12, r2 = 22, w = 31;
 			Point o = Point.Zero;	// Drawing origin
 			// Align single-thickness lines on 0.5 pixel coords
 			o.X += 0.5;
@@ -93,22 +93,22 @@ namespace Samples
 
 			ctx.Save ();
 			ctx.SetColor (Colors.Black);
+			ctx.SetLineWidth (1);
 			ctx.Translate (p);	// Final translation to point p
 			// draw as 4 quadrants, each rotated by +90 degrees
-			for (double theta = 0; theta < 360; theta += 90) {
+			for (double theta = 0; theta < 300; theta += 90) {
 				ctx.Rotate (theta);
 				// Hairline in X-direction, ending at x=r1
 				ctx.MoveTo (o.X + w, o.Y);
 				ctx.LineTo (o.X + r1, o.Y);
 				// Inner single-thickness arc
 				ctx.Arc (o.X, o.Y, r1, 0, 90);
-				ctx.SetLineWidth (1);
 				ctx.Stroke ();
-				// Double thickness outer arc, 5 - 85 degrees. Draw at (0,0) and rotate
+				// Double thickness outer arc, 10 - 80 degrees. Draw at (0,0) and rotate
 				ctx.Save ();
-				ctx.Rotate (5);
+				ctx.Rotate (10);
 				ctx.MoveTo (r2, 0);
-				ctx.Arc (0, 0, r2, 0, 80);
+				ctx.Arc (0, 0, r2, 0, 70);
 				ctx.SetLineWidth (2);
 				ctx.Stroke ();
 				ctx.Restore ();

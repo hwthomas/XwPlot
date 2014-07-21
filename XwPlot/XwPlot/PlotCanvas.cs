@@ -49,13 +49,13 @@ namespace XwPlot
 	/// </remarks>
 	public class PlotCanvas : PlotSurface2D
 	{
-		private DrawingSurface surface;	// The Xwt Drawing Surface
+		private DrawingSurface canvas;	// The Xwt Canvas
 		public ArrayList interactions = new ArrayList();
 
 		public PlotCanvas () : base ()
 		{
 			// Create Drawing Surface with a reference to this PlotCanvas
-			surface = new DrawingSurface (this);
+			canvas = new DrawingSurface (this);
 			// Create empty InteractionOccurred and PreRefresh Event handlers
 			InteractionOccurred += new InteractionHandler (OnInteractionOccurred);
 			PreRefresh += new PreRefreshHandler (OnPreRefresh);
@@ -66,7 +66,7 @@ namespace XwPlot
 		/// </summary>
 		public Canvas Canvas
 		{
-			get { return (Canvas)surface; }
+			get { return (Canvas)canvas; }
 		}
 
 		/// <summary>
@@ -82,11 +82,10 @@ namespace XwPlot
 		/// <summary>
 		/// Force a complete redraw and display of the plot area on the Canvas.
 		/// </summary>
-		public void Refresh ()
+		public void Redraw ()
 		{
-			PreRefresh (this);			// Raise the PreRefresh event
-			surface.UpdateCache ();		// First update the cache
-			surface.QueueDraw ();		// then request a full redraw
+			PreRefresh (this);		// Raise the PreRefresh event
+			canvas.Redraw ();		// Redraw the canvas
 		}
 
 		#region Add/Remove Interaction
@@ -230,43 +229,29 @@ namespace XwPlot
 	/// from which standard display updates are made. Overlays can also be
 	/// drawn over this standard background, to handle any dynamic content.
 	/// </summary>
-	internal class DrawingSurface : Canvas
+	internal class DrawingSurface : OverlayCanvas
 	{
 		PlotCanvas plotCanvas;	// To allow access to parent PlotCanvas
-		Size cacheSize;
-
-		ImageBuilder ib;
-		BitmapImage cache;
 
 		/// <summary>
 		/// Creates a new DrawingSurface and saves a reference to the PlotSurface
 		/// </summary>
 		internal DrawingSurface (PlotCanvas pc) : base ()
 		{
-			CanGetFocus = true;
 			plotCanvas = pc;
-			//ib = new ImageBuilder (Bounds.Width, Bounds.Height);
-			cacheSize = Bounds.Size;
-			//cache = ib.ToBitmap ();
 		}
 
 		/// <summary>
 		/// Called when the off-screen cache needs to be redrawn
 		/// </summary>
-		protected virtual void OnDrawCache (Context ctx, Rectangle dirtyArea)
+		protected override void OnDrawCache (Context ctx, Rectangle dirtyArea)
 		{
-			// First clear cache to Canvas Background colour
-			ctx.SetColor (BackgroundColor);
-			ctx.Rectangle (Bounds);
-			ctx.Fill ();
-
 			// PlotSurface draws itself into the rectangle specified when Draw is called.
-			// Consequently, always specify the entire area of the plot cache, since a
-			// smaller part of the plot cannot (at present) be drawn.
+			// Specify the entire area of the canvas, since a part-plot cannot be drawn.
 			plotCanvas.Draw (ctx, Bounds);
 		}
 
-		protected virtual void OnDrawOverlay (Context ctx, Rectangle dirtyArea)
+		protected override void OnDrawOverlay (Context ctx, Rectangle dirtyArea)
 		{
 			// All Overlay content is added by PlotSurface Interactions
 			foreach (Interaction interaction in plotCanvas.interactions) {
@@ -274,54 +259,21 @@ namespace XwPlot
 			}
 		}
 
-		/// <summary>
-		/// Update the cache contents, reallocating the cache if necessary
-		/// </summary>
-		internal void UpdateCache ()
-		{
-			if (Bounds.Size == Size.Zero)
-				return;
-			/*			if (cache != null)
-				cache.Dispose ();
-			if (ib != null)
-				ib.Dispose ();
-*/			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
-			OnDrawCache (ib.Context, Bounds);
-			cacheSize = Bounds.Size;
-			cache = ib.ToBitmap ();
-		}
-
 		private void CheckForRedraw (bool modified)
 		{
 			if (modified) {
 				plotCanvas.NotifyUpdate (this);
-				//UpdateCache ();
-				QueueDraw ();
+				Redraw ();
 			}
 		}
 
-		#region Canvas (base) overrides
-		protected override void OnBoundsChanged ()
-		{
-			base.OnBoundsChanged ();
-			//UpdateCache ();			// cache must be redrawn
-			QueueDraw ();			// and display updated
-		}
+		#region OverlayCanvas (base) overrides
 
-		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
-		{
-			// OnDraw updates the display from the off-screen cache,
-			// then adds Overlay content by calling OnDrawOverlay.
-			//ctx.DrawImage (cache, dirtyRect, dirtyRect);
-			//OnDrawOverlay (ctx, dirtyRect);
-			OnDrawCache (ctx, Bounds);	// Test only
-		}
+		// All user input is handled via the Interactions mechanism,
+		// which requests a Redraw of the (cached) canvas if modified
 
 		protected override void OnMouseEntered (EventArgs args)
 		{
-			CanGetFocus = true;
-			SetFocus ();		// ensure keypresses are received
-
 			bool modified = false;
 			foreach (Interaction interaction in plotCanvas.interactions) {
 				modified |= interaction.OnMouseEntered (args, plotCanvas);
@@ -331,7 +283,6 @@ namespace XwPlot
 
 		protected override void OnMouseExited (EventArgs args)
 		{
-			CanGetFocus = false;
 			bool modified = false;
 			foreach (Interaction interaction in plotCanvas.interactions) {
 				modified |= interaction.OnMouseExited (args, plotCanvas);

@@ -187,5 +187,5 @@ namespace XwPlot
 		}
 
 	} // Plot Selection
-		
+
 }

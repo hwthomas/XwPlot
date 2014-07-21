@@ -80,7 +80,7 @@ namespace Samples
 			//plotCanvas.Add (line2);
 			
 			plotCanvas.Title = "Line in the Title Number 1\nFollowed by another title line\n and another";
-			plotCanvas.Refresh ();
+			plotCanvas.Redraw ();
 
 			plotCanvas.Legend = new Legend(	);
 			plotCanvas.LegendZOrder = 1; // default zorder for adding idrawables is 0, so this puts legend on top.

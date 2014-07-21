@@ -59,9 +59,18 @@ namespace XwPlot
 			CanGetFocus = true;
 			if (Bounds.Size == Size.Zero)
 				return;
-			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
 			cacheSize = Bounds.Size;
+			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
 			cache = ib.ToBitmap ();
+		}
+
+		/// <summary>
+		/// Redraw the off-screen cache
+		/// </summary>
+		public void Redraw ()
+		{
+			UpdateCache ();
+			QueueDraw ();
 		}
 
 		/// <summary>
@@ -81,23 +90,25 @@ namespace XwPlot
 		/// <summary>
 		/// Update the cache contents, reallocating the cache if necessary
 		/// </summary>
-		internal void UpdateCache ()
+		void UpdateCache ()
 		{
 			if (Bounds.Size == Size.Zero)
 				return;
-			if (cache != null)
-				cache.Dispose ();
-			if (ib != null)
-				ib.Dispose ();
-
-			ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+			// reallocate cache if Bounds have changed
+			if (cacheSize != Bounds.Size) {
+				if (cache != null)
+					cache.Dispose ();
+				if (ib != null)
+					ib.Dispose ();
+				cacheSize = Bounds.Size;
+				ib = new ImageBuilder (Bounds.Width, Bounds.Height);
+			}
 			// Clear cache to Canvas Background colour
 			ib.Context.SetColor (BackgroundColor);
 			ib.Context.Rectangle (Bounds);
 			ib.Context.Fill ();
 			// Draw into cache
 			OnDrawCache (ib.Context, Bounds);
-			cacheSize = Bounds.Size;
 			cache = ib.ToBitmap ();
 		}
 
@@ -111,23 +122,15 @@ namespace XwPlot
 
 		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
-			// OnDraw updates the display from the off-screen cache,
-			// then adds Overlay content by calling OnDrawOverlay.
+			// Update the display from the off-screen cache
 			ctx.DrawImage (cache, dirtyRect, dirtyRect);
+			// then add any Overlay content
 			OnDrawOverlay (ctx, dirtyRect);
-
-			//OnDrawCache (ctx, Bounds);	// Test only
 		}
 
 		protected override void OnMouseEntered (EventArgs args)
 		{
-			CanGetFocus = true;
 			SetFocus ();		// ensure keypresses are received
-		}
-
-		protected override void OnMouseExited (EventArgs args)
-		{
-			CanGetFocus = false;
 		}
 
 		#endregion // overrides

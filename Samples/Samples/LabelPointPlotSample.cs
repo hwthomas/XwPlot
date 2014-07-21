@@ -148,7 +148,7 @@ namespace Samples
 					PlotQEExampleTextValues[i] = "";
 				}
 			}
-			plotCanvas.Refresh ();
+			plotCanvas.Redraw ();
 			//returning true means that the timeout routine should be invoked
 			//again after the timeout period expires.  Returning false will 
 			//terminate the timeout ie when it has been disabled.
