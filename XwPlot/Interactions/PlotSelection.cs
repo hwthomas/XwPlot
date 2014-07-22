@@ -157,9 +157,13 @@ namespace XwPlot
 		public override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
 			if (selectionActive && selection != Rectangle.Zero) {
+				Rectangle rect = selection;
+				// allow for rectangle draw/fill difference
+				rect.Width	-= 1;
+				rect.Height -= 1;
 				ctx.Save ();
 				ctx.SetColor (LineColor);
-				ctx.Rectangle (selection);
+				ctx.Rectangle (rect);
 				ctx.Stroke ();
 				//Console.WriteLine ("Draw: {0} {1} {2} {3} ", selection.X, selection.Y, selection.Width, selection.Height);
 				ctx.Restore ();

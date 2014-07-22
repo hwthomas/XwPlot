@@ -116,8 +116,7 @@ namespace XwPlot
 		protected override void OnBoundsChanged ()
 		{
 			base.OnBoundsChanged ();
-			UpdateCache ();			// cache must be redrawn
-			QueueDraw ();			// and display updated
+			Redraw ();				// redraw cache
 		}
 
 		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
