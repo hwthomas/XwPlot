@@ -96,10 +96,10 @@ namespace XwPlot
 				return;
 			// reallocate cache if Bounds have changed
 			if (cacheSize != Bounds.Size) {
-				if (cache != null)
-					cache.Dispose ();
-				if (ib != null)
-					ib.Dispose ();
+				//if (cache != null)
+				//	cache.Dispose ();
+				//if (ib != null)
+				//	ib.Dispose ();
 				cacheSize = Bounds.Size;
 				ib = new ImageBuilder (Bounds.Width, Bounds.Height);
 			}

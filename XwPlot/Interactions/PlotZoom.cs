@@ -46,7 +46,7 @@ namespace XwPlot
 	public class PlotZoom : Interaction
 	{
 		private Rectangle focusRect = Rectangle.Zero;
-		private Point pF = Point.Zero;
+		private Point focus = Point.Zero;
   
 		public PlotZoom ()
 		{
@@ -74,13 +74,13 @@ namespace XwPlot
 			// Zoom direction is +1 for Up/ZoomIn, or -1 for Down/ZoomOut
 			proportion *= -direction;
 
-			// delete previous focusPoint drawing - this is all a bit 'tentative'
-			//pc.QueueDraw (focusRect);
+			// delete previous focusPoint drawing
+			pc.Canvas.QueueDraw (focusRect);
 
 			Rectangle area = pc.PlotAreaBoundingBoxCache;
 			if (area.Contains(args.X, args.Y)) {
-				pF.X = args.X;
-				pF.Y = args.Y;
+				focus.X = args.X;
+				focus.Y = args.Y;
 				focusX = (double)(args.X - area.Left)/(double)area.Width;
 				focusY = (double)(area.Bottom - args.Y)/(double)area.Height;
 			}
@@ -90,12 +90,12 @@ namespace XwPlot
 			pc.ZoomXAxes (proportion,focusX);
 			pc.ZoomYAxes (proportion,focusY);
 
-			double x = pF.X-10;
-			double y = pF.Y-10;
+			double x = focus.X-32;
+			double y = focus.Y-32;
 
-			focusRect = new Rectangle (x, y, 21, 21);
+			focusRect = new Rectangle (x, y, 64, 64);
 			// draw new focusRect
-			//pc.QueueDraw (focusRect);
+			pc.Canvas.QueueDraw (focusRect);
 				
 			return (true);
 		}
@@ -106,13 +106,13 @@ namespace XwPlot
 		public override bool OnMouseMoved (MouseMovedEventArgs args, PlotCanvas pc)
 		{
 			// delete previous focusPoint drawing
-			//pc.QueueDraw (focusRect);
+			pc.Canvas.QueueDraw (focusRect);
 			return false;
 		}
 
 		public override void OnDraw (Context ctx, Rectangle dirtyRect)
 		{
-			//DrawFocus (ctx);
+			DrawFocus (ctx, focus);
 		}
 
 		void DrawFocus (Context ctx, Point p)
