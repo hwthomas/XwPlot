@@ -64,9 +64,9 @@ namespace Samples
 			testCategory = AddSample (null, "Tests", null);
 
 			AddSample (plotCategory, "Plot Markers", typeof (PlotMarkerSample));
-			AddSample (plotCategory, "Waveform Step Plot", typeof (StepPlotSample));
-			AddSample (plotCategory, "Point Plot", typeof (PointPlotSample));
 			AddSample (plotCategory, "LabelPoint Plot", typeof (LabelPointPlotSample));
+			AddSample (plotCategory, "Line and Point Plot", typeof (PointPlotSample));
+			AddSample (plotCategory, "Waveform Step Plot", typeof (StepPlotSample));
 			AddSample (plotCategory, "GradientPlot", typeof (GradientPlotSample));
 			AddSample (plotCategory, "Histogram Plot", typeof (HistogramSample));
 			AddSample (plotCategory, "Stacked Histogram Plot", typeof (StackedHistogram));

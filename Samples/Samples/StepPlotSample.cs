@@ -58,14 +58,19 @@ namespace Samples
 
 			Stream file = asm.GetManifestResourceStream ("Samples.Resources.sound.wav");
 
-			System.Int16[] w = new short[5000];
 			byte[] a = new byte[10000];
+			System.Int16[] v = new short[5000];
+			System.Int16[] w = new short[1000];
 
 			file.Read (a, 0, 10000);
 			for (int i=100; i<5000; ++i) {
-				w[i] = BitConverter.ToInt16 (a,i*2);
+				v[i] = BitConverter.ToInt16 (a,i*2);
 			}
 			file.Close();
+			// Select only every 5th sample, so data size = 1000 points
+			for (int i=1; i<1000; ++i) {
+				w[i] = v[i*5];
+			}
 
 			plotCanvas.Clear();
 		  
@@ -79,9 +84,9 @@ namespace Samples
 			
 			StepPlot sp = new StepPlot ();
 			sp.DataSource = w;
-			sp.Color = Colors.Yellow;
+			sp.Color = Colors.Black;
 			sp.Center = true;
-			plotCanvas.Add( sp );
+			plotCanvas.Add (sp);
 
 			plotCanvas.YAxis1.FlipTickText = true;
 
@@ -94,7 +99,7 @@ namespace Samples
 
 			plotCanvas.XAxis1.LineColor = Colors.White;
 			plotCanvas.YAxis1.LineColor = Colors.White;
-			
+
 			PackStart (plotCanvas.Canvas, true);
 			Label la = new Label (infoText);
 			PackStart (la);
