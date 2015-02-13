@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5415AE99-2877-4730-AF1F-F94DCD12C31A}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -30,8 +30,8 @@
     <Reference Include="Xwt">
       <HintPath>..\..\xwt\Xwt\bin\Debug\Xwt.dll</HintPath>
     </Reference>
-    <Reference Include="Xwt.Gtk">
-      <HintPath>..\..\xwt\Xwt.Gtk\bin\Debug\Xwt.Gtk.dll</HintPath>
+    <Reference Include="Xwt.Gtk3">
+      <HintPath>..\..\xwt\Xwt.Gtk\bin\Debug\Xwt.Gtk3.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

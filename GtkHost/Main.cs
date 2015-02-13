@@ -32,7 +32,9 @@ namespace GtkHost
 		[STAThread]
 		public static void Main (string[] args)
 		{
-			App.Run (ToolkitType.Gtk);
+			// Set ToolkitType to Gtk or Gtk3, and add
+			// appropriate reference for Gtk or Gtk3
+			App.Run (ToolkitType.Gtk3);
 		}
 	}
 }
